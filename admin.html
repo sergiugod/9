@@ -837,6 +837,8 @@ const TX = {
   teacher: L('Profesor', 'Учитель', 'Teacher'), teacherOn: L('Mod profesor', 'Режим учителя', 'Teacher mode'),
   teacherBar: L('👩‍🏫 Mod profesor activ: răspunsurile sunt vizibile, iar fișele PDF pot include cheia de răspunsuri.', '👩‍🏫 Режим учителя: ответы видны, а в PDF можно включить ключ.', '👩‍🏫 Teacher mode on: answers are visible and PDFs can include the answer key.'),
   password: L('Parola profesorului', 'Пароль учителя', 'Teacher password'), enter: L('Intră', 'Войти', 'Enter'), cancel: L('Anulează', 'Отмена', 'Cancel'),
+  keysOn: L('👩‍🏫 Mod profesor: răspunsurile sunt VIZIBILE.', '👩‍🏫 Режим учителя: ответы ВИДНЫ.', '👩‍🏫 Teacher mode: answers are VISIBLE.'), keysOff: L('👩‍🏫 Mod profesor: răspunsurile sunt ascunse (poți prezenta la tablă).', '👩‍🏫 Режим учителя: ответы скрыты (можно показывать у доски).', '👩‍🏫 Teacher mode: answers are hidden (safe to present on the board).'),
+  showKeys: L('Arată răspunsurile', 'Показать ответы', 'Show answers'), hideKeys: L('Ascunde răspunsurile', 'Скрыть ответы', 'Hide answers'),
   wrongPass: L('Parolă greșită', 'Неверный пароль', 'Wrong password'), leave: L('Ieși din modul profesor', 'Выйти из режима учителя', 'Leave teacher mode'),
   tAnswer: L('Răspuns (profesor)', 'Ответ (учитель)', 'Answer (teacher)'),
   print: L('🖨️ Tipărește / Salvează PDF', '🖨️ Печать / Сохранить PDF', '🖨️ Print / Save PDF'), close: L('Închide', 'Закрыть', 'Close'),
@@ -877,7 +879,7 @@ const SALT = 'mpf|';
 const EXAM_CFG = window.__EXAM_CFG || { minutes: 120, points: null, conv: null };
 
 /* ================= stare ================= */
-const S = { lang: 'ro', teacher: false, view: 'home', pr: null, test: null, exam: null, say: null, mood: '', lastInput: null, badges: [] };
+const S = { lang: 'ro', teacher: false, keys: (() => { try { return sessionStorage.getItem('mpf-keys') === '1'; } catch (e) { return false; } })(), view: 'home', pr: null, test: null, exam: null, say: null, mood: '', lastInput: null, badges: [] };
 const PAGE = window.__PAGE || { kind: 'item', n: 1 };
 try { const l = localStorage.getItem('mpf-lang'); if (LANGS.includes(l)) S.lang = l; } catch (e) {}
 try { const v = new URLSearchParams(location.search).get('view'); if (['theory', 'example'].includes(v) && PAGE.kind === 'item') S.view = v; } catch (e) {}
@@ -1035,7 +1037,7 @@ function shell(inner) {
   <div class="tools"><button class="chip theme menub" data-act="menu" title="${tx('menu')}" aria-label="${tx('menu')}">${svgIc('list')}</button><span class="seg">${LANGS.map(l => `<button class="chip ${l === S.lang ? 'on' : ''}" data-act="lang" data-v="${l}">${l.toUpperCase()}</button>`).join('')}</span>
   ${themeBtn()}<button class="chip theme" data-act="tour" title="${tx('tourBtn')}" aria-label="${tx('tourBtn')}">?</button><button class="chip theme" data-act="fs" title="${tx('fullscr')}" aria-label="${tx('fullscr')}">${svgIc('expand')}</button>${window.FIREBASE_CONFIG ? '' : `<button class="chip teach ${S.teacher ? 'on' : ''}" data-act="teacher">👩‍🏫 ${S.teacher ? tx('teacherOn') : tx('teacher')}</button>`}</div></header>
   <div class="icard"><span class="ilogo">∑</span><div class="ititle"><b>${title}</b><small>${sub}</small></div>${nav}</div>
-  <div class="pcols"><main class="paper">${S.teacher ? `<div class="teachbar">${tx('teacherBar')}${window.FIREBASE_CONFIG ? '' : ` <button class="btn alt" style="padding:2px 10px;font-size:.8rem" data-act="teacher-off">${tx('leave')}</button>`}</div>` : ''}${inner}</main></div>
+  <div class="pcols"><main class="paper">${S.teacher ? `<div class="teachbar past-noprint"><span>${S.keys ? tx('keysOn') : tx('keysOff')}</span> <button class="btn ${S.keys ? 'alt' : ''}" style="padding:3px 12px;font-size:.85rem" data-act="keys">${S.keys ? tx('hideKeys') : tx('showKeys')}</button>${window.FIREBASE_CONFIG ? '' : ` <button class="btn alt" style="padding:2px 10px;font-size:.8rem" data-act="teacher-off">${tx('leave')}</button>`}</div>` : ''}${inner}</main></div>
   <footer class="lic">© 2026 Godovaniuc Ana · ${tx('lic')} <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></footer></div></div></div>`;
 }
 function tabsHTML() {
@@ -1065,7 +1067,7 @@ function probHTML(p, i, o) {
   if (o.reveal) extra += `<div class="fb ${res && res.all ? 'good' : ''}">${res && res.all ? '' : `${tx('correctAns')}: `}${res && res.all ? '' : ansHTML(p)}</div>`;
   if (o.showSol) extra += `<div class="sol"><b>${tx('solution')}:</b><br>${p.sol(S.lang)}</div>`;
   if (o.hint) extra += `<div class="hintbox">💡 ${p.hint ? p.hint(S.lang) : ''}</div>`;
-  if (S.teacher && !o.reveal) extra += `<div class="key"><b>${tx('tAnswer')}:</b> ${ansHTML(p)}</div>`;
+  if (S.teacher && S.keys && !o.reveal) extra += `<div class="key"><b>${tx('tAnswer')}:</b> ${ansHTML(p)}</div>`;
   return `<div class="prob ${cls}"><div class="pnum">${o.num != null ? o.num : i + 1}</div><div class="pbody"><div class="ptext">${p.text(S.lang)}</div>${p.fig ? `<div class="pfig">${p.fig}</div>` : ''}<div class="pfields">${p.fields.map((f, j) => fieldHTML(p, i, j, o)).join('')}</div>${o.note || ''}${extra}</div></div>`;
 }
 
@@ -1273,7 +1275,7 @@ function pNewSingle() { const pool = pPool(); PS.cur = pool.length ? pPick(pool.
 function pNewVar() { PS.vset = []; for (let n = 1; n <= 12; n++) { const pool = pPool(n); if (pool.length) PS.vset.push(pPick(pool)); } PS.showAll = false; }
 function pCard(t, num, show) {
   const rows = []; for (let n = 1; n <= 12; n++) { const a = PAST.ans[`${n}|${t.l}|${t.y}`]; if (a) rows.push(`<li value="${n}">${a}</li>`); }
-  const key = S.teacher ? `<details class="key past-noprint"><summary><b>🔑 ${tx('pKey')} ${PTYPES[t.l] ? PTYPES[t.l][S.lang] : t.l} ${t.y}</b></summary><p class="sub" style="margin:6px 0">${tx('pKeyNote')}</p><ol class="pkey">${rows.join('') || tx('pNoAns')}</ol></details>` : '';
+  const key = S.teacher && S.keys ? `<details class="key past-noprint"><summary><b>🔑 ${tx('pKey')} ${PTYPES[t.l] ? PTYPES[t.l][S.lang] : t.l} ${t.y}</b></summary><p class="sub" style="margin:6px 0">${tx('pKeyNote')}</p><ol class="pkey">${rows.join('') || tx('pNoAns')}</ol></details>` : '';
   return `<div class="prob"><div class="pnum">${num}</div><div class="pbody"><div class="pmeta"><b>${tx('pItem')} ${t.i}</b> · ${PTYPES[t.l] ? PTYPES[t.l][S.lang] : t.l} · ${t.y}</div><div class="ptext">${t.h}</div>${key}</div></div>`;
 }
 function pastView() {
@@ -1470,6 +1472,7 @@ document.addEventListener('click', e => {
   else if (a === 'theme') { applyTheme(curTheme() === 'dark' ? 'light' : 'dark'); render(); }
   else if (a === 'lang') { S.lang = b.dataset.v; try { localStorage.setItem('mpf-lang', S.lang); } catch (x) {} render(); }
   else if (a === 'teacher') { if (S.teacher) { S.teacher = false; try { sessionStorage.removeItem('mpf-teacher'); } catch (x) {} render(); } else if (window.FIREBASE_CONFIG && window.CLD) { if (CLD.isTeacher()) { S.teacher = true; try { sessionStorage.setItem('mpf-teacher', '1'); } catch (x) {} render(); } else CLD.openTeacherLogin(); } else askPassword(); }
+  else if (a === 'keys') { S.keys = !S.keys; try { sessionStorage.setItem('mpf-keys', S.keys ? '1' : '0'); } catch (x) {} render(); }
   else if (a === 'teacher-off') { S.teacher = false; try { sessionStorage.removeItem('mpf-teacher'); } catch (x) {} render(); }
   else if (a === 'go') { S.view = b.dataset.v; if (S.view === 'practice' && !S.pr) { newPractice(0); say(MSG.hello); } render(); }
   else if (a === 'check') prCheck();
