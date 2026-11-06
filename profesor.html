@@ -1,0 +1,1901 @@
+<!doctype html>
+<html lang="ro"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Profesor · Mate pentru fiecare</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%2064%2064%22%3E%3Cdefs%3E%3ClinearGradient%20id=%22g%22%20x1=%220%22%20y1=%220%22%20x2=%221%22%20y2=%221%22%3E%3Cstop%20offset=%220%22%20stop-color=%22%233b5bff%22/%3E%3Cstop%20offset=%221%22%20stop-color=%22%2316a8c9%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20width=%2264%22%20height=%2264%22%20rx=%2216%22%20fill=%22url(%23g)%22/%3E%3Ctext%20x=%2232%22%20y=%2246%22%20text-anchor=%22middle%22%20font-family=%22Georgia,Times,serif%22%20font-size=%2242%22%20font-weight=%22700%22%20fill=%22%23fff%22%3E%26%238721;%3C/text%3E%3C/svg%3E">
+<style>:root{
+  --bg:#f5f7fb;--bg2:#e9eef9;--surface:#ffffff;--ink:#0f1b33;--muted:#5b6780;--line:#dde4f0;
+  --brand:#2f5bff;--brand2:#12b5a6;--accent:#ff8a3d;--ring:rgba(47,91,255,.28);
+  --ok:#16a34a;--okbg:#e8f7ee;--bad:#e11d48;--badbg:#fdecef;--warn:#f59e0b;--warnbg:#fff6e0;
+  --shadow:0 1px 2px rgba(15,27,51,.06),0 8px 24px rgba(15,27,51,.06);
+  --fig:#1d2f4f;--figbad:#d6336c;
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){
+  --bg:#0b1220;--bg2:#101a30;--surface:#131e36;--ink:#eef2fb;--muted:#9aa8c4;--line:#22304f;
+  --brand:#7a96ff;--brand2:#3ad1c2;--accent:#ffa566;--ring:rgba(122,150,255,.35);
+  --ok:#4ade80;--okbg:#10301f;--bad:#fb7185;--badbg:#3a1520;--warn:#fbbf24;--warnbg:#33290d;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);--fig:#dbe4ff;--figbad:#ff8fb1;}}
+:root[data-theme=dark]{
+  --bg:#0b1220;--bg2:#101a30;--surface:#131e36;--ink:#eef2fb;--muted:#9aa8c4;--line:#22304f;
+  --brand:#7a96ff;--brand2:#3ad1c2;--accent:#ffa566;--ring:rgba(122,150,255,.35);
+  --ok:#4ade80;--okbg:#10301f;--bad:#fb7185;--badbg:#3a1520;--warn:#fbbf24;--warnbg:#33290d;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);--fig:#dbe4ff;--figbad:#ff8fb1;}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:Inter,"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"DejaVu Sans",sans-serif;color:var(--ink);
+background:radial-gradient(900px 500px at 85% -10%,color-mix(in srgb,var(--brand) 14%,transparent),transparent 60%),radial-gradient(700px 420px at -5% 10%,color-mix(in srgb,var(--brand2) 12%,transparent),transparent 60%),var(--bg);min-height:100vh;-webkit-font-smoothing:antialiased}
+.board{max-width:1080px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+header.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 16px;margin:0 -16px;background:color-mix(in srgb,var(--bg) 82%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand .logo{flex:none;width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;display:grid;place-items:center;font:700 19px Georgia,serif;box-shadow:0 6px 16px var(--ring);text-decoration:none}
+.brand b{font-size:1rem;display:block;letter-spacing:-.01em;line-height:1.2}
+.brand small{display:block;color:var(--muted);font-size:.72rem}
+.tools{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.tools .seg{display:inline-flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:var(--shadow)}
+.chip{border:0;background:transparent;color:var(--muted);border-radius:999px;padding:6px 12px;font:600 .78rem inherit;font-family:inherit;cursor:pointer}
+.chip.on{background:var(--ink);color:var(--bg)}
+.chip.teach{background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);color:var(--ink)}
+.chip.teach.on{background:var(--warn);color:#2b1d00;border-color:var(--warn)}
+.chip:focus-visible,.btn:focus-visible,.tab:focus-visible,.gcard:focus-visible,.opt:focus-visible,.lv:focus-visible{outline:3px solid var(--ring);outline-offset:2px}
+.paper{--sq:color-mix(in srgb,var(--brand) 13%,transparent);position:relative;background-color:color-mix(in srgb,var(--surface) 38%,transparent);background-image:linear-gradient(var(--sq) 1px,transparent 1px),linear-gradient(90deg,var(--sq) 1px,transparent 1px);background-size:24px 24px;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);border:1px solid color-mix(in srgb,var(--line) 70%,transparent);border-radius:18px;box-shadow:none;padding:22px 24px 26px 56px;margin-top:16px;min-height:420px}
+.paper:before{content:"";position:absolute;left:38px;top:0;bottom:0;width:2px;background:var(--bad);opacity:.35}
+@media(max-width:720px){.paper{padding:16px 12px 20px 34px}.paper:before{left:22px}}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 16px;padding:4px;background:var(--bg2);border-radius:14px;width:fit-content;max-width:100%}
+.tab{border:0;background:transparent;color:var(--muted);padding:8px 14px;border-radius:10px;cursor:pointer;font:600 .88rem inherit;font-family:inherit}
+.tab:hover{color:var(--ink)}
+.tab.on{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
+h1.t,h2.t{color:var(--ink);margin:2px 0 8px;letter-spacing:-.025em;font-weight:800}
+h1.t{font-size:clamp(1.5rem,4vw,2.2rem);line-height:1.1}h2.t{font-size:1.35rem}
+.sub{color:var(--muted);margin:0 0 14px;line-height:1.55}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:14px;margin:14px 0}
+.gcard{display:flex;flex-direction:column;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;cursor:pointer;text-align:left;font:inherit;color:inherit;transition:transform .18s,border-color .18s,box-shadow .18s;box-shadow:var(--shadow)}
+.gcard:hover{transform:translateY(-3px);border-color:var(--brand);box-shadow:0 12px 30px var(--ring)}
+.gcard .ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:1.3rem;background:color-mix(in srgb,var(--brand) 12%,transparent)}
+.gcard b{display:block;font-size:1.02rem;letter-spacing:-.01em}
+.gcard span{color:var(--muted);font-size:.88rem;line-height:1.45}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;background:var(--brand);color:#fff;border:1px solid transparent;border-radius:12px;padding:10px 18px;font:700 .92rem inherit;font-family:inherit;cursor:pointer;box-shadow:0 8px 20px var(--ring);transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}.btn:active{transform:translateY(0)}
+.btn.alt{background:var(--surface);color:var(--ink);border-color:var(--line);box-shadow:none}
+.btn.warn{background:var(--accent);color:#2b1400;box-shadow:none}
+.btn[disabled]{opacity:.5;cursor:not-allowed;transform:none}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.stat{display:inline-block;margin:0 6px 6px 0;background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-weight:700;font-size:.85rem}
+.levels{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.lv{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;cursor:pointer;font:600 .82rem inherit;font-family:inherit;color:var(--muted)}
+.lv.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.stage{display:block}
+@media(max-width:720px){.stage{grid-template-columns:1fr}.paper{padding:16px 14px 20px;border-radius:18px}}
+.mascot{display:flex;flex-direction:column;align-items:center;gap:8px;position:sticky;top:84px}
+.mascot .owl{width:90px;height:100px}
+.bubble{background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:14px;padding:8px 10px;font-size:.82rem;text-align:center;position:relative;line-height:1.3;color:var(--ink)}
+.bubble:after{content:"";position:absolute;bottom:-8px;left:50%;margin-left:-8px;border:8px solid transparent;border-top-color:var(--line);border-bottom:0}
+@media(max-width:720px){.mascot{flex-direction:row;position:static}.mascot .owl{width:56px;height:62px}.bubble:after{display:none}}
+.owl.bounce{animation:bounce .6s}.owl.shake{animation:shake .5s}
+@keyframes bounce{0%,100%{transform:translateY(0)}30%{transform:translateY(-14px)}60%{transform:translateY(0)}80%{transform:translateY(-6px)}}
+@keyframes shake{0%,100%{transform:rotate(0)}25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
+.prob{display:flex;gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;margin:0 0 12px;box-shadow:var(--shadow)}
+.prob.okp{border-color:var(--ok)}.prob.badp{border-color:var(--bad)}
+.pnum{flex:0 0 32px;height:32px;border-radius:10px;background:color-mix(in srgb,var(--brand) 14%,transparent);color:var(--brand);font-weight:800;display:flex;align-items:center;justify-content:center}
+.pbody{flex:1;min-width:0}
+.ptext{line-height:1.6;font-size:1.02rem}
+.pfig{margin:8px 0;max-width:300px}
+.pfig svg,svg.fig{width:100%;height:auto;display:block}
+.pfields{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:10px;align-items:center}
+.fld{display:inline-flex;align-items:center;gap:6px;font-size:1.02rem}
+.fld .flab{white-space:nowrap}
+input.ans{width:104px;border:1px solid var(--line);border-bottom:3px solid var(--brand);background:var(--bg);color:var(--ink);font:700 1.05rem inherit;font-family:inherit;padding:6px 8px;border-radius:8px;outline:0}
+input.ans:focus{box-shadow:0 0 0 3px var(--ring)}
+input.ans.ok{border-color:var(--ok);background:var(--okbg)}
+input.ans.bad{border-color:var(--bad);background:var(--badbg)}
+.mark{font-weight:800;font-size:1.2rem}.mark.ok{color:var(--ok)}.mark.bad{color:var(--bad)}
+.opts{display:inline-flex;gap:6px;flex-wrap:wrap}
+.opt{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:6px 12px;cursor:pointer;font:600 .9rem inherit;font-family:inherit}
+.opt.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}.opt.ok{border-color:var(--ok);background:var(--okbg);color:var(--ink)}.opt.bad{border-color:var(--bad);background:var(--badbg);color:var(--ink)}
+.unit{color:var(--muted)}
+.fb{margin-top:10px;color:var(--bad);font-size:.95rem;line-height:1.5;font-weight:600}
+.fb.good{color:var(--ok)}
+.sol{margin-top:10px;background:var(--warnbg);border-left:4px solid var(--warn);border-radius:10px;padding:10px 14px;line-height:1.75}
+.key{margin-top:10px;background:color-mix(in srgb,var(--brand) 10%,transparent);border-left:4px solid var(--brand);border-radius:10px;padding:8px 14px;font-size:.93rem}
+.hintbox{margin-top:10px;background:var(--okbg);border-left:4px solid var(--ok);border-radius:10px;padding:8px 14px}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.keypad{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0;padding:8px;background:var(--bg2);border-radius:12px}
+.keypad button{min-width:40px;height:38px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--ink);font-size:1.02rem;cursor:pointer;font-family:inherit}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 .18em;line-height:1.12;font-size:.95em}
+.fr>i{font-style:normal;padding:0 .2em}.fr>i:first-child{border-bottom:1.5px solid currentColor}
+.sq{white-space:nowrap}.sq .ov{border-top:1.5px solid currentColor;padding:0 1px}
+sup{font-size:.7em;line-height:0}sub{font-size:.7em;line-height:0}
+.result{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;margin:12px 0;text-align:center;box-shadow:var(--shadow)}
+.big{font:800 2.6rem inherit;font-family:inherit;letter-spacing:-.03em;background:linear-gradient(90deg,var(--brand),var(--brand2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.badges{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:8px 0}
+.badge{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:4px 10px;font-size:.88rem;font-weight:700}
+.timer{position:sticky;top:64px;z-index:5;background:linear-gradient(135deg,color-mix(in srgb,var(--brand) 92%,#000),color-mix(in srgb,var(--brand2) 88%,#000));color:#fff;border-radius:14px;padding:8px 14px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-weight:700;box-shadow:0 8px 20px var(--ring)}
+.timer .t{font:700 1.3rem "DejaVu Sans Mono",monospace}.timer.low{background:#be123c}
+.itemhead{display:flex;align-items:center;gap:12px;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:22px 0 8px;font-weight:700}
+.itemhead:after{content:"";flex:1;height:1px;background:var(--line)}
+table.rt{border-collapse:collapse;width:100%;background:var(--surface)}
+table.rt td,table.rt th{border:1px solid var(--line);padding:6px 10px;text-align:left}
+table.rt th{background:var(--bg2)}
+footer.lic{color:var(--muted);text-align:center;font-size:.8rem;padding:16px 6px 0}
+footer.lic a{color:var(--brand)}
+.modal{position:fixed;inset:0;background:rgba(10,16,32,.55);display:flex;align-items:center;justify-content:center;z-index:50;padding:12px}
+.modal .box{background:var(--surface);color:var(--ink);border-radius:18px;padding:20px;max-width:420px;width:100%;box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.modal input[type=text],.modal input[type=password],.modal input[type=number],.modal select,.codein,#pdfCode,#pdfN,#codein{width:100%;padding:9px 11px;font:inherit;font-size:1rem;border:1px solid var(--line);border-radius:10px;margin:4px 0 10px;background:var(--bg);color:var(--ink)}
+.codein,#codein{width:auto;margin:0}
+.modal label{font-weight:700;font-size:.9rem}
+.confetti{position:fixed;top:-20px;font-size:1.4rem;pointer-events:none;z-index:60;animation:fall 1.6s ease-in forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(540deg);opacity:.9}}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 16px;border-radius:999px;z-index:70;font-size:.9rem}
+.teachbar{background:var(--warnbg);border:1px solid var(--warn);border-radius:12px;padding:8px 14px;margin-bottom:12px;font-size:.9rem;font-weight:700}
+.exbox{max-width:760px}.exh{font-weight:800;color:var(--brand);margin:16px 0 6px;font-size:.78rem;text-transform:uppercase;letter-spacing:.1em}
+.exsol{margin:0}.exrule{background:color-mix(in srgb,var(--brand2) 12%,transparent);border-left:4px solid var(--brand2);padding:10px 14px;border-radius:10px;line-height:1.55}
+.codehelp{font-size:.85rem;margin:4px 0 0}
+.tab{text-decoration:none;display:inline-block;font-size:.88rem;font-weight:600;font-family:inherit}
+.theory{max-width:780px}.theory h3{margin:20px 0 6px;font-size:1.02rem;color:var(--brand);letter-spacing:-.01em}
+.theory p,.theory li{line-height:1.65}.theory ul{padding-left:20px;margin:6px 0}
+.theory .box{background:color-mix(in srgb,var(--brand) 8%,transparent);border-left:4px solid var(--brand);border-radius:10px;padding:8px 14px;margin:8px 0}
+.theory .ex{background:var(--warnbg);border-left:4px solid var(--warn);border-radius:10px;padding:8px 14px;margin:8px 0}
+.theory table{border-collapse:collapse;margin:8px 0}.theory td,.theory th{border:1px solid var(--line);padding:5px 10px}
+/* ---- desen geometric ---- */
+svg.fig .gl{stroke:var(--fig);stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+svg.fig .gl.hl{stroke:var(--figbad);stroke-width:2.2}
+svg.fig .gl.thin{stroke:var(--muted);stroke-width:1}
+svg.fig .gl.lineA{stroke:var(--fig)}
+svg.fig .gd{fill:var(--fig)}
+svg.fig .glab{font:italic 700 14px "Cambria","DejaVu Serif",serif;fill:var(--fig)}
+svg.fig .gtxt{font:12px "DejaVu Sans",sans-serif;fill:var(--muted)}
+svg.fig .ga{stroke:var(--figbad);stroke-width:1.5;fill:none}
+svg.fig .gang{font:700 11px "DejaVu Sans",sans-serif;fill:var(--figbad)}
+/* ---- fișa PDF ---- */
+#pdfOverlay{position:fixed;inset:0;background:#6b7280;z-index:80;overflow:auto}
+#pdfOverlay[hidden]{display:none}
+.pbar{position:sticky;top:0;z-index:2;background:#263238;color:#fff;display:flex;gap:8px;padding:8px 12px;align-items:center;flex-wrap:wrap}
+.sheets{padding:14px 0;display:flex;flex-direction:column;align-items:center;gap:14px}
+.sheet{box-sizing:border-box;width:210mm;height:297mm;padding:12mm;flex:none;background:#fff;color:#000;box-shadow:0 2px 10px rgba(0,0,0,.4);display:flex;flex-direction:column;overflow:hidden;font-family:"Liberation Serif","Times New Roman","DejaVu Serif",serif;font-size:11.5pt}
+.sheet .shead{border-bottom:1.5px solid #000;padding-bottom:2mm;margin-bottom:3mm}
+.sheet .shead .t1{font-weight:700;font-size:13.5pt}
+.sheet .shead .t2{font-size:10.5pt;display:flex;justify-content:space-between;margin-top:.5mm}
+.sheet .shead .scoreln{margin-top:1mm}.pex .ppt{font-size:.85em;white-space:nowrap;font-weight:700}
+.sheet .shead .t3{margin-top:2.5mm;font-size:10.5pt;display:flex;gap:6mm}
+.sheet .shead .t3 span{flex:1;border-bottom:1px solid #000;white-space:nowrap}
+.sheet .cols{flex:1;min-height:0;column-gap:8mm;column-fill:auto;overflow:hidden}
+.sheet .cols.c1{column-count:1}.sheet .cols.c2{column-count:2}.sheet .cols.c3{column-count:3}
+.sheet .sfoot{border-top:.8px solid #555;margin-top:2mm;padding-top:1mm;font-size:8pt;color:#333;display:flex;justify-content:space-between}
+.pex{break-inside:avoid;page-break-inside:avoid;display:flex;gap:2mm;margin:0 0 3.2mm;line-height:1.4}
+.pex .pn{flex:0 0 6mm;font-weight:700}
+.pex .pc{flex:1;min-width:0}
+.pex .pbot{display:flex;flex-wrap:wrap;gap:1mm 3mm;align-items:flex-end;justify-content:space-between}.pex .pf{flex:0 0 40mm;margin:1mm 0 0 auto}.pex .pa>span{white-space:nowrap}.pex .pa>span.pch{white-space:normal;display:block;flex:1 0 100%}.pex .pco{display:block;margin-top:.6mm}
+.pex .pf svg{width:100%;height:auto}
+.pex .pa{flex:1 1 auto;margin-top:1.2mm;display:flex;flex-wrap:wrap;gap:1mm 5mm;align-items:baseline}
+.pex .bl{display:inline-block;min-width:17mm;border-bottom:1px solid #000;height:1.15em;vertical-align:baseline}
+.pdiv{break-inside:avoid;font-weight:700;border-bottom:1px dashed #000;margin:1mm 0 3mm;padding-bottom:.6mm;font-size:11pt;letter-spacing:.3px}
+.krow{break-inside:avoid;margin:0 0 1.6mm;line-height:1.35;font-size:10.5pt}
+.sheet .fr{font-size:.95em}
+.sheet svg.fig .gl{stroke:#000}.sheet svg.fig .gl.hl{stroke:#000;stroke-width:2.2}.sheet svg.fig .ga,.sheet svg.fig .gang{stroke:#000;fill:none}.sheet svg.fig .gang{fill:#000;stroke:none}.sheet svg.fig .glab,.sheet svg.fig .gd{fill:#000}
+@media print{
+  @page{size:A4;margin:12mm}
+  body.printing{background:#fff!important}
+  body.printing .board,body.printing .modal,body.printing .toast,body.printing .confetti{display:none!important}
+  body.printing #pdfOverlay{position:static!important;background:#fff!important;overflow:visible!important;display:block!important}
+  body.printing .pbar{display:none!important}
+  body.printing .sheets{display:block!important;padding:0!important;zoom:1!important}
+  body.printing .sheet{box-shadow:none!important;margin:0!important;padding:0!important;break-after:page;page-break-after:always;width:186mm;height:271mm}
+  body.printing .sheet:last-child{break-after:auto;page-break-after:auto}
+}
+
+.teachbox{margin-top:18px;padding:12px 14px;border:1px solid var(--warn);background:var(--warnbg);border-radius:14px}
+.teachbox input{width:auto;padding:9px 11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit}
+/* pagina „Din examenele anterioare” */
+.pmeta{font-size:.82rem;color:var(--muted);margin-bottom:6px}
+.pfilters{gap:10px 16px}.pfilters select{padding:6px 8px;border:2px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;max-width:100%}
+.ptext img{max-width:100%;height:auto;vertical-align:middle}.ptext math{font-size:1.08em}
+@media print{.past-noprint,.top,.lic,.teachbar{display:none!important}.board,.paper{background:#fff!important;backdrop-filter:none!important}.prob{break-inside:avoid;box-shadow:none}}
+.pkey{margin:0 0 4px;padding-left:28px;columns:2;font-size:.92rem}.pkey li{break-inside:avoid;margin:2px 0}details.key summary{cursor:pointer}
+.pin{padding:8px 10px;border:2px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;min-width:220px;max-width:100%}
+.pex .pt img{max-width:62mm;max-height:48mm;height:auto;vertical-align:middle}.pex .psrc{font-size:.7em;color:#555}.pex .pt math{font-size:1.05em}
+.pex .pt img{display:block;margin:1mm 0 1.5mm}
+
+/* ================= REDESIGN v2 (aspect; funcționalul rămâne neschimbat) ================= */
+:root{--r:16px;--bg:#f6f8fc;--bg2:#eef2f9}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0a0f1d;--bg2:#141d33;--surface:#111a2d;--line:#233154}}
+:root[data-theme=dark]{--bg:#0a0f1d;--bg2:#141d33;--surface:#111a2d;--line:#233154}
+body{background:radial-gradient(1000px 420px at 80% -8%,color-mix(in srgb,var(--brand) 10%,transparent),transparent 62%),var(--bg);transition:background-color .25s,color .25s}
+.board{max-width:1040px}
+header.top{margin:0 -16px;padding:10px 16px;background:color-mix(in srgb,var(--bg) 86%,transparent);border-bottom:1px solid var(--line);gap:10px}
+.brand .logo{width:36px;height:36px;border-radius:11px;font-size:20px;box-shadow:0 4px 14px var(--ring);transition:transform .18s}
+.brand .logo:hover{transform:rotate(-6deg) scale(1.05)}
+.brand b{font-size:1.02rem;font-weight:750}
+.tools{gap:8px}
+.tools .seg{box-shadow:none;border-color:var(--line);padding:2px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;transition:background .15s,color .15s}
+.chip:hover{color:var(--ink)}
+.chip.on:hover{color:var(--bg)}
+.chip.teach{box-shadow:none;border-radius:999px;padding:7px 13px}
+.chip.theme{width:38px;height:38px;padding:0;justify-content:center;background:var(--surface);border:1px solid var(--line);color:var(--ink)}
+.chip.theme:hover{border-color:var(--brand);color:var(--brand)}
+.chip.theme .ic{margin:0;width:18px;height:18px}
+.ic{width:1.1em;height:1.1em;flex:none;vertical-align:-.2em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;margin-right:.38em}
+.ic.fill{fill:currentColor;stroke:none}
+.paper{background:transparent;background-image:none;border:0;box-shadow:none;border-radius:0;padding:22px 0 8px}
+.paper:before{display:none}
+@media(max-width:720px){.paper{padding:16px 0 8px}}
+.tabs{gap:4px;padding:4px;margin:0 0 20px;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{display:inline-flex;align-items:center;white-space:nowrap;padding:8px 14px;border-radius:10px;font-weight:600;transition:background .15s,color .15s}
+.tab:hover{background:var(--bg2)}
+.tab.on{background:var(--brand);color:#fff;box-shadow:0 3px 10px var(--ring)}
+.tab .ic{margin-right:.45em}
+h1.t,h2.t{font-weight:780}
+h2.t{font-size:1.5rem;margin-top:4px}
+.cards{gap:14px}
+.gcard{border-radius:18px;padding:20px;box-shadow:none;border-color:var(--line);position:relative;overflow:hidden}
+.gcard:hover{box-shadow:0 14px 34px var(--ring);transform:translateY(-3px)}
+.gcard .ico{width:46px;height:46px;border-radius:14px;color:var(--brand);background:color-mix(in srgb,var(--brand) 11%,transparent);font-size:0}
+.gcard .ico .ic{width:24px;height:24px;margin:0}
+.gcard b{font-size:1.05rem}
+.btn{border-radius:12px;box-shadow:0 4px 14px var(--ring);font-weight:650;letter-spacing:.005em}
+.btn.alt{box-shadow:none;background:var(--surface)}
+.btn.alt:hover{border-color:var(--brand);color:var(--brand)}
+.btn.warn{box-shadow:none}
+.btn .ic{margin-right:.1em}
+.stats{gap:8px;margin-bottom:14px}
+.stat{display:inline-flex;align-items:center;margin:0;background:var(--surface);border-radius:999px;padding:5px 13px;font-weight:650;box-shadow:none}
+.stat .ic{margin-right:.4em;color:var(--brand)}
+.levels{margin-bottom:12px}
+.lv{background:var(--surface);transition:all .15s}.lv:hover{border-color:var(--brand);color:var(--brand)}
+.lv.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.prob{border-radius:var(--r);padding:18px;box-shadow:var(--shadow);transition:border-color .2s;border-width:1px}
+.prob.okp{border-color:var(--ok);background:linear-gradient(180deg,color-mix(in srgb,var(--ok) 6%,var(--surface)),var(--surface))}
+.prob.badp{border-color:var(--bad);background:linear-gradient(180deg,color-mix(in srgb,var(--bad) 6%,var(--surface)),var(--surface))}
+.pnum{flex:0 0 34px;height:34px;border-radius:50%;background:var(--brand);color:#fff;font-size:.92rem}
+.ptext{font-size:1.05rem;line-height:1.65}
+input.ans{border:1.5px solid var(--line);border-bottom-width:1.5px;border-radius:10px;padding:8px 10px;background:var(--bg);transition:border-color .15s,box-shadow .15s}
+input.ans:focus{border-color:var(--brand)}
+.opt{border-width:1.5px;border-radius:10px;transition:all .15s}.opt:hover{border-color:var(--brand)}
+.opt.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.sol,.key,.hintbox{border-left-width:0;border-radius:12px;padding:12px 16px;position:relative}
+.sol{background:var(--warnbg);box-shadow:inset 3px 0 0 var(--warn)}
+.key{box-shadow:inset 3px 0 0 var(--brand)}
+.hintbox{box-shadow:inset 3px 0 0 var(--ok)}
+.keypad{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:10px;gap:6px}
+.keypad button{min-width:42px;height:40px;border-radius:10px;font-weight:600;transition:all .12s}
+.keypad button:hover{background:var(--brand);border-color:var(--brand);color:#fff}
+.result{border-radius:20px;padding:24px}
+.timer{border-radius:14px;top:68px}
+.itemhead{margin:26px 0 10px}
+.theory{max-width:800px}
+.theory h3{margin:26px 0 8px;font-size:1.08rem;color:var(--ink);display:flex;align-items:center;gap:10px}
+.theory h3:before{content:"";width:4px;height:1.1em;border-radius:2px;background:var(--brand)}
+.theory .box{border-left:0;box-shadow:inset 3px 0 0 var(--brand);border-radius:12px;padding:12px 16px}
+.theory .ex{border-left:0;box-shadow:inset 3px 0 0 var(--warn);border-radius:12px;padding:12px 16px}
+.theory table{border-radius:10px;overflow:hidden}
+.teachbar{border-radius:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.teachbox{border-radius:14px}
+.modal{backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.modal .box{border:1px solid var(--line);border-radius:20px}
+.pfilters select,.pin{border-width:1.5px}
+footer.lic{margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+body{overflow-x:hidden}
+header.top{background:transparent;border-bottom:0;-webkit-backdrop-filter:none;backdrop-filter:none}
+header.top:before{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:-100vmax;right:-100vmax;background:color-mix(in srgb,var(--bg) 82%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.cards{grid-template-columns:repeat(auto-fit,minmax(min(100%,178px),1fr))}
+:root{--bf:#2f5bff}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bf:#4766f0}}
+:root[data-theme=dark]{--bf:#4766f0}
+.btn,.tab.on,.lv.on,.pnum,.opt.on{background:var(--bf);color:#fff}
+.btn.alt{background:var(--surface);color:var(--ink)}
+.btn.warn{background:var(--accent);color:#2b1400}
+.lv.on,.opt.on{border-color:var(--bf)}
+.keypad button:hover{background:var(--bf);border-color:var(--bf)}
+.chip.on{background:var(--ink);color:var(--bg)}
+.stat{gap:.35em}
+svg.fig{overflow:visible}
+/* ================= LAYOUT v3: sidebar + banner + coloană de unelte ================= */
+.app{display:grid;grid-template-columns:248px minmax(0,1fr);min-height:100vh}
+.mainwrap{min-width:0}
+.board{max-width:1180px;padding:16px max(16px,env(safe-area-inset-right)) 24px max(16px,env(safe-area-inset-left))}
+header.top{display:none}
+.side{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:6px;padding:18px 12px 14px;color:#e8f0ff;background:linear-gradient(180deg,#0b3a8f 0%,#0a2f78 55%,#082457 100%);overflow:hidden}
+.sbrand{display:flex;align-items:center;gap:12px;padding:4px 8px 14px;border-bottom:1px solid rgba(255,255,255,.14)}
+.slogo{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#38bdf8,#14b8a6);color:#fff;font:700 22px Georgia,serif;box-shadow:0 6px 16px rgba(0,0,0,.25)}
+.sbrand b{font-size:1.05rem;line-height:1.2;font-weight:750}.sbrand small{display:block;font-weight:500;opacity:.75;font-size:.8rem}
+.snav{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:2px;padding:10px 0;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.25) transparent}
+.sh{font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;opacity:.6;font-weight:700;margin:12px 10px 4px}
+.sl{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:12px;color:inherit;text-decoration:none;font-weight:600;font-size:.92rem;transition:background .15s}
+.sl span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.sl:hover{background:rgba(255,255,255,.1)}
+.sl.on{background:linear-gradient(90deg,#2f7bff,#2563eb);box-shadow:0 6px 16px rgba(10,30,90,.4)}
+.sl .ic{margin:0;width:19px;height:19px}
+.sl.it{padding:7px 12px;font-weight:550;font-size:.86rem}
+.sl.it i{flex:none;width:24px;height:24px;border-radius:8px;background:rgba(255,255,255,.14);display:grid;place-items:center;font-style:normal;font-weight:750;font-size:.78rem}
+.sl.it.on i{background:rgba(255,255,255,.28)}
+.sbadge{display:flex;align-items:center;gap:10px;padding:12px;border-radius:14px;background:rgba(255,255,255,.1);font-weight:700;font-size:.85rem;line-height:1.25}
+.sbadge .ic{width:26px;height:26px;margin:0;color:#fbbf24}
+.banner{position:relative;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:132px;padding:22px 26px;border-radius:22px;overflow:hidden;color:#fff;background:linear-gradient(120deg,#1e5eff 0%,#2a8cf0 48%,#22c3d6 100%);box-shadow:0 14px 34px rgba(30,94,255,.28)}
+.banner:before{content:"";position:absolute;inset:auto -10% -55% 15%;height:90%;border-radius:50%;background:rgba(255,255,255,.12)}
+.btxt{position:relative;z-index:1;padding-top:30px}
+.banner h1{margin:0;font-size:clamp(1.4rem,3.2vw,2.1rem);font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.banner p{margin:6px 0 0;opacity:.92;font-size:1rem}
+.bsvg{position:relative;z-index:1;flex:none;width:clamp(240px,34vw,380px);height:auto;margin-top:18px}
+.banner .tools{position:absolute;z-index:2;top:12px;right:14px}
+.banner .tools .seg{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.3)}
+.banner .tools .seg .chip{color:#fff}.banner .tools .seg .chip.on{background:#fff;color:#1e3a8a}
+.banner .tools .chip.theme,.banner .tools .chip.teach{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.32);color:#fff}
+.banner .tools .chip.theme:hover,.banner .tools .chip.teach:hover{background:rgba(255,255,255,.3);color:#fff}
+.banner .tools .chip.teach.on{background:var(--warn);color:#2b1d00}
+.icard{display:flex;align-items:center;gap:14px;margin:16px 0 0;padding:14px 18px;background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.ilogo{flex:none;width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--bf),var(--brand2));color:#fff;font:700 26px Georgia,serif}
+.ititle{flex:1;min-width:0}.ititle b{display:block;font-size:1.15rem;letter-spacing:-.01em;font-weight:780}.ititle small{color:var(--muted);font-size:.9rem}
+.inav{display:flex;gap:8px}
+.inav a,.inav .dis{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;border:1px solid var(--line);background:var(--surface);color:var(--ink);transition:all .15s}
+.inav a:hover{border-color:var(--bf);color:var(--bf);box-shadow:0 4px 12px var(--ring)}
+.inav .dis{opacity:.35}.inav .ic{margin:0;width:20px;height:20px}
+.pcols{margin-top:16px}
+.paper{padding:6px 0 8px}
+.rcol{display:flex;flex-direction:column;gap:14px}
+.pan{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:var(--shadow)}
+.pan h3{margin:0 0 8px;font-size:1rem;display:flex;align-items:center;gap:8px}.pan h3 .ic{margin:0;color:var(--bf)}
+.ul{display:flex;align-items:center;gap:10px;width:100%;padding:10px;border:0;border-top:1px solid var(--line);background:transparent;color:var(--ink);text-decoration:none;font:600 .92rem inherit;font-family:inherit;cursor:pointer;text-align:left;border-radius:0}
+.ul:first-of-type{border-top:0}.ul span{flex:1}.ul .ic{margin:0;color:var(--bf)}.ul .ic.e{width:15px;height:15px;color:var(--muted)}.ul:hover{background:var(--bg2)}
+.pan textarea{width:100%;resize:vertical;min-height:110px;padding:10px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);font:inherit;font-size:.92rem}
+.pan textarea:focus{outline:0;border-color:var(--bf);box-shadow:0 0 0 3px var(--ring)}
+.pan small{display:block;color:var(--muted);margin-top:6px;font-size:.78rem}
+.timer{top:12px}
+@media(max-width:900px){
+ .app{display:block}
+ .side{position:static;height:auto;flex-direction:row;align-items:center;gap:8px;padding:8px 10px;overflow-x:auto}
+ .sbrand{border:0;padding:0 6px 0 2px;flex:none}.sbrand b{display:none}.sbadge,.sh{display:none}
+ .snav{flex-direction:row;overflow-x:auto;overflow-y:hidden;padding:0;gap:4px;flex:1}.sl{flex:none}.sl.it span{display:none}.sl.it{padding:6px}
+ .banner{min-height:0;padding:18px 16px}.bsvg{display:none}.btxt{padding-top:44px}
+ .banner .tools{left:12px;right:12px;justify-content:flex-end}
+}
+/* tema de noapte */
+:root[data-theme=dark] .banner{background:linear-gradient(120deg,#16348f,#1c5fb8 55%,#17808f);box-shadow:0 14px 34px rgba(0,0,0,.45)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .banner{background:linear-gradient(120deg,#16348f,#1c5fb8 55%,#17808f);box-shadow:0 14px 34px rgba(0,0,0,.45)}}
+@media print{.side,.banner,.icard,.rcol{display:none!important}.app{display:block}}
+.ul{font-family:inherit;font-size:.92rem;font-weight:600}
+.tabs{flex-wrap:wrap;overflow:visible}
+.sl.it{padding:5px 12px}.sl{padding:8px 12px}.snav{gap:1px}
+@media(max-width:720px){.tabs{flex-wrap:nowrap;overflow-x:auto}}
+@media(max-width:900px){.banner{flex-direction:column;align-items:flex-start;gap:12px}.banner .tools{position:static;order:-1;width:100%;flex-wrap:wrap;justify-content:flex-start}.btxt{padding-top:0}}
+/* ================= v4: bară laterală uniformă și pliabilă, banner plat, tur ================= */
+.side{background:#0f3d91;transition:width .2s;position:sticky}
+.slogo{background:#2f6df0;box-shadow:none}
+.sl.on{background:#2f6df0;box-shadow:none}
+.banner{background:#1f5fe0;box-shadow:0 10px 28px rgba(31,95,224,.25)}
+.banner:before{display:none}
+:root[data-theme=dark] .banner{background:#173a8c;box-shadow:0 10px 28px rgba(0,0,0,.45)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .banner{background:#173a8c;box-shadow:0 10px 28px rgba(0,0,0,.45)}}
+:root[data-theme=dark] .side{background:#0c2760}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .side{background:#0c2760}}
+.ilogo{background:var(--bf)}
+.sbrand{position:relative}.sbrand b{flex:1}
+.scol{flex:none;width:30px;height:30px;border-radius:9px;border:0;background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;cursor:pointer;padding:0}
+.scol:hover{background:rgba(255,255,255,.22)}.scol .ic{margin:0;width:16px;height:16px;transition:transform .2s}
+.sl.it{position:relative;padding-bottom:9px}
+.sl.it em{position:absolute;left:46px;right:12px;bottom:3px;height:3px;border-radius:2px;background:rgba(255,255,255,.14);overflow:hidden}
+.sl.it em:after{content:"";position:absolute;inset:0;width:var(--p);background:#4ade80;border-radius:2px}
+.sl.it.full i{background:#16a34a}.sl.it i .ic{width:14px;height:14px;margin:0;stroke-width:3}
+.sfoot{display:flex;align-items:center;gap:8px}
+.sprog{flex:1;min-width:0;padding:10px 12px;border-radius:14px;background:rgba(255,255,255,.1);font-size:.82rem;line-height:1.3}
+.sprog b{font-size:1.05rem}.sprog span{opacity:.8}.sprog .sx{float:right;font-weight:700;color:#fde047}
+.sprog .bar{height:5px;border-radius:3px;background:rgba(255,255,255,.18);margin-top:7px;overflow:hidden}.sprog .bar i{display:block;height:100%;background:#4ade80;border-radius:3px}
+.srst{flex:none;width:30px;height:30px;border-radius:9px;border:0;background:transparent;color:rgba(255,255,255,.55);cursor:pointer;display:grid;place-items:center;padding:0}
+.srst:hover{background:rgba(255,255,255,.14);color:#fff}.srst .ic{margin:0;width:15px;height:15px}
+.menub{display:none}
+.sback{display:none}
+/* pliat (desktop) */
+@media(min-width:901px){
+ .app.collapsed{grid-template-columns:76px minmax(0,1fr)}
+ .collapsed .side{padding-left:10px;padding-right:10px}
+ .collapsed .sbrand{flex-direction:column;gap:10px;padding-bottom:12px}
+ .collapsed .sbrand b,.collapsed .sl span,.collapsed .sh,.collapsed .sl.it em,.collapsed .sprog span,.collapsed .sprog .bar,.collapsed .sprog .sx,.collapsed .srst{display:none}
+ .collapsed .sl{justify-content:center;padding:9px 0}.collapsed .sl.it{padding:6px 0}
+ .collapsed .sfoot{justify-content:center}.collapsed .sprog{padding:8px 4px;text-align:center}
+ .collapsed .scol .ic{transform:rotate(180deg)}
+}
+/* telefon: meniu glisant */
+@media(max-width:900px){
+ .menub{display:grid}
+ .side{position:fixed;left:0;top:0;bottom:0;z-index:60;width:min(300px,84vw);height:auto;flex-direction:column;align-items:stretch;padding:18px 12px 14px;overflow:hidden;transform:translateX(-102%);transition:transform .22s;box-shadow:none}
+ .drawer .side{transform:none;box-shadow:12px 0 40px rgba(0,0,0,.4)}
+ .drawer .sback{display:block;position:fixed;inset:0;z-index:55;background:rgba(5,10,25,.55)}
+ .sbrand{border-bottom:1px solid rgba(255,255,255,.14);padding:4px 8px 14px}.sbrand b{display:block}
+ .snav{flex-direction:column;overflow-y:auto;overflow-x:hidden;gap:1px;padding:10px 0;flex:1}
+ .sl{flex:initial}.sl.it span{display:block}.sl.it{padding:7px 12px 9px}.sh,.sbadge{display:block}
+ .sfoot{display:flex}.scol .ic{transform:none}
+ .banner .tools{gap:6px}
+}
+/* tur */
+#tour{position:fixed;inset:0;z-index:90}
+#tour .thl{position:fixed;border-radius:14px;box-shadow:0 0 0 9999px rgba(5,10,25,.62),0 0 0 3px #fde047;transition:all .2s;pointer-events:none}
+#tour .tcard{position:fixed;background:var(--surface);color:var(--ink);border-radius:16px;padding:14px 16px;box-shadow:0 18px 44px rgba(0,0,0,.45);border:1px solid var(--line)}
+#tour .tcard small{color:var(--muted);font-weight:700}#tour .tcard b{display:block;font-size:1.05rem;margin:2px 0 4px}#tour .tcard p{margin:0 0 4px;line-height:1.5;font-size:.92rem;color:var(--muted)}
+@media print{#tour{display:none}}
+.bsvg{width:clamp(170px,21vw,235px)}
+/* ===== v5: culori difuze pentru itemi și bare de progres ===== */
+.sl.it i{background:hsl(var(--h,210) 80% 65%/.32);color:#fff;box-shadow:0 0 10px hsl(var(--h,210) 85% 60%/.35)}
+.sl.it.on i{background:hsl(var(--h,210) 85% 62%/.75)}
+.sl.it.full i{background:hsl(var(--h,150) 70% 40%/.95)}
+.sl.it em{background:rgba(255,255,255,.12);overflow:visible;height:4px;border-radius:3px;filter:none}
+.sl.it em:after{inset:0;width:100%;background:linear-gradient(90deg,#fb923c 0%,#fbbf24 40%,#a3e635 70%,#4ade80 100%);clip-path:inset(0 calc(100% - var(--p)) 0 0 round 3px);filter:saturate(.95)}
+.sprog .bar i{background:linear-gradient(90deg,#fb923c,#fbbf24,#a3e635,#4ade80);box-shadow:0 0 8px rgba(163,230,53,.4)}
+.stat.goal{position:relative;overflow:hidden;gap:0;padding-right:16px}
+.stat.goal i{position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--line)}
+.stat.goal i:after{content:"";position:absolute;left:0;top:0;bottom:0;width:var(--p);background:linear-gradient(90deg,#fb923c,#fbbf24,#a3e635,#4ade80);border-radius:2px;box-shadow:0 0 6px rgba(163,230,53,.5)}
+.sl.it.full i{background:hsl(145 65% 38%/.95);box-shadow:0 0 10px rgba(74,222,128,.4)}
+
+/* ===== conturi / cloud ===== */
+.scloud{padding:10px 12px;margin:0 10px 8px;border-radius:14px;background:rgba(255,255,255,.1);display:flex;flex-direction:column;gap:6px}
+.scloud .who{color:#fff;display:flex;flex-direction:column;line-height:1.25}.scloud .who small{opacity:.7}
+.sbtn{display:block;text-align:center;text-decoration:none;position:relative;border:0;border-radius:10px;padding:8px 10px;font:700 .86rem inherit;font-family:inherit;background:#fff;color:#1e3a8a;cursor:pointer}
+.sbtn.dirty{background:#fde047;color:#422006}.sbtn i{position:absolute;top:5px;right:7px;width:8px;height:8px;border-radius:50%;background:#e11d48}
+.slnk{background:none;border:0;color:rgba(255,255,255,.8);font:inherit;font-size:.8rem;text-decoration:underline;cursor:pointer;padding:2px;text-align:center}
+.collapsed .scloud{display:none}
+.pan2{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;margin:14px 0}.pan2 h3{margin:0 0 6px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.cbtn{border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;padding:8px 12px;cursor:pointer;font:inherit;text-align:left}.cbtn small{display:block;opacity:.7}.cbtn.on{border-color:var(--brand);box-shadow:0 0 0 2px color-mix(in srgb,var(--brand) 25%,transparent)}
+.codebox{font-size:1.1rem;margin:6px 0}.codebox b{font-size:1.5rem;letter-spacing:.12em}
+.restab{border-collapse:collapse;width:100%;font-size:.88rem;margin:10px 0}.restab th,.restab td{border:1px solid var(--line);padding:5px 7px;text-align:center}.restab td:first-child,.restab th:first-child{text-align:left}.restab td small{display:block;opacity:.7}.restab td.e{opacity:.4}.restab td.d{font-size:.78rem}
+.restab tr.hist td{text-align:left;background:var(--bg)}
+.lk{background:none;border:0;color:var(--brand);text-decoration:underline;cursor:pointer;font:inherit;padding:0}
+.st.pending{color:#b45309}.st.approved{color:#15803d}.st.rejected{color:#b91c1c}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+</style></head>
+<body><div id="app"></div><div id="modal"></div><div id="pdfOverlay" hidden></div>
+<script>
+/* ← LINK: adresa paginii principale (start). Ex.: window.HOME_URL = 'https://sites.google.com/view/.../acasa'; */
+window.HOME_URL = null;
+window.FIREBASE_CONFIG = null;window.ADMIN_EMAILS = ["godser@gmail.com"];window.MAX_TEACHERS = 20;
+window.__PAGE={"kind": "teacher"};window.__EXAM_CFG={"minutes": 120, "points": {"1": 3, "2": 2, "3": 3, "4": 5, "5": 2, "6": 4, "7": 6, "8": 5, "9": 5, "10": 5, "11": 6, "12": 4}, "conv": [[0, 1], [1, 2], [5, 3], [9, 4], [13, 5], [21, 6], [29, 7], [37, 8], [45, 9], [48, 10]]};window.PASS_HASH="e43419c3ebbc4de79f6e66673cc564d67135e7c07b6d2e88a099d376859354de";</script>
+<script>
+'use strict';
+/* ================= CORE: RNG, fracții, parser matematic, verificare ================= */
+const LANGS = ['ro', 'ru', 'en'];
+const MINUS = '−';
+
+function hashSeed(str) {
+  let h = 1779033703 ^ str.length;
+  for (let i = 0; i < str.length; i++) { h = Math.imul(h ^ str.charCodeAt(i), 3432918353); h = (h << 13) | (h >>> 19); }
+  h = Math.imul(h ^ (h >>> 16), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909);
+  return (h ^ (h >>> 16)) >>> 0;
+}
+function RNG(seed) {
+  let a = hashSeed(String(seed));
+  const f = () => { a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  f.int = (lo, hi) => lo + Math.floor(f() * (hi - lo + 1));
+  f.pick = arr => arr[Math.floor(f() * arr.length)];
+  f.chance = p => f() < p;
+  f.sign = () => (f() < .5 ? -1 : 1);
+  f.range = (lo, hi) => lo + f() * (hi - lo);
+  f.shuffle = arr => { arr = arr.slice(); for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(f() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; };
+  return f;
+}
+const randCode = () => { const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s = ''; for (let i = 0; i < 6; i++) s += c[Math.floor(Math.random() * c.length)]; return s; };
+
+/* ---------- fracții ---------- */
+const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a; };
+class Q {
+  constructor(n, d = 1) { if (d < 0) { n = -n; d = -d; } const g = gcd(n, d) || 1; this.n = n / g; this.d = d / g; }
+  add(o) { return new Q(this.n * o.d + o.n * this.d, this.d * o.d); }
+  sub(o) { return new Q(this.n * o.d - o.n * this.d, this.d * o.d); }
+  mul(o) { return new Q(this.n * o.n, this.d * o.d); }
+  div(o) { return new Q(this.n * o.d, this.d * o.n); }
+  pow(k) { let r = new Q(1); for (let i = 0; i < k; i++) r = r.mul(this); return r; }
+  isInt() { return this.d === 1; }
+  isZero() { return this.n === 0; }
+  val() { return this.n / this.d; }
+}
+const qi = n => new Q(n);
+
+/* ---------- formatare HTML ---------- */
+const fmtInt = n => (n < 0 ? MINUS : '') + Math.abs(n);
+const frH = (n, d) => `<span class="fr"><i>${n}</i><i>${d}</i></span>`;
+const supH = s => `<sup>${s}</sup>`;
+const sqrtH = s => `<span class="sq">√<span class="ov">${s}</span></span>`;
+function qH(q, paren = false) {
+  let s = q.d === 1 ? fmtInt(q.n) : (q.n < 0 ? MINUS : '') + frH(Math.abs(q.n), q.d);
+  return paren && q.n < 0 ? '(' + s + ')' : s;
+}
+const qT = q => (q.d === 1 ? String(q.n) : q.n + '/' + q.d);
+const decS = (x, l) => String(x).replace('.', l === 'en' ? '.' : ',');
+
+/* ---------- parser de expresii ---------- */
+function normExpr(s) {
+  return String(s).trim()
+    .replace(/[−–—‑]/g, '-').replace(/[·×⋅∙•]/g, '*').replace(/[÷:]/g, '/')
+    .replace(/\s+/g, '').replace(/π/g, 'pi').replace(/²/g, '^2').replace(/³/g, '^3').replace(/⁴/g, '^4')
+    .replace(/√/g, 'sqrt').replace(/,/g, '.').replace(/[\{\[]/g, '(').replace(/[\}\]]/g, ')');
+}
+function compile(str) {
+  const s = normExpr(str);
+  if (!s) return null;
+  const toks = []; const re = /\d+\.?\d*|\.\d+|sqrt|pi|[a-z]|[-+*\/^()]/y; let pos = 0;
+  while (pos < s.length) { re.lastIndex = pos; const m = re.exec(s); if (!m || m.index !== pos) return null; toks.push(m[0]); pos = re.lastIndex; }
+  let p = 0; const peek = () => toks[p];
+  const isAtomStart = t => t !== undefined && (/^[\d.]/.test(t) || t === '(' || t === 'sqrt' || t === 'pi' || /^[a-z]$/.test(t));
+  function expr() {
+    let l = term();
+    while (peek() === '+' || peek() === '-') { const op = toks[p++]; const r = term(); const a = l; l = op === '+' ? (e => a(e) + r(e)) : (e => a(e) - r(e)); }
+    return l;
+  }
+  function term() {
+    let l = unary();
+    for (;;) {
+      const t = peek();
+      if (t === '*' || t === '/') { p++; const r = unary(); const a = l; l = t === '*' ? (e => a(e) * r(e)) : (e => a(e) / r(e)); }
+      else if (isAtomStart(t)) { const r = power(); const a = l; l = e => a(e) * r(e); }
+      else break;
+    }
+    return l;
+  }
+  function unary() {
+    if (peek() === '-') { p++; const u = unary(); return e => -u(e); }
+    if (peek() === '+') { p++; return unary(); }
+    return power();
+  }
+  function power() {
+    const b = atom();
+    if (peek() === '^') { p++; const ex = unary(); return e => Math.pow(b(e), ex(e)); }
+    return b;
+  }
+  function atom() {
+    const t = toks[p++];
+    if (t === undefined) throw 0;
+    if (/^[\d.]/.test(t)) { const v = parseFloat(t); return () => v; }
+    if (t === '(') { const v = expr(); if (toks[p++] !== ')') throw 0; return v; }
+    if (t === 'sqrt') { const a = atom(); return e => Math.sqrt(a(e)); }
+    if (t === 'pi') return () => Math.PI;
+    if (/^[a-z]$/.test(t)) return e => (e && t in e ? e[t] : NaN);
+    throw 0;
+  }
+  try { const f = expr(); if (p !== toks.length) return null; return f; } catch (e) { return null; }
+}
+function evalNum(str) { const f = compile(str); if (!f) return NaN; const v = f({}); return typeof v === 'number' ? v : NaN; }
+const nearEq = (a, b) => Number.isFinite(a) && Number.isFinite(b) && Math.abs(a - b) <= 1e-9 * Math.max(1, Math.abs(a), Math.abs(b));
+
+function parseList(raw) {
+  let s = String(raw).trim();
+  s = s.replace(/^[A-Za-zА-Яа-я]{1,2}\s*(=|∈)\s*/, '');
+  if (/^[\{\(\[]?\s*[\}\)\]]?$/.test(s) || /∅|fără|нет|no\s*sol|empty/i.test(s)) return [];
+  s = s.replace(/^[\{\[]|[\}\]]$/g, '');
+  const parts = s.indexOf(';') >= 0 ? s.split(';') : (/,\s/.test(s) ? s.split(/,\s+/) : s.split(/\s+(?:și|si|and|и|sau)\s+/i));
+  return parts.map(x => x.trim()).filter(x => x.length);
+}
+
+/* verificare câmp -> {ok, note} */
+function checkField(f, raw) {
+  raw = raw == null ? '' : String(raw);
+  if (!raw.trim()) return { ok: false, empty: true };
+  if (f.type === 'choice') return { ok: raw === f.ans };
+  if (f.type === 'num') {
+    const v = evalNum(raw);
+    if (!nearEq(v, f.ans)) return { ok: false };
+    const m = normExpr(raw).match(/^-?(\d+)\/(\d+)$/);
+    if (m && gcd(+m[1], +m[2]) > 1 && !f.ansInt) return { ok: true, note: 'reduce' };
+    return { ok: true };
+  }
+  if (f.type === 'set') {
+    const got = parseList(raw).map(evalNum);
+    if (got.some(x => !Number.isFinite(x))) return { ok: false };
+    const uniq = a => { const o = []; a.slice().sort((x, y) => x - y).forEach(x => { if (!o.length || !nearEq(o[o.length - 1], x)) o.push(x); }); return o; };
+    const A = uniq(got), B = uniq(f.ans);
+    return { ok: A.length === B.length && A.every((x, i) => nearEq(x, B[i])) };
+  }
+  if (f.type === 'expr') {
+    const ff = compile(raw), gg = compile(f.ans);
+    if (!ff || !gg) return { ok: false };
+    const vars = f.vars || ['x'];
+    const pts = [-3.7, -2.3, -1.1, 0.37, 0.9, 1.7, 2.9, 4.3, 6.1, 7.7];
+    let tested = 0;
+    for (let i = 0; i < pts.length; i++) {
+      const env = {}; vars.forEach((v, k) => env[v] = pts[(i + k * 3) % pts.length]);
+      const a = ff(env), b = gg(env);
+      if (!Number.isFinite(b)) continue;
+      tested++;
+      if (!Number.isFinite(a) || Math.abs(a - b) > 1e-7 * Math.max(1, Math.abs(b))) return { ok: false };
+    }
+    return { ok: tested >= 4 };
+  }
+  return { ok: false };
+}
+/* verificare problemă -> {fields:[...], frac} */
+function checkProblem(p, vals) {
+  const fields = p.fields.map((f, j) => checkField(f, vals[j]));
+  const okN = fields.filter(r => r.ok).length;
+  return { fields, frac: okN / p.fields.length, all: okN === p.fields.length };
+}
+
+/* ---------- SHA-256 (pentru parola profesorului) ---------- */
+function sha256(msg) {
+  const K = [0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+  const b = unescape(encodeURIComponent(msg)); const l = b.length; const nw = (((l + 8) >> 6) + 1) << 4; const w = new Array(nw).fill(0);
+  for (let i = 0; i < l; i++) w[i >> 2] |= b.charCodeAt(i) << (24 - (i % 4) * 8);
+  w[l >> 2] |= 0x80 << (24 - (l % 4) * 8); w[(((l + 8) >> 6) << 4) + 15] = l * 8;
+  let H = [0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  const rr = (x, n) => (x >>> n) | (x << (32 - n));
+  for (let i = 0; i < w.length; i += 16) {
+    const x = w.slice(i, i + 16); for (let t = 16; t < 64; t++) { const s0 = rr(x[t-15],7)^rr(x[t-15],18)^(x[t-15]>>>3), s1 = rr(x[t-2],17)^rr(x[t-2],19)^(x[t-2]>>>10); x[t] = (x[t-16] + s0 + x[t-7] + s1) | 0; }
+    let [a, bb, c, d, e, f, g, h] = H;
+    for (let t = 0; t < 64; t++) {
+      const S1 = rr(e,6)^rr(e,11)^rr(e,25), ch = (e & f) ^ (~e & g), t1 = (h + S1 + ch + K[t] + x[t]) | 0;
+      const S0 = rr(a,2)^rr(a,13)^rr(a,22), mj = (a & bb) ^ (a & c) ^ (bb & c), t2 = (S0 + mj) | 0;
+      h = g; g = f; f = e; e = (d + t1) | 0; d = c; c = bb; bb = a; a = (t1 + t2) | 0;
+    }
+    H = [(H[0]+a)|0,(H[1]+bb)|0,(H[2]+c)|0,(H[3]+d)|0,(H[4]+e)|0,(H[5]+f)|0,(H[6]+g)|0,(H[7]+h)|0];
+  }
+  return H.map(v => ('00000000' + (v >>> 0).toString(16)).slice(-8)).join('');
+}
+
+/* ---------- registru de itemi și generare ---------- */
+const ITEMS = {};            // n -> {n, families:[{id,lvl,exam,gen}]}
+const L = (ro, ru, en) => ({ ro, ru, en });
+function registerItem(it) { ITEMS[it.n] = it; }
+
+const ITEM_TITLES = {
+  1: L('Calcule cu numere reale', 'Вычисления с действительными числами', 'Calculations with real numbers'),
+  2: L('Geometrie: unghiuri, cerc, linia mijlocie', 'Геометрия: углы, окружность, средняя линия', 'Geometry: angles, circle, midline'),
+  3: L('Ecuația de gradul II', 'Квадратное уравнение', 'Quadratic equations'),
+  4: L('Rapoarte, proporții, procente', 'Отношения, пропорции, проценты', 'Ratios, proportions, percentages'),
+  5: L('Funcții și grafice', 'Функции и графики', 'Functions and graphs'),
+  6: L('Inecuații', 'Неравенства', 'Inequalities'),
+  7: L('Puteri și radicali', 'Степени и радикалы', 'Powers and radicals'),
+  8: L('Triunghiuri și patrulatere: lungimi și arii', 'Треугольники и четырёхугольники: длины и площади', 'Triangles and quadrilaterals: lengths and areas'),
+  9: L('Probleme rezolvate cu sisteme de ecuații', 'Задачи на системы уравнений', 'Word problems with systems of equations'),
+  10: L('Corpuri geometrice: paralelipiped și cub', 'Геометрические тела: параллелепипед и куб', 'Solids: cuboid and cube'),
+  11: L('Fracții algebrice', 'Алгебраические дроби', 'Algebraic fractions'),
+  12: L('Funcția de gradul II cu parametru', 'Квадратичная функция с параметром', 'Quadratic function with a parameter')
+};
+
+/* alege o familie după nivel: lvl 1..3, 0 = oricare, 'exam' = familii marcate exam */
+function makeProblem(item, r, lvl, usedSigs) {
+  let pool = item.families.filter(f => lvl === 0 ? true : lvl === 'exam' ? f.exam : f.lvl === lvl);
+  if (!pool.length) pool = item.families;
+  for (let tries = 0; tries < 40; tries++) {
+    const fam = r.pick(pool);
+    const p = fam.gen(r);
+    p.fam = fam.id; p.lvl = fam.lvl; p.item = item.n;
+    if (!p.sig) p.sig = fam.id + '|' + JSON.stringify(p.fields.map(f => f.ans));
+    if (!usedSigs || !usedSigs.has(p.sig)) { if (usedSigs) usedSigs.add(p.sig); return p; }
+  }
+  const fam = r.pick(pool); const p = fam.gen(r); p.fam = fam.id; p.lvl = fam.lvl; p.item = item.n; p.sig = p.sig || Math.random().toString(); return p;
+}
+/* set de n exerciții cu dificultate crescătoare (reproductibil după cod) */
+function makeSet(item, code, tag, n, plan) {
+  plan = plan || (n === 10 ? [1, 1, 1, 2, 2, 2, 2, 3, 3, 3] : Array.from({ length: n }, (_, i) => 1 + Math.min(2, Math.floor(i * 3 / n))));
+  const used = new Set(); const out = [];
+  for (let i = 0; i < n; i++) out.push(makeProblem(item, RNG(`${code}|${item.n}|${tag}|${i}`), plan[i % plan.length], used));
+  return out;
+}
+
+'use strict';
+/* ================= Desen geometric SVG (coordonate matematice, y în sus) ================= */
+const D2R = Math.PI / 180;
+const vadd = (a, b) => [a[0] + b[0], a[1] + b[1]];
+const vsub = (a, b) => [a[0] - b[0], a[1] - b[1]];
+const vmul = (a, k) => [a[0] * k, a[1] * k];
+const vlen = a => Math.hypot(a[0], a[1]);
+const vnorm = a => { const l = vlen(a) || 1; return [a[0] / l, a[1] / l]; };
+const mid = (a, b) => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+const polar = (c, r, deg) => [c[0] + r * Math.cos(deg * D2R), c[1] + r * Math.sin(deg * D2R)];
+const angDeg = (v, a, b) => { // măsura unghiului a-v-b în grade
+  const u = vsub(a, v), w = vsub(b, v);
+  return Math.acos(Math.max(-1, Math.min(1, (u[0] * w[0] + u[1] * w[1]) / (vlen(u) * vlen(w))))) / D2R;
+};
+function rotAll(pts, deg, c) { const a = deg * D2R, co = Math.cos(a), si = Math.sin(a); return pts.map(p => { const x = p[0] - c[0], y = p[1] - c[1]; return [c[0] + x * co - y * si, c[1] + x * si + y * co]; }); }
+/* orientare aleatoare a unei figuri: rotație + oglindire (aplicate tuturor punctelor dintr-un obiect) */
+function orient(obj, r, wild) {
+  const keys = Object.keys(obj);
+  const mirror = r.chance(.5);
+  let deg = wild && r.chance(.6) ? r.range(0, 360) : r.range(-14, 14);
+  const out = {};
+  keys.forEach(k => { const p = obj[k]; out[k] = mirror ? [-p[0], p[1]] : p; });
+  const c = [0, 0];
+  keys.forEach(k => { out[k] = rotAll([out[k]], deg, c)[0]; });
+  return out;
+}
+const LETTERS = 'ABCDEFGKLMNPQRSTUVW'.split('');
+function pickLetters(r, k, exclude = []) { return r.shuffle(LETTERS.filter(x => !exclude.includes(x))).slice(0, k); }
+
+class Fig {
+  constructor(W = 250, H = 180, pad = 26) { this.W = W; this.H = H; this.pad = pad; this.ops = []; this.pts = []; this.verts = []; }
+  ext(P, r = 0) { this.pts.push([P[0] - r, P[1] - r], [P[0] + r, P[1] + r]); }
+  seg(P, Q, o = {}) { this.ext(P); this.ext(Q); this.ops.push(T => { const a = T(P), b = T(Q); return `<line class="gl ${o.cls || ''}" ${o.dash ? 'stroke-dasharray="5 4"' : ''} x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}"/>`; }); return this; }
+  poly(Ps, o = {}) { Ps.forEach((P, i) => this.seg(P, Ps[(i + 1) % Ps.length], o)); return this; }
+  line(P, Q, o = {}) { // dreaptă infinită prin P,Q, extinsă cu margini
+    const d = vnorm(vsub(Q, P)), ext = o.ext || 1.0; const a = vsub(P, vmul(d, ext)), b = vadd(Q, vmul(d, ext)); return this.seg(a, b, o); }
+  circle(C, r, o = {}) { this.ext(C, r); this.ops.push((T, s) => { const c = T(C); return `<circle class="gl ${o.cls || ''}" cx="${c[0].toFixed(1)}" cy="${c[1].toFixed(1)}" r="${(r * s).toFixed(1)}" fill="none"/>`; }); return this; }
+  dot(P, o = {}) { this.ext(P); this.ops.push(T => { const c = T(P); return `<circle class="gd" cx="${c[0].toFixed(1)}" cy="${c[1].toFixed(1)}" r="${o.r || 2.6}"/>`; }); return this; }
+  /* etichetă de punct: se depărtează de centrul figurii (sau în direcția dir dată) */
+  lab(P, txt, dir, dist = 12) { this.ext(P, 0); this.verts.push(P); this.ops.push((T, s, cen) => { const d = dir ? vnorm(dir) : vnorm(vsub(P, cen)); const c = T(P); const x = c[0] + d[0] * dist, y = c[1] - d[1] * dist; return `<text class="glab" x="${x.toFixed(1)}" y="${(y + 5).toFixed(1)}" text-anchor="middle">${txt}</text>`; }); this.pts.push([P[0], P[1]]); return this; }
+  text(P, txt, o = {}) { this.ops.push(T => { const c = T(P); return `<text class="gtxt ${o.cls || ''}" x="${(c[0] + (o.dx || 0)).toFixed(1)}" y="${(c[1] + (o.dy || 4)).toFixed(1)}" text-anchor="middle">${txt}</text>`; }); return this; }
+  /* arc de unghi la V între semidreptele către P1 și P2, raza în px */
+  arc(V, P1, P2, rpx, label, o = {}) {
+    this.ops.push((T) => {
+      const a1 = Math.atan2(P1[1] - V[1], P1[0] - V[0]), a2 = Math.atan2(P2[1] - V[1], P2[0] - V[0]);
+      let d = a2 - a1; while (d > Math.PI) d -= 2 * Math.PI; while (d <= -Math.PI) d += 2 * Math.PI;
+      const c = T(V); const pt = a => [c[0] + rpx * Math.cos(a), c[1] - rpx * Math.sin(a)];
+      const s = pt(a1), e = pt(a2); const sweep = d > 0 ? 0 : 1;
+      let out = `<path class="ga ${o.cls || ''}" d="M${s[0].toFixed(1)} ${s[1].toFixed(1)} A${rpx} ${rpx} 0 0 ${sweep} ${e[0].toFixed(1)} ${e[1].toFixed(1)}"/>`;
+      if (o.dbl) { const r2 = rpx + 3.5; const pt2 = a => [c[0] + r2 * Math.cos(a), c[1] - r2 * Math.sin(a)]; const s2 = pt2(a1), e2 = pt2(a2); out += `<path class="ga" d="M${s2[0].toFixed(1)} ${s2[1].toFixed(1)} A${r2} ${r2} 0 0 ${sweep} ${e2[0].toFixed(1)} ${e2[1].toFixed(1)}"/>`; }
+      if (label) { const am = a1 + d / 2; const lr = rpx + (o.lr || 13); out += `<text class="gang" x="${(c[0] + lr * Math.cos(am)).toFixed(1)}" y="${(c[1] - lr * Math.sin(am) + 4).toFixed(1)}" text-anchor="middle">${label}</text>`; }
+      return out;
+    }); return this;
+  }
+  right(V, P1, P2, size = 9) {
+    this.ops.push(T => { const c = T(V); const u = vnorm(vsub(P1, V)), w = vnorm(vsub(P2, V)); const a = [c[0] + u[0] * size, c[1] - u[1] * size], b = [c[0] + (u[0] + w[0]) * size, c[1] - (u[1] + w[1]) * size], e = [c[0] + w[0] * size, c[1] - w[1] * size];
+      return `<path class="ga" d="M${a[0].toFixed(1)} ${a[1].toFixed(1)} L${b[0].toFixed(1)} ${b[1].toFixed(1)} L${e[0].toFixed(1)} ${e[1].toFixed(1)}"/>`; }); return this;
+  }
+  tick(P, Q, n = 1) { // segmente congruente
+    this.ops.push(T => { const a = T(P), b = T(Q); const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2; const dx = b[0] - a[0], dy = b[1] - a[1]; const l = Math.hypot(dx, dy) || 1; const ux = dx / l, uy = dy / l, nx = -uy, ny = ux; let out = '';
+      for (let i = 0; i < n; i++) { const off = (i - (n - 1) / 2) * 4; const cx = mx + ux * off, cy = my + uy * off; out += `<line class="ga" x1="${(cx + nx * 4).toFixed(1)}" y1="${(cy + ny * 4).toFixed(1)}" x2="${(cx - nx * 4).toFixed(1)}" y2="${(cy - ny * 4).toFixed(1)}"/>`; } return out; }); return this;
+  }
+  parMark(P, Q, n = 1) { // semn de paralelism (săgeți)
+    this.ops.push(T => { const a = T(P), b = T(Q); const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2; const dx = b[0] - a[0], dy = b[1] - a[1]; const l = Math.hypot(dx, dy) || 1; const ux = dx / l, uy = dy / l, nx = -uy, ny = ux; let out = '';
+      for (let i = 0; i < n; i++) { const off = (i - (n - 1) / 2) * 6; const cx = mx + ux * off, cy = my + uy * off; out += `<path class="ga" d="M${(cx - ux * 4 + nx * 4).toFixed(1)} ${(cy - uy * 4 + ny * 4).toFixed(1)} L${(cx + ux * 2).toFixed(1)} ${(cy + uy * 2).toFixed(1)} L${(cx - ux * 4 - nx * 4).toFixed(1)} ${(cy - uy * 4 - ny * 4).toFixed(1)}"/>`; } return out; }); return this;
+  }
+  svg(extraPad = 0) {
+    const P = this.pts; let minx = Infinity, maxx = -Infinity, miny = Infinity, maxy = -Infinity;
+    P.forEach(p => { minx = Math.min(minx, p[0]); maxx = Math.max(maxx, p[0]); miny = Math.min(miny, p[1]); maxy = Math.max(maxy, p[1]); });
+    const w = Math.max(maxx - minx, 1e-6), h = Math.max(maxy - miny, 1e-6);
+    const pad = this.pad + extraPad;
+    const s = Math.min((this.W - 2 * pad) / w, (this.H - 2 * pad) / h);
+    const ox = (this.W - w * s) / 2, oy = (this.H - h * s) / 2;
+    const T = p => [ox + (p[0] - minx) * s, oy + (maxy - p[1]) * s];
+    const cen = this.verts.length ? [this.verts.reduce((a, p) => a + p[0], 0) / this.verts.length, this.verts.reduce((a, p) => a + p[1], 0) / this.verts.length] : [(minx + maxx) / 2, (miny + maxy) / 2];
+    return `<svg class="fig" viewBox="0 0 ${this.W} ${this.H}" xmlns="http://www.w3.org/2000/svg" role="img">${this.ops.map(o => o(T, s, cen)).join('')}</svg>`;
+  }
+}
+
+/* ================= ajutoare comune pentru itemii 3–12 ================= */
+const T3 = (ro, ru, en) => l => ({ ro, ru, en })[l];
+const SUP = { 2: '²', 3: '³', 4: '⁴' };
+const sgn = n => (n < 0 ? MINUS : '');
+const absS = n => String(Math.abs(n));
+/* coeficienți (de la gradul cel mai mare) -> "3x² + 5x − 2" */
+function pol(co, v = 'x') {
+  const deg = co.length - 1; let out = '';
+  co.forEach((c, i) => {
+    if (c === 0) return; const e = deg - i; const a = Math.abs(c);
+    const body = e === 0 ? String(a) : (a === 1 ? '' : String(a)) + v + (e === 1 ? '' : (SUP[e] || '^' + e));
+    out += out === '' ? (c < 0 ? MINUS : '') + body : (c < 0 ? ` ${MINUS} ` : ' + ') + body;
+  });
+  return out || '0';
+}
+const factor = (p, v = 'x') => (p === 0 ? v : `(${v} ${p < 0 ? MINUS : '+'} ${Math.abs(p)})`);
+const parenIf = (s, b) => (b ? `(${s})` : s);
+/* răspuns numeric / mulțime / alegere / expresie */
+const nf = (label, ans, unit, show) => ({ label, type: 'num', ans, unit, show: () => show || String(ans).replace('-', MINUS), src: String(ans) });
+const setf = (label, arr, show) => ({ label, type: 'set', ans: arr, show: () => show || (arr.length ? '{' + arr.map(v => String(Math.round(v * 1e9) / 1e9).replace('-', MINUS)).join('; ') + '}' : '∅') });
+const chf = (label, opts, ans) => ({ label, type: 'choice', opts, ans, show: () => opts.find(o => o.v === ans).h });
+const exf = (label, ans, showHtml, vars) => ({ label, type: 'expr', ans, vars: vars || ['x'], show: () => showHtml });
+const opt = (v, ro, ru, en) => ({ v, h: { ro: ro, ru: ru == null ? ro : ru, en: en == null ? ro : en } });
+const SIGN_OPTS = [opt('<', '<'), opt('=', '='), opt('>', '>')];
+/* fracție exactă n/d -> html */
+function ratH(n, d) { const q = new Q(n, d); return qH(q); }
+const U = { cm: { ro: 'cm', ru: 'см', en: 'cm' }, cm2: { ro: 'cm²', ru: 'см²', en: 'cm²' }, cm3: { ro: 'cm³', ru: 'см³', en: 'cm³' }, lei: { ro: 'lei', ru: 'леев', en: 'lei' }, pct: { ro: '%', ru: '%', en: '%' }, deg: '°', ha: { ro: 'ha', ru: 'га', en: 'ha' } };
+/* număr de soluții raționale: ax²+bx+c=0 */
+const disc = (a, b, c) => b * b - 4 * a * c;
+const isSq = n => n >= 0 && Number.isInteger(Math.sqrt(n));
+
+'use strict';
+/* ================= UI: interfața jocului, testare, examen, PDF ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [].slice.call(r.querySelectorAll(s));
+const TX = {
+  appSub: L('Pregătire pentru examenul de matematică · gimnaziu', 'Подготовка к экзамену по математике · гимназия', 'Maths exam preparation · lower secondary'),
+  itemWord: L('Itemul', 'Задание', 'Item'),
+  examTitle: L('Test complet · simulare de examen', 'Полный тест · пробный экзамен', 'Full test · exam simulation'),
+  home: L('Acasă', 'Главная', 'Home'),
+  practice: L('Exersare', 'Тренировка', 'Practice'),
+  test: L('Test · 10 exerciții', 'Тест · 10 заданий', 'Test · 10 exercises'),
+  pdf: L('Fișe PDF', 'Листы PDF', 'PDF sheets'),
+  practiceD: L('Exerciții una câte una, cu indicii și rezolvare după fiecare răspuns.', 'Задания по одному, с подсказками и решением после каждого ответа.', 'One exercise at a time with hints and a solution after each answer.'),
+  testD: L('10 exerciții doar din acest item. Rezolvările apar după predarea testului.', '10 заданий только по этому пункту. Решения — после сдачи теста.', '10 exercises from this item only. Solutions appear after you submit.'),
+  pdfD: L('Variante tipărite (1–10) cu cod de variantă. În regim de profesor — cu răspunsuri.', 'Печатные варианты (1–10) с кодом. В режиме учителя — с ответами.', 'Printable variants (1–10) with a variant code. Teacher mode adds the answer key.'),
+  level: L('Nivel', 'Уровень', 'Level'),
+  l1: L('Ușor', 'Легко', 'Easy'), l2: L('Mediu', 'Средне', 'Medium'), l3: L('Dificil', 'Сложно', 'Hard'), l0: L('Mixt', 'Смешанный', 'Mixed'),
+  check: L('Verifică', 'Проверить', 'Check'), hint: L('Indiciu', 'Подсказка', 'Hint'), solution: L('Rezolvarea', 'Решение', 'Solution'),
+  next: L('Următorul exercițiu ▶', 'Следующее задание ▶', 'Next exercise ▶'),
+  retry: L('Mai încearcă!', 'Попробуй ещё!', 'Try again!'),
+  correctAns: L('Răspuns corect', 'Правильный ответ', 'Correct answer'),
+  collapse: L('Strânge meniul', 'Свернуть меню', 'Collapse menu'), menu: L('Meniu', 'Меню', 'Menu'), resetProg: L('Șterge progresul', 'Сбросить прогресс', 'Reset progress'), resetQ: L('Ștergi progresul salvat pe acest dispozitiv?', 'Удалить прогресс, сохранённый на этом устройстве?', 'Delete the progress saved on this device?'),
+  progT: L('Progres', 'Прогресс', 'Progress'), itemsDone: L('itemi parcurși', 'заданий пройдено', 'items completed'), bestTest: L('Cel mai bun test', 'Лучший тест', 'Best test'), solvedN: L('rezolvate', 'решено', 'solved'),
+  seenNote: L('Ai văzut răspunsul — exercițiul nu se mai numără. Treci la următorul.', 'Вы увидели ответ — упражнение не засчитывается. Переходите к следующему.', 'You saw the answer — this exercise does not count. Move on to the next one.'),
+  stepSol: L('Rezolvare pas cu pas', 'Решение по шагам', 'Step-by-step solution'), hideSol: L('Ascunde rezolvarea', 'Скрыть решение', 'Hide solution'), tourBtn: L('Tur ghidat', 'Экскурсия', 'Guided tour'),
+  tourNext: L('Înainte', 'Далее', 'Next'), tourSkip: L('Închide', 'Закрыть', 'Close'), tourDone: L('Gata', 'Готово', 'Done'),
+  startPage: L('Pagina de start', 'Главная', 'Start page'), itemsH: L('Itemi', 'Задания', 'Items'), testsH: L('Teste', 'Тесты', 'Tests'),
+  examShort: L('Test complet · 2 ore', 'Полный тест · 2 часа', 'Full test · 2 hours'), pastShort: L('Din examene anterioare', 'Из прошлых экзаменов', 'Past exam tasks'),
+  domain1: L('Matematică', 'Математика', 'Mathematics'), domain2: L('Gimnaziu', 'Гимназия', 'Lower secondary'),
+  bannerT: L('Pregătire pentru examen', 'Подготовка к экзамену', 'Exam preparation'), bannerS: L('Exerciții interactive pentru fiecare item', 'Интерактивные упражнения по каждому заданию', 'Interactive practice for every item'),
+  prevItem: L('Itemul anterior', 'Предыдущее задание', 'Previous item'), nextItem: L('Itemul următor', 'Следующее задание', 'Next item'),
+  tools: L('Unelte utile', 'Полезные инструменты', 'Useful tools'), sciCalc: L('Calculator științific', 'Научный калькулятор', 'Scientific calculator'), graphs: L('Grafic de funcții', 'График функций', 'Function grapher'),
+  formulas: L('Formule importante', 'Важные формулы', 'Key formulas'), notes: L('Notițe personale', 'Личные заметки', 'Personal notes'), notesPh: L('Scrie aici ce vrei să reții…', 'Пишите здесь, что хотите запомнить…', 'Write what you want to remember…'),
+  notesD: L('Se salvează doar pe acest dispozitiv.', 'Сохраняется только на этом устройстве.', 'Saved only on this device.'),
+  reveal: L('Arată răspunsul', 'Показать ответ', 'Show answer'), fullscr: L('Ecran complet', 'Во весь экран', 'Full screen'), pickSec: L('Alege o secțiune', 'Выберите раздел', 'Choose a section'),
+  stars: L('Stele', 'Звёзды', 'Stars'), streak: L('Serie', 'Серия', 'Streak'), points: L('Puncte', 'Баллы', 'Points'), done: L('Rezolvate', 'Решено', 'Solved'),
+  fillIn: L('Completează răspunsul.', 'Впиши ответ.', 'Fill in your answer.'),
+  reduceTip: L('Corect! Poți simplifica fracția.', 'Верно! Дробь можно сократить.', 'Correct! You can simplify the fraction.'),
+  submitTest: L('Predă testul', 'Сдать тест', 'Submit test'), newTest: L('Alt test', 'Новый тест', 'New test'),
+  code: L('Cod test', 'Код теста', 'Test code'),
+  codeHelp: L('Notează codul ca să regenerezi același test mai târziu: același cod = aceleași exerciții. Lasă gol pentru un test nou.', 'Запиши код, чтобы позже получить тот же тест: тот же код — те же задания. Оставь пустым для нового теста.', 'Write the code down to get the same test again later: same code = same exercises. Leave empty for a new test.'),
+  codeHelpPdf: L('Același cod + același număr de variante = aceeași fișă. Variantele 1, 2, 3… sunt diferite între ele și au același cod.', 'Тот же код и то же число вариантов — тот же лист. Варианты 1, 2, 3… различаются между собой, код у них общий.', 'Same code + same number of variants = same worksheet. Variants 1, 2, 3… differ from each other and share one code.'),
+  theoryD: L('Regulile de care ai nevoie, pe scurt.', 'Нужные правила — кратко.', 'The rules you need, in short.'),
+  theory: L('Teorie', 'Теория', 'Theory'), print: L('Tipărește', 'Печать', 'Print'),
+  checkByCode: L('Verifică un test după cod', 'Проверить тест по коду', 'Check a test by code'), showKey: L('Arată răspunsurile', 'Показать ответы', 'Show answers'),
+  inst: L('Instituția', 'Учебное заведение', 'Institution'), printTest: L('Tipărește testul (PDF)', 'Печать теста (PDF)', 'Print the test (PDF)'),
+  maxPts: L('Punctaj maxim', 'Максимум баллов', 'Maximum score'), gotPts: L('Punctaj obținut', 'Набрано баллов', 'Score obtained'),
+  toHome: L('Pagina principală', 'Главная страница', 'Main page'),
+  example: L('Exemplu', 'Пример', 'Example'), exampleD: L('Un exercițiu rezolvat pas cu pas.', 'Одно задание с пошаговым решением.', 'One exercise solved step by step.'),
+  exTask: L('Enunț', 'Условие', 'Task'), exRule: L('Reține', 'Запомни', 'Remember'), exSteps: L('Rezolvare pas cu pas', 'Решение по шагам', 'Step-by-step solution'), exTry: L('Încearcă singur', 'Попробуй сам', 'Try it yourself'),
+  load: L('Încarcă', 'Загрузить', 'Load'),
+  startTest: L('Începe testul', 'Начать тест', 'Start the test'),
+  testIntro: L('Vei primi 10 exerciții din acest item, de la ușor la dificil. Fiecare exercițiu valorează 1 punct. Rezolvările le vezi la final.', 'Вы получите 10 заданий по этому пункту — от лёгких к сложным. Каждое стоит 1 балл. Решения — в конце.', 'You will get 10 exercises from this item, from easy to hard. Each is worth 1 point. Solutions are shown at the end.'),
+  score: L('Scor', 'Результат', 'Score'), mistakes: L('Verifică greșelile', 'Разбор ошибок', 'Review'),
+  teacher: L('Profesor', 'Учитель', 'Teacher'), teacherOn: L('Mod profesor', 'Режим учителя', 'Teacher mode'),
+  teacherBar: L('👩‍🏫 Mod profesor activ: răspunsurile sunt vizibile, iar fișele PDF pot include cheia de răspunsuri.', '👩‍🏫 Режим учителя: ответы видны, а в PDF можно включить ключ.', '👩‍🏫 Teacher mode on: answers are visible and PDFs can include the answer key.'),
+  password: L('Parola profesorului', 'Пароль учителя', 'Teacher password'), enter: L('Intră', 'Войти', 'Enter'), cancel: L('Anulează', 'Отмена', 'Cancel'),
+  wrongPass: L('Parolă greșită', 'Неверный пароль', 'Wrong password'), leave: L('Ieși din modul profesor', 'Выйти из режима учителя', 'Leave teacher mode'),
+  tAnswer: L('Răspuns (profesor)', 'Ответ (учитель)', 'Answer (teacher)'),
+  print: L('🖨️ Tipărește / Salvează PDF', '🖨️ Печать / Сохранить PDF', '🖨️ Print / Save PDF'), close: L('Închide', 'Закрыть', 'Close'),
+  newTab: L('Deschide în filă nouă', 'Открыть в новой вкладке', 'Open in a new tab'),
+  variants: L('Număr de variante', 'Количество вариантов', 'Number of variants'),
+  withKey: L('Include răspunsurile (doar profesor)', 'Включить ответы (только учитель)', 'Include answer key (teacher only)'),
+  keyLocked: L('Răspunsurile se pot include numai în modul profesor.', 'Ответы можно включить только в режиме учителя.', 'The answer key is available in teacher mode only.'),
+  preview: L('Previzualizare fișă', 'Предпросмотр листа', 'Preview sheet'),
+  pdfHelp: L('Fiecare variantă are 10 exerciții și apoi exerciții suplimentare, până se umple pagina. Pentru PDF: apasă „Tipărește” și alege „Salvează ca PDF”.', 'В каждом варианте 10 заданий и дополнительные упражнения до заполнения страницы. Для PDF нажмите «Печать» и выберите «Сохранить как PDF».', 'Each variant has 10 exercises plus extras until the page is full. For a PDF press “Print” and choose “Save as PDF”.'),
+  pdfThis: L('🖨️ PDF cu acest test', '🖨️ PDF этого теста', '🖨️ PDF of this test'),
+  sheetTitle: L('Fișă de exersare', 'Лист для тренировки', 'Practice sheet'),
+  variant: L('Varianta', 'Вариант', 'Variant'), extra: L('Exerciții suplimentare', 'Дополнительные упражнения', 'Extra exercises'),
+  answers: L('Răspunsuri', 'Ответы', 'Answers'), name: L('Nume, prenume', 'Фамилия, имя', 'Name'), cls: L('Clasa', 'Класс', 'Class'), date: L('Data', 'Дата', 'Date'),
+  page: L('pag.', 'стр.', 'p.'),
+  startExam: L('Începe lucrarea', 'Начать работу', 'Start the exam'), submitExam: L('Predă lucrarea', 'Сдать работу', 'Submit the exam'),
+  timeLeft: L('Timp rămas', 'Осталось', 'Time left'), answered: L('completate', 'заполнено', 'answered'),
+  examIntro: L('Simulare de examen: câte un exercițiu din fiecare item, în ordinea examenului. Ai la dispoziție 2 ore. Rezolvările apar după ce predai lucrarea.', 'Пробный экзамен: по одному заданию из каждого пункта в порядке экзамена. Время — 2 часа. Решения — после сдачи работы.', 'Exam simulation: one exercise from every item, in exam order. You have 2 hours. Solutions appear after you submit.'),
+  proto: L('Versiune de probă: în acest prototip sunt activi doar itemii', 'Пробная версия: в прототипе активны только пункты', 'Prototype: only the following items are active'),
+  total: L('Total', 'Итого', 'Total'), pts: L('puncte', 'баллов', 'points'), ptsS: L('p.', 'б.', 'pt'), pastTitle: L('Din examenele și exersările anterioare', 'Из прошлых экзаменов и тренировок', 'From past exams and practice tests'), pastIntro: L('Sarcini reale din testele de exersare, pretestări, sesiunile de bază și examenele repetate (2015–2025). Textele sunt în limba română.', 'Реальные задания из тренировочных тестов, претестирований, основных сессий и повторных экзаменов (2015–2025). Тексты на румынском языке.', 'Real tasks from practice tests, pre-tests, main sessions and repeat exams (2015–2025). Task texts are in Romanian.'), pItem: L('Itemul', 'Задание', 'Item'), pType: L('Tipul testului', 'Тип теста', 'Test type'), pYear: L('Anul', 'Год', 'Year'), pAll: L('toate', 'все', 'all'), pNew: L('Altă sarcină', 'Другое задание', 'Another task'), pShow: L('Arată răspunsul', 'Показать ответ', 'Show answer'), pHide: L('Ascunde răspunsul', 'Скрыть ответ', 'Hide answer'), pTest: L('Test din examene', 'Тест из экзаменов', 'Exam test'), pTestD: L('Un test real complet (12 sarcini). Scrie răspunsurile și predă lucrarea; apoi compari cu cheia oficială.', 'Один реальный полный тест (12 заданий). Запишите ответы и сдайте работу; затем сравните с официальным ключом.', 'One real full test (12 tasks). Type your answers and submit; then compare with the official key.'), pAnsPh: L('Răspuns', 'Ответ', 'Answer'), pSubmit: L('Predă lucrarea', 'Сдать работу', 'Submit'), pNewTest: L('Alt test', 'Другой тест', 'Another test'), pFound: L('Răspunsuri găsite în cheie', 'Ответов найдено в ключе', 'Answers found in the key'), pFoundNote: L('Verificare orientativă: răspunsul tău este căutat printre răspunsurile oficiale ale testului. Compară cu cheia de mai jos.', 'Ориентировочная проверка: ваш ответ ищется среди официальных ответов теста. Сравните с ключом ниже.', 'Indicative check: your answer is looked up among the official answers of the test. Compare with the key below.'), pOfficial: L('Cheia oficială a testului (ordinea testului original)', 'Официальный ключ теста (порядок исходного теста)', 'Official key of the test (original test order)'), pPdf: L('Fișă PDF', 'PDF-лист', 'PDF sheet'), pCount: L('Variante', 'Вариантов', 'Variants'), pPdfThis: L('PDF cu acest test', 'PDF этого теста', 'PDF of this test'), pKey: L('Răspunsurile testului', 'Ответы теста', 'Answers of the test'), pKeyNote: L('Răspunsurile sunt în ordinea numerotării testului original din document; potriviți-le după conținut.', 'Ответы даны в порядке нумерации исходного теста из документа; сопоставляйте по содержанию.', 'Answers follow the numbering of the original test in the source document; match them by content.'), pNoAns: L('Răspuns indisponibil în sursă.', 'Ответ в источнике отсутствует.', 'No answer in the source.'), pVar: L('Variantă de 12 sarcini', 'Вариант из 12 заданий', 'Variant of 12 tasks'), pVarD: L('Câte o sarcină din fiecare item, alese la întâmplare.', 'По одному заданию из каждого пункта, случайно.', 'One task from each item, chosen at random.'), pShowAll: L('Arată toate răspunsurile', 'Показать все ответы', 'Show all answers'), pPrint: L('Printează', 'Печать', 'Print'), pSingle: L('O sarcină', 'Одно задание', 'Single task'), pNone: L('Nu există sarcini pentru filtrele alese.', 'Нет заданий для выбранных фильтров.', 'No tasks for these filters.'), exWord: L('exercițiu', 'упражнение', 'exercise'), grade: L('Nota', 'Оценка', 'Grade'),
+  gradePending: L('Scara oficială de notare va fi adăugată.', 'Официальная шкала оценок будет добавлена.', 'The official grading scale will be added.'),
+  min: L('min', 'мин', 'min'),
+  hello: L('Salut! Hai să rezolvăm împreună!', 'Привет! Решаем вместе!', 'Hi! Let’s solve together!'),
+  lic: L('Licență', 'Лицензия', 'License'),
+  timeUp: L('Timpul a expirat! Lucrarea a fost predată.', 'Время вышло! Работа сдана.', 'Time is up! The exam was submitted.'),
+  empty: L('Scrie mai întâi un răspuns.', 'Сначала впиши ответ.', 'Write an answer first.'),
+  lvUp: L('Super serie! Încearcă nivelul următor.', 'Отличная серия! Попробуй следующий уровень.', 'Great streak! Try the next level.')
+};
+const MSG = {
+  ok: [L('Bravo! 🎉', 'Браво! 🎉', 'Well done! 🎉'), L('Exact! Ești pe drumul cel bun!', 'Точно! Ты на верном пути!', 'Exactly! You are on the right track!'), L('Excelent! Continuă așa!', 'Отлично! Так держать!', 'Excellent! Keep going!'), L('Perfect! Ești un as la matematică!', 'Идеально! Ты ас математики!', 'Perfect! You are a maths ace!')],
+  bad: [L('Aproape! Mai încearcă o dată.', 'Почти! Попробуй ещё раз.', 'Almost! Try once more.'), L('Nu-i nimic, greșind învățăm. Verifică calculele!', 'Не страшно, на ошибках учимся. Проверь вычисления!', 'No worries, mistakes help us learn. Check your work!')],
+  reveal: [L('Uite rezolvarea, data viitoare îți iese!', 'Вот решение, в следующий раз получится!', 'Here is the solution, you will get it next time!')],
+  streak: [L('🔥 Serie de foc! Nu te opri!', '🔥 Огненная серия! Не останавливайся!', '🔥 You are on fire! Don’t stop!')],
+  hello: [TX.hello],
+  hint: [L('Un mic ajutor… gândește-te bine!', 'Небольшая помощь… подумай хорошенько!', 'A little help… think carefully!')]
+};
+const OWL = `<svg class="owl" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><ellipse cx="50" cy="66" rx="34" ry="38" fill="#8d6e63"/><ellipse cx="50" cy="74" rx="22" ry="26" fill="#efe3d3"/><path d="M18 40 L26 14 L40 32Z M82 40 L74 14 L60 32Z" fill="#6d4c41"/><circle cx="36" cy="48" r="14" fill="#fff"/><circle cx="64" cy="48" r="14" fill="#fff"/><circle cx="37" cy="49" r="7" fill="#263238"/><circle cx="63" cy="49" r="7" fill="#263238"/><circle cx="39" cy="46" r="2.3" fill="#fff"/><circle cx="65" cy="46" r="2.3" fill="#fff"/><path d="M44 58 L56 58 L50 70Z" fill="#ffb300"/><path d="M12 62 Q8 84 26 90 Q22 74 24 62Z" fill="#6d4c41"/><path d="M88 62 Q92 84 74 90 Q78 74 76 62Z" fill="#6d4c41"/><path d="M36 100 l-4 8 M44 102 l-2 8 M56 102 l2 8 M64 100 l4 8" stroke="#ffb300" stroke-width="3.5" stroke-linecap="round"/><path d="M20 28 L50 14 L80 28 L50 40Z" fill="#263238"/><path d="M70 32 L70 46" stroke="#ffd54a" stroke-width="2.5"/><circle cx="70" cy="48" r="3" fill="#ffd54a"/></svg>`;
+const SALT = 'mpf|';
+const EXAM_CFG = window.__EXAM_CFG || { minutes: 120, points: null, conv: null };
+
+/* ================= stare ================= */
+const S = { lang: 'ro', teacher: false, view: 'home', pr: null, test: null, exam: null, say: null, mood: '', lastInput: null, badges: [] };
+const PAGE = window.__PAGE || { kind: 'item', n: 1 };
+try { const l = localStorage.getItem('mpf-lang'); if (LANGS.includes(l)) S.lang = l; } catch (e) {}
+try { const v = new URLSearchParams(location.search).get('view'); if (['theory', 'example'].includes(v) && PAGE.kind === 'item') S.view = v; } catch (e) {}
+try { const q = new URLSearchParams(location.search).get('lang'); if (LANGS.includes(q)) S.lang = q; } catch (e) {}
+try { if (sessionStorage.getItem('mpf-teacher') === '1') S.teacher = true; } catch (e) {}
+const tx = k => TX[k][S.lang];
+const lbl = o => (o && typeof o === 'object' ? o[S.lang] : o);
+const unitOf = u => (u ? (typeof u === 'object' ? u[S.lang] : u) : '');
+const showOf = f => (typeof f.show === 'function' ? f.show(S.lang) : f.show);
+const ITEM = () => ITEMS[PAGE.n];
+const ansHTML = p => p.fields.map(f => `${lbl(f.label)} <b>${showOf(f)}</b> ${unitOf(f.unit)}`).join(' &nbsp;;&nbsp; ');
+const say = (arr, mood) => { S.say = arr[Math.floor(Math.random() * arr.length)]; S.mood = mood || ''; };
+
+
+
+/* ================= progres salvat pe dispozitiv ================= */
+const PKEY = 'mpf-prog';
+const progLoad = () => { try { return JSON.parse(localStorage.getItem(PKEY)) || {}; } catch (e) { return {}; } };
+const progSave = o => { try { localStorage.setItem(PKEY, JSON.stringify(o)); } catch (e) {} };
+const PROG_GOAL = 50;
+const setDirty = () => { try { localStorage.setItem('mpf-dirty', '1'); } catch (e) {} };
+function progAdd(n, fn) { const o = progLoad(); const it = o[n] || { solved: 0, best: 0 }; fn(it); o[n] = it; progSave(o); setDirty(); }
+function histAdd(rec) { try { const h = JSON.parse(localStorage.getItem('mpf-hist') || '[]'); h.push(Object.assign({ ts: Date.now() }, rec)); localStorage.setItem('mpf-hist', JSON.stringify(h.slice(-40))); setDirty(); } catch (e) {} }
+const itemPct = n => { const it = progLoad()[n]; if (!it) return 0; return Math.min(1, (it.solved || 0) / PROG_GOAL); };
+
+/* ================= teme (zi/noapte) + iconițe ================= */
+const THEME_KEY = 'mpf-theme';
+const sysDark = () => !!(window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
+function curTheme() { const t = document.documentElement.getAttribute('data-theme'); return t || (sysDark() ? 'dark' : 'light'); }
+function applyTheme(t) { document.documentElement.setAttribute('data-theme', t); try { localStorage.setItem(THEME_KEY, t); } catch (e) {} }
+try { const st = localStorage.getItem(THEME_KEY); if (st === 'dark' || st === 'light') document.documentElement.setAttribute('data-theme', st); } catch (e) {}
+const IC = {
+  arrowL: '<path d="M15 5l-7 7 7 7"/>', arrowR: '<path d="M9 5l7 7-7 7"/>', calc: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M12 12h2M16 12h0M8 16h2M12 16h2M16 16h0"/>',
+  chart: '<path d="M3 3v18h18"/><path d="M7 15c3-9 6-9 10 0"/>', expand: '<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>', pen: '<path d="M4 20l1-4L16 5l3 3L8 19z"/><path d="M14 7l3 3"/>', formula: '<path d="M18 5H7l6 7-6 7h11"/>', list: '<path d="M8 6h12M8 12h12M8 18h12M4 6h0M4 12h0M4 18h0"/>', ext: '<path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>',
+  home: '<path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/>',
+  book: '<path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/>',
+  example: '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/>',
+  practice: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/>',
+  test: '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 13l2 2 4-4"/>',
+  print: '<path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M7 14h10v7H7z"/>',
+  teacher: '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/><path d="M22 9v6"/>',
+  bulb: '<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.700 1-2.500A6 6 0 0 0 12 3z"/>',
+  star: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.300 1 6.100L12 17l-5.400 2.900 1-6.100L3.200 9.500l6.100-.9z"/>',
+  flame: '<path d="M12 22c4 0 7-2.800 7-7 0-3-1.800-5-3-7-.7 1.500-1.700 2.300-2.800 2.500C13.500 7 12.500 4.500 10 2 10 6 5 8.500 5 15c0 4.200 3 7 7 7z"/>',
+  award: '<circle cx="12" cy="9" r="6"/><path d="M8.500 14L7 22l5-3 5 3-1.500-8"/>',
+  check: '<circle cx="12" cy="12" r="9"/><path d="M8 12.500l3 3 5-6"/>',
+  clip: '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 11h6M9 15h6"/>',
+  lock: '<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+  key: '<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/>',
+  dice: '<rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.500" cy="8.500" r="1" fill="currentColor"/><circle cx="15.500" cy="15.500" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/>',
+  ruler: '<path d="M3 17L17 3l4 4L7 21z"/><path d="M7 13l2 2M10 10l2 2M13 7l2 2"/>',
+  spark: '<path d="M12 3l1.800 5.200L19 10l-5.200 1.800L12 17l-1.800-5.200L5 10l5.200-1.800z"/><path d="M19 17v4M17 19h4"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  x: '<path d="M6 6l12 12M18 6L6 18"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.900 4.900l1.400 1.400M17.700 17.700l1.400 1.400M2 12h2M20 12h2M4.900 19.100l1.400-1.400M17.700 6.300l1.400-1.400"/>',
+  moon: '<path d="M21 13A9 9 0 1 1 11 3a7 7 0 0 0 10 10z"/>',
+  trophy: '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/>',
+  sprout: '<path d="M12 21v-9"/><path d="M12 12c0-4 3-6 7-6 0 4-3 6-7 6zM12 15c0-3-2-5-6-5 0 3 2 5 6 5z"/>'
+};
+const svgIc = (n, cls) => `<svg class="ic ${cls || ''}" viewBox="0 0 24 24" aria-hidden="true">${IC[n]}</svg>`;
+const EMO = { '🏠': 'home', '📚': 'book', '📖': 'example', '🎮': 'practice', '📝': 'test', '🖨️': 'print', '🖨': 'print', '👩‍🏫': 'teacher', '💡': 'bulb', '⭐': 'star', '🌟': 'star', '★': 'star', '🔥': 'flame', '🏅': 'award', '✅': 'check', '📋': 'clip', '🔒': 'lock', '🔑': 'key', '🎲': 'dice', '📐': 'ruler', '✨': 'spark', '➕': 'plus', '✖️': 'x', '🏆': 'trophy', '🥇': 'award', '🥈': 'award', '🌱': 'sprout' };
+const EMO_RE = new RegExp(Object.keys(EMO).sort((a, b) => b.length - a.length).map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'g');
+const decorate = html => html.replace(/>([^<]+)</g, (m, t) => '>' + t.replace(EMO_RE, e => svgIc(EMO[e], e === '⭐' || e === '🌟' || e === '★' ? 'fill' : '')) + '<');
+const themeBtn = () => `<button class="chip theme" data-act="theme" title="${curTheme() === 'dark' ? 'Mod zi' : 'Mod noapte'}" aria-label="${curTheme() === 'dark' ? 'Mod zi' : 'Mod noapte'}">${svgIc(curTheme() === 'dark' ? 'sun' : 'moon')}</button>`;
+
+
+/* ================= tur ghidat (prima vizită) ================= */
+const TOUR_KEY = 'mpf-tour';
+function tourSteps() {
+  const vis = sel => Array.from(document.querySelectorAll(sel)).find(el => el.offsetParent !== null || (el.getClientRects && el.getClientRects().length));
+  const phone = window.innerWidth <= 900;
+  const T3 = (a, b, c) => ({ ro: a, ru: b, en: c });
+  const st = [
+    { el: () => vis(phone ? '.menub' : '.side'), t: T3('Meniul', 'Меню', 'Menu'), d: T3('De aici treci la orice item, la testul complet sau la sarcinile din examenele anterioare. Pe telefon se deschide cu acest buton.', 'Отсюда можно перейти к любому заданию, к полному тесту или к задачам прошлых экзаменов. На телефоне открывается этой кнопкой.', 'Jump to any item, the full test or past exam tasks. On a phone it opens with this button.') },
+    { el: () => vis('.tabs') || vis('.cards'), t: T3('Secțiunile itemului', 'Разделы задания', 'Item sections'), d: T3('Teorie, exemplu rezolvat, exersare, test din 10 exerciții și fișe PDF de tipărit.', 'Теория, разобранный пример, тренировка, тест из 10 заданий и листы PDF для печати.', 'Theory, a worked example, practice, a 10-exercise test and printable PDF sheets.') },
+    { el: () => vis('.icard .inav') || vis('.icard'), t: T3('Itemul anterior / următor', 'Предыдущее / следующее', 'Previous / next item'), d: T3('Cu săgețile treci rapid la itemul vecin.', 'Стрелками можно быстро перейти к соседнему заданию.', 'Use the arrows to move to the neighbouring item.') },
+    { el: () => vis('[data-act=theme]'), t: T3('Zi sau noapte', 'День или ночь', 'Day or night'), d: T3('Alege tema care îți ușurează ochii. Se păstrează la următoarea vizită.', 'Выберите тему, удобную для глаз. Выбор сохраняется.', 'Pick the theme that is easier on your eyes. It is remembered.') },
+    { el: () => vis('.sprog') || vis('.banner'), t: T3('Progresul tău', 'Ваш прогресс', 'Your progress'), d: T3('Exercițiile rezolvate și cel mai bun test se salvează pe acest dispozitiv și se văd în meniu.', 'Решённые задания и лучший тест сохраняются на этом устройстве и видны в меню.', 'Solved exercises and your best test are saved on this device and shown in the menu.') }
+  ];
+  return st.filter(s => s.el());
+}
+let tourI = 0, tourList = [];
+function startTour() { tourList = tourSteps(); tourI = 0; if (S.drawer) { S.drawer = false; render(); tourList = tourSteps(); } if (tourList.length) showTour(); }
+function endTour() { const o = document.getElementById('tour'); if (o) o.remove(); try { localStorage.setItem(TOUR_KEY, '1'); } catch (e) {} }
+function showTour() {
+  let o = document.getElementById('tour'); if (o) o.remove();
+  const s = tourList[tourI]; if (!s) { endTour(); return; }
+  const el = s.el(); if (!el) { tourI++; showTour(); return; }
+  el.scrollIntoView({ block: 'center', behavior: 'instant' });
+  const r = el.getBoundingClientRect(); const last = tourI === tourList.length - 1;
+  o = document.createElement('div'); o.id = 'tour';
+  const W = Math.min(320, window.innerWidth - 24); let left = Math.min(Math.max(12, r.left), window.innerWidth - W - 12); let top = r.bottom + 14;
+  if (top + 190 > window.innerHeight) top = Math.max(12, r.top - 200);
+  if (r.width > window.innerWidth * .6 && r.height > window.innerHeight * .6) { top = window.innerHeight - 210; left = 12; }
+  o.innerHTML = `<div class="thl" style="left:${r.left - 6}px;top:${r.top - 6}px;width:${r.width + 12}px;height:${r.height + 12}px"></div><div class="tcard" style="left:${left}px;top:${top}px;width:${W}px"><small>${tourI + 1} / ${tourList.length}</small><b>${s.t[S.lang]}</b><p>${s.d[S.lang]}</p><div class="row"><button class="btn" data-act="tournext">${last ? tx('tourDone') : tx('tourNext')}</button><button class="btn alt" data-act="tourend">${tx('tourSkip')}</button></div></div>`;
+  document.body.appendChild(o);
+}
+
+/* ================= scheletul paginii ================= */
+const LINK_ITEM = n => `item-${String(n).padStart(2, '0')}.html`;
+const BN = {
+  line: 'fill="none" stroke="rgba(255,255,255,.75)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"',
+  txt: 'font-family="Cambria,Georgia,serif" font-style="italic" fill="#fff"'
+};
+function bannerSvg() {
+  const n = PAGE.kind === 'item' ? PAGE.n : 0; const Y = '#fde047', C = '#67e8f9';
+  const axes = `<path d="M240 104V16M226 92h130" ${BN.line}/>`;
+  const T = (x, y, s, sz, c) => `<text x="${x}" y="${y}" ${BN.txt} font-size="${sz}" ${c ? `style="fill:${c}"` : ''}>${s}</text>`;
+  const G = {
+    0: `${axes}<path d="M252 100C262 20 300 20 322 100" ${BN.line} stroke="${Y}"/>${T(262, 34, 'π', 26)}${T(310, 60, '√x', 24)}${T(330, 100, 'x²', 22, C)}`,
+    1: `${T(236, 46, '−3', 34)}${T(290, 70, '√2', 38, Y)}${T(236, 108, 'π', 38, C)}${T(298, 108, '⅔', 34)}`,
+    2: `<circle cx="300" cy="62" r="44" ${BN.line}/><path d="M262 84L300 18L338 84Z" ${BN.line} stroke="${Y}"/><path d="M300 62L338 84M300 62L262 84M300 62V18" ${BN.line} stroke-width="1.2" stroke-dasharray="4 4"/><circle cx="300" cy="62" r="3" fill="#fff"/>`,
+    3: `${axes}<path d="M252 100C262 20 300 20 322 100" ${BN.line} stroke="${Y}"/><circle cx="256" cy="92" r="4" fill="${C}"/><circle cx="318" cy="92" r="4" fill="${C}"/>${T(266, 30, 'x₁', 20)}${T(322, 30, 'x₂', 20)}`,
+    4: `${T(230, 62, 'a', 34)}${T(256, 62, ':', 34)}${T(270, 62, 'b', 34)}${T(298, 62, '=', 34, Y)}${T(330, 62, 'c', 34)}${T(354, 62, ':', 34)}${T(366, 62, 'd', 34)}<rect x="230" y="84" width="40" height="12" rx="3" fill="${C}"/><rect x="230" y="102" width="80" height="12" rx="3" fill="#fff" opacity=".8"/>`,
+    5: `${axes}<path d="M236 94L350 22" ${BN.line} stroke="${Y}"/><path d="M236 100C270 100 300 96 350 28" ${BN.line} stroke="${C}"/>${T(330, 18, 'f(x)', 18)}`,
+    6: `<path d="M226 78H360" ${BN.line}/><path d="M250 70v16M290 70v16M330 70v16" ${BN.line}/><circle cx="290" cy="78" r="6" fill="${Y}"/><path d="M290 78H350" ${BN.line} stroke="${Y}" stroke-width="5"/><path d="M344 70l10 8-10 8" ${BN.line} stroke="${Y}"/>${T(272, 44, 'x ≥ 2', 28)}`,
+    7: `${T(226, 70, 'x²', 46)}${T(290, 70, '√', 46, Y)}${T(318, 70, 'aⁿ', 40, C)}${T(250, 108, '2³ = 8', 24)}`,
+    8: `<path d="M244 98H340V30Z" ${BN.line} stroke="${Y}"/><path d="M328 98v-12h12" ${BN.line}/>${T(286, 114, 'a', 20)}${T(346, 68, 'b', 20)}${T(280, 56, 'c', 20, C)}`,
+    9: `<rect x="232" y="30" width="48" height="26" rx="4" fill="${C}"/><rect x="284" y="30" width="48" height="26" rx="4" fill="${C}"/><rect x="336" y="30" width="24" height="26" rx="4" fill="${Y}"/>${T(340, 50, '?', 22, '#1e3a8a')}<path d="M232 72H360" ${BN.line}/><path d="M232 66v12M360 66v12" ${BN.line}/>${T(274, 100, 'x + y = S', 24)}`,
+    10: `<path d="M246 52h72v52h-72zM246 52l24-22h72l-24 22M342 30v52l-24 22" ${BN.line} stroke="${Y}"/><path d="M270 30v52l-24 22M270 82h72" ${BN.line} stroke-width="1.2" stroke-dasharray="4 4"/>${T(280, 120, 'V = a·b·c', 20)}`,
+    11: `${T(236, 46, 'x² − 1', 28)}<path d="M232 56H338" ${BN.line} stroke="${Y}" stroke-width="3"/>${T(246, 88, 'x + 1', 28, C)}${T(346, 74, '= x − 1', 22)}`,
+    12: `${axes}<path d="M250 24C268 120 312 120 330 24" ${BN.line} stroke="${Y}"/><circle cx="290" cy="94" r="4.5" fill="${C}"/>${T(304, 112, 'V', 18)}${T(262, 18, 'f(x)=ax²+bx+c', 15)}`
+  };
+  return `<svg class="bsvg" viewBox="190 0 190 124" aria-hidden="true">${G[n] || G[0]}</svg>`;
+}
+function sideHTML() {
+  const L2 = (href, ico, label, on) => `<a class="sl ${on ? 'on' : ''}" href="${href}" target="_top" title="${label}">${svgIc(ico)}<span>${label}</span></a>`;
+  const P = progLoad(); let done = 0;
+  const items = Object.keys(ITEM_TITLES).map(n => { const p = itemPct(n); if (p >= 1) done++; return `<a class="sl it ${PAGE.kind === 'item' && +n === PAGE.n ? 'on' : ''} ${p >= 1 ? 'full' : ''}" href="${LINK_ITEM(n)}" target="_top" title="${ITEM_TITLES[n][S.lang]}"><i style="--h:${(n - 1) * 30}">${p >= 1 ? svgIc('check') : n}</i><span>${ITEM_TITLES[n][S.lang]}</span><em style="--p:${Math.round(p * 100)}%"></em></a>`; }).join('');
+  const ex = P.exam ? `<span class="sx">${Math.round(P.exam * 100)}%</span>` : '';
+  return `<aside class="side"><div class="sbrand"><span class="slogo">∑</span><b>${tx('domain1')}<small>${tx('domain2')}</small></b><button class="scol" data-act="side" title="${tx('collapse')}" aria-label="${tx('collapse')}">${svgIc('arrowL')}</button></div>
+  <nav class="snav">${L2(window.HOME_URL || 'index.html', 'home', tx('startPage'))}<div class="sh">${tx('itemsH')}</div>${items}<div class="sh">${tx('testsH')}</div>
+  ${L2('test-complet.html', 'test', tx('examShort'), PAGE.kind === 'exam')}${L2('din-examene.html', 'clip', tx('pastShort'), PAGE.kind === 'past')}</nav>
+  ${window.CLD ? CLD.sideHTML() : ''}<div class="sfoot"><div class="sprog"><b>${done}/12</b> <span>${tx('itemsDone')}</span>${ex}<div class="bar"><i style="width:${Math.round(done / 12 * 100)}%"></i></div></div><button class="srst" data-act="resetprog" title="${tx('resetProg')}" aria-label="${tx('resetProg')}">${svgIc('x')}</button></div></aside>`;
+}
+function asideHTML() {
+  if (PAGE.kind !== 'item') return '';
+  let note = ''; try { note = localStorage.getItem('mpf-note-' + PAGE.n) || ''; } catch (e) {}
+  const hasTh = ITEMS[PAGE.n] && ITEMS[PAGE.n].theory;
+  const lk = (href, ico, label) => `<a class="ul" href="${href}" target="_blank" rel="noopener">${svgIc(ico)}<span>${label}</span>${svgIc('ext', 'e')}</a>`;
+  return `<aside class="rcol"><section class="pan"><h3>${svgIc('spark')} ${tx('tools')}</h3>
+  ${lk('https://www.desmos.com/scientific', 'calc', tx('sciCalc'))}${lk('https://www.desmos.com/calculator', 'chart', tx('graphs'))}
+  ${hasTh ? `<button class="ul" data-act="go" data-v="theory">${svgIc('formula')}<span>${tx('formulas')}</span></button>` : ''}</section>
+  <section class="pan"><h3>${svgIc('pen')} ${tx('notes')}</h3><textarea id="note" rows="6" placeholder="${tx('notesPh')}">${note.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</textarea><small>${tx('notesD')}</small></section></aside>`;
+}
+function shell(inner) {
+  const isItem = PAGE.kind === 'item';
+  const title = PAGE.kind === 'admin' ? 'Administrare' : PAGE.kind === 'teacher' ? 'Profesor' : PAGE.kind === 'past' ? tx('pastTitle') : PAGE.kind === 'exam' ? tx('examTitle') : `${tx('itemWord')} ${PAGE.n} · ${ITEM_TITLES[PAGE.n][S.lang]}`;
+  let sub = isItem ? (S.view && S.view !== 'home' && TX[S.view] ? tx(S.view) : tx('pickSec')) : tx('appSub');
+  if (isItem) { const it = progLoad()[PAGE.n]; if (it && (it.solved || it.best)) sub += ' · ' + [it.solved ? `${Math.min(it.solved, PROG_GOAL)}/${PROG_GOAL} ${tx('solvedN')}` : '', it.best ? `${tx('bestTest')}: ${Math.round(it.best * 10 * itemPts(PAGE.n) * 10) / 10} / ${10 * itemPts(PAGE.n)} ${tx('ptsS')}` : ''].filter(Boolean).join(' · '); }
+  const nav = isItem ? `<div class="inav">${PAGE.n > 1 ? `<a href="${LINK_ITEM(PAGE.n - 1)}" target="_top" title="${tx('prevItem')}" aria-label="${tx('prevItem')}">${svgIc('arrowL')}</a>` : `<span class="dis">${svgIc('arrowL')}</span>`}${PAGE.n < 12 ? `<a href="${LINK_ITEM(PAGE.n + 1)}" target="_top" title="${tx('nextItem')}" aria-label="${tx('nextItem')}">${svgIc('arrowR')}</a>` : `<span class="dis">${svgIc('arrowR')}</span>`}</div>` : '';
+  const collapsed = (() => { try { return localStorage.getItem('mpf-side') === 'c'; } catch (e) { return false; } })();
+  return `<div class="app ${collapsed ? 'collapsed' : ''} ${S.drawer ? 'drawer' : ''}"><div class="sback" data-act="menu"></div>${sideHTML()}<div class="mainwrap"><div class="board">
+  <header class="banner"><div class="btxt"><h1>${tx('bannerT')}</h1><p>${tx('bannerS')}</p></div>${bannerSvg()}
+  <div class="tools"><button class="chip theme menub" data-act="menu" title="${tx('menu')}" aria-label="${tx('menu')}">${svgIc('list')}</button><span class="seg">${LANGS.map(l => `<button class="chip ${l === S.lang ? 'on' : ''}" data-act="lang" data-v="${l}">${l.toUpperCase()}</button>`).join('')}</span>
+  ${themeBtn()}<button class="chip theme" data-act="tour" title="${tx('tourBtn')}" aria-label="${tx('tourBtn')}">?</button><button class="chip theme" data-act="fs" title="${tx('fullscr')}" aria-label="${tx('fullscr')}">${svgIc('expand')}</button><button class="chip teach ${S.teacher ? 'on' : ''}" data-act="teacher">👩‍🏫 ${S.teacher ? tx('teacherOn') : tx('teacher')}</button></div></header>
+  <div class="icard"><span class="ilogo">∑</span><div class="ititle"><b>${title}</b><small>${sub}</small></div>${nav}</div>
+  <div class="pcols"><main class="paper">${S.teacher ? `<div class="teachbar">${tx('teacherBar')} <button class="btn alt" style="padding:2px 10px;font-size:.8rem" data-act="teacher-off">${tx('leave')}</button></div>` : ''}${inner}</main></div>
+  <footer class="lic">© 2026 Godovaniuc Ana · ${tx('lic')} <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></footer></div></div></div>`;
+}
+function tabsHTML() {
+  if (PAGE.kind === 'exam' || PAGE.kind === 'past') return `<div class="tabs past-noprint"><!-- ← LINK: Acasă → pagina de start (HOME_URL din build.py) --><a class="tab" href="${window.HOME_URL || 'index.html'}" target="_top">🏠 ${tx('home')}</a></div>`;
+  return `<div class="tabs">${`<!-- ← LINK: butonul Acasă duce la pagina de start (HOME_URL din build.py) -->
+  <a class="tab" href="${window.HOME_URL || 'index.html'}" target="_top">🏠 ${tx('home')}</a>` + [...(ITEMS[PAGE.n] && ITEMS[PAGE.n].theory ? [['theory', '📚', 'theory']] : []), ...(ITEMS[PAGE.n] && ITEMS[PAGE.n].example ? [['example', '📖', 'example']] : []), ['practice', '🎮', 'practice'], ['test', '📝', 'test'], ['pdf', '🖨️', 'pdf']].map(([v, ic, k]) => `<button class="tab ${S.view === v ? 'on' : ''}" data-act="go" data-v="${v}">${ic} ${tx(k)}</button>`).join('')}</div>`;
+}
+function mascotHTML() { return ''; /* asistent eliminat */ return `<div class="mascot"><div class="bubble">${S.say ? S.say[S.lang] : tx('hello')}</div>${OWL.replace('class="owl"', `class="owl ${S.mood}"`)}</div>`; }
+const KEYS = ['−', '/', ',', '(', ')', '√', '²', '^', ';', 'π', 'x', '⌫'];
+const keypadHTML = () => `<div class="keypad">${KEYS.map(k => `<button type="button" data-act="key" data-k="${k}">${k}</button>`).join('')}</div>`;
+
+/* ================= card de exercițiu ================= */
+function fieldHTML(p, i, j, o) {
+  const f = p.fields[j]; const v = (o.vals[i] || [])[j] || ''; const res = o.res && o.res[i] && o.res[i].fields[j];
+  const cls = res ? (res.ok ? 'ok' : 'bad') : '';
+  const mark = res ? `<span class="mark ${res.ok ? 'ok' : 'bad'}">${res.ok ? '✓' : '✗'}</span>` : '';
+  const label = lbl(f.label);
+  if (f.type === 'choice') {
+    return `<span class="fld"><span class="flab">${label}</span><span class="opts">${f.opts.map(op => `<button type="button" class="opt ${v === op.v ? 'on' : ''} ${res && v === op.v ? (res.ok ? 'ok' : 'bad') : ''}" data-act="opt" data-p="${i}" data-f="${j}" data-v="${op.v}" ${o.locked ? 'disabled' : ''}>${op.h[S.lang]}</button>`).join('')}</span>${mark}</span>`;
+  }
+  return `<label class="fld"><span class="flab">${label}</span><input class="ans ${cls}" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" data-p="${i}" data-f="${j}" value="${String(v).replace(/"/g, '&quot;')}" ${o.locked ? 'readonly' : ''} placeholder="?"><span class="unit">${unitOf(f.unit)}</span>${mark}</label>`;
+}
+function probHTML(p, i, o) {
+  const res = o.res && o.res[i];
+  const cls = res && o.locked ? (res.all ? 'okp' : 'badp') : '';
+  let extra = '';
+  if (o.reveal) extra += `<div class="fb ${res && res.all ? 'good' : ''}">${res && res.all ? '' : `${tx('correctAns')}: `}${res && res.all ? '' : ansHTML(p)}</div>`;
+  if (o.showSol) extra += `<div class="sol"><b>${tx('solution')}:</b><br>${p.sol(S.lang)}</div>`;
+  if (o.hint) extra += `<div class="hintbox">💡 ${p.hint ? p.hint(S.lang) : ''}</div>`;
+  if (S.teacher && !o.reveal) extra += `<div class="key"><b>${tx('tAnswer')}:</b> ${ansHTML(p)}</div>`;
+  return `<div class="prob ${cls}"><div class="pnum">${o.num != null ? o.num : i + 1}</div><div class="pbody"><div class="ptext">${p.text(S.lang)}</div>${p.fig ? `<div class="pfig">${p.fig}</div>` : ''}<div class="pfields">${p.fields.map((f, j) => fieldHTML(p, i, j, o)).join('')}</div>${o.note || ''}${extra}</div></div>`;
+}
+
+/* ================= vederi ================= */
+function homeView() {
+  if (PAGE.kind === 'exam') return examView();
+  return `${tabsHTML()}<h1 class="t">${tx('itemWord')} ${PAGE.n}: ${ITEM_TITLES[PAGE.n][S.lang]}</h1><p class="sub">${tx('appSub')}</p>
+  <div class="stage"><div><div class="cards">
+  ${ITEMS[PAGE.n] && ITEMS[PAGE.n].theory ? `<button class="gcard" data-act="go" data-v="theory"><div class="ico">📚</div><b>${tx('theory')}</b><span>${tx('theoryD')}</span></button>` : ''}
+  ${ITEMS[PAGE.n] && ITEMS[PAGE.n].example ? `<button class="gcard" data-act="go" data-v="example"><div class="ico">📖</div><b>${tx('example')}</b><span>${tx('exampleD')}</span></button>` : ''}
+  <button class="gcard" data-act="go" data-v="practice"><div class="ico">🎮</div><b>${tx('practice')}</b><span>${tx('practiceD')}</span></button>
+  <button class="gcard" data-act="go" data-v="test"><div class="ico">📝</div><b>${tx('test')}</b><span>${tx('testD')}</span></button>
+  <button class="gcard" data-act="go" data-v="pdf"><div class="ico">🖨️</div><b>${tx('pdf')}</b><span>${tx('pdfD')}</span></button></div></div>${mascotHTML()}</div>`;
+}
+function theoryView() {
+  return `${tabsHTML()}<div class="theory"><h2 class="t">${tx('theory')} · ${ITEM_TITLES[PAGE.n][S.lang]}</h2>${ITEMS[PAGE.n].theory[S.lang]}
+  <div class="row"><button class="btn" data-act="go" data-v="example">📖 ${tx('example')}</button><button class="btn alt" data-act="go" data-v="practice">🎮 ${tx('practice')}</button></div></div>`;
+}
+function exampleView() {
+  const ex = ITEMS[PAGE.n].example; const p = ex.make();
+  return `${tabsHTML()}<h2 class="t">${tx('example')}</h2>
+  <div class="exbox"><div class="exh">${tx('exTask')}</div><div class="extext">${p.text(S.lang)}</div>${p.fig ? `<div class="pfig">${p.fig}</div>` : ''}
+  <div class="exh">${tx('exSteps')}</div><div class="sol exsol">${p.sol(S.lang)}</div>
+  <div class="exh">${tx('exRule')}</div><div class="exrule">${ex.rule[S.lang]}</div>
+  <div class="row"><button class="btn" data-act="go" data-v="practice">🎮 ${tx('exTry')}</button></div></div>`;
+}
+function newPractice(lvl) {
+  const prev = S.pr || {};
+  S.pr = { lvl: lvl != null ? lvl : (prev.lvl != null ? prev.lvl : 1), base: randCode(), n: 0, pts: prev.pts || 0, stars: prev.stars || 0, streak: 0, best: prev.best || 0, solved: prev.solved || 0, tries: 0, hint: false, showSol: false, p: null, vals: [[]], res: null, final: false, used: new Set() };
+  nextProblem();
+}
+function nextProblem() {
+  const pr = S.pr; pr.n++; pr.tries = 0; pr.hint = false; pr.showSol = false; pr.vals = [[]]; pr.res = null; pr.final = false;
+  pr.p = makeProblem(ITEM(), RNG(`${pr.base}|${pr.n}`), pr.lvl, pr.used);
+}
+function practiceView() {
+  if (!S.pr) { newPractice(0); say(MSG.hello); }
+  const pr = S.pr; const locked = pr.final;
+  const card = probHTML(pr.p, 0, { vals: pr.vals, res: pr.res, locked, reveal: pr.final && pr.res && !pr.res[0].all, showSol: pr.showSol, hint: pr.hint, num: pr.n,
+    note: pr.res && pr.res[0].fields.some(f => f.note === 'reduce') && pr.res[0].all ? `<div class="fb good">${tx('reduceTip')}</div>` : (pr.res && !pr.res[0].all && !pr.final ? `<div class="fb">✗ ${tx('retry')}</div>` : '') });
+  const itp = progLoad()[PAGE.n] || {}; const goal = Math.min(PROG_GOAL, itp.solved || 0);
+  return `${tabsHTML()}<div class="stats"><span class="stat">✅ ${tx('done')}: ${pr.solved}</span><span class="stat goal">${goal} / ${PROG_GOAL}<i style="--p:${Math.round(goal / PROG_GOAL * 100)}%"></i></span></div>
+  <div class="stage" style="margin-top:10px"><div>${card}
+  <div class="controls">${locked ? '' : `<button class="btn" data-act="check">${tx('check')}</button><button class="btn alt" data-act="hint">💡 ${tx('hint')}</button><button class="btn alt" data-act="reveal">${svgIc('key')} ${tx('reveal')}</button>`}
+  <button class="btn alt" data-act="sol">${svgIc('example')} ${pr.showSol ? tx('hideSol') : tx('stepSol')}</button>
+  ${locked ? `<button class="btn" data-act="next">${tx('next')}</button>` : ''}</div>${locked ? '' : keypadHTML()}</div>${mascotHTML()}</div>`;
+}
+function prReveal(withSol) {
+  const pr = S.pr; if (pr.final) return;
+  const res = checkProblem(pr.p, pr.vals[0] || []);
+  if (res.all) { prCheck(); if (withSol) { pr.showSol = true; render(); } return; }
+  pr.res = [res]; pr.tries = Math.max(pr.tries, 2); pr.final = true; pr.seen = true; pr.streak = 0; if (withSol) pr.showSol = true; say(MSG.reveal, 'shake'); toast(tx('seenNote')); render();
+}
+function prCheck() {
+  const pr = S.pr; if (pr.final) return;
+  const vals = pr.vals[0] || [];
+  if (pr.p.fields.every((f, j) => !String(vals[j] || '').trim())) { toast(tx('empty')); return; }
+  const res = checkProblem(pr.p, vals); pr.res = [res]; pr.tries++;
+  if (res.all) {
+    if (pr.tries === 1) { progAdd(PAGE.n, it => { it.solved = (it.solved || 0) + 1; }); pr.solved++; }
+    pr.final = true; pr.streak++; pr.best = Math.max(pr.best, pr.streak);
+    const first = pr.tries === 1 && !pr.hint; pr.pts += first ? 10 : pr.tries === 1 ? 7 : 5; if (pr.tries === 1) pr.stars++;
+    say(pr.streak >= 3 && pr.streak % 3 === 0 ? MSG.streak : MSG.ok, 'bounce'); confetti();
+    if (pr.streak === 5 && pr.lvl > 0 && pr.lvl < 3) toast(tx('lvUp'));
+  } else {
+    pr.streak = 0;
+    if (pr.tries >= 2) { pr.final = true; say(MSG.reveal, 'shake'); } else say(MSG.bad, 'shake');
+  }
+  render();
+}
+/* ---- test de 10 exerciții ---- */
+function newTest(code) {
+  code = (code || randCode()).toUpperCase();
+  S.test = { code, probs: makeSet(ITEM(), code, 't', 10), vals: [], res: null, done: false, score: 0 };
+}
+function checkHTML() {
+  const c = S.check; if (!c) return '';
+  const rows = c.probs.map((p, i) => `<div class="prob"><div class="pnum">${c.nums ? c.nums[i] : i + 1}</div><div class="pbody"><div class="ptext">${p.text(S.lang)}</div>${p.fig ? `<div class="pfig">${p.fig}</div>` : ''}<div class="key"><b>${tx('tAnswer')}:</b> ${ansHTML(p)}</div><div class="sol"><b>${tx('solution')}:</b><br>${p.sol(S.lang)}</div></div></div>`).join('');
+  return `<h3 class="itemhead">${tx('code')}: ${c.code}</h3>${rows}`;
+}
+function teacherCheckBox(act) {
+  if (!S.teacher) return '';
+  return `<div class="teachbox"><b>👩‍🏫 ${tx('checkByCode')}</b><div class="row"><input id="chkcode" type="text" maxlength="14" placeholder="${tx('code')}" value="${S.check ? S.check.code : ''}" style="text-transform:uppercase"><button class="btn" data-act="${act}">${tx('showKey')}</button>${S.check ? `<button class="btn alt" data-act="chkclear">✕</button>` : ''}</div></div>${checkHTML()}`;
+}
+function testView() {
+  const t = S.test;
+  if (!t) return `${tabsHTML()}<h2 class="t">${tx('test')}</h2><p class="sub">${tx('testIntro')}</p>
+  <div class="row"><button class="btn" data-act="tstart">${tx('startTest')}</button><button class="btn alt" data-act="tpdfnew">🖨️ ${tx('printTest')}</button></div>
+  <div class="row"><label>${tx('code')}: <input class="codein" id="codein" type="text" maxlength="14" style="padding:6px 8px;border:2px solid #9db3c9;border-radius:8px;text-transform:uppercase"></label><button class="btn alt" data-act="tload">${tx('load')}</button></div><p class="sub codehelp">${tx('codeHelp')}</p>${teacherCheckBox('tcheck')}`;
+  const body = t.probs.map((p, i) => probHTML(p, i, { vals: t.vals, res: t.res, locked: t.done, reveal: t.done, showSol: t.done })).join('');
+  let head = `<div class="row"><span class="stat">${tx('code')}: <b>${t.code}</b></span><span class="stat">${itemPts(PAGE.n)} ${tx('ptsS')} / ${tx('exWord')} · ${10 * itemPts(PAGE.n)} ${tx('pts')}</span><button class="btn alt" data-act="tpdf">🖨️ ${tx('printTest')}</button></div>`;
+  if (t.done) {
+    const ip = itemPts(PAGE.n), sc = Math.round(t.score * 10) / 10, scp = Math.round(t.score * ip * 100) / 100;
+    head += `<div class="result"><div>${tx('score')}</div><div class="big">${scp} / ${10 * ip} ${tx('pts')}</div><div>${sc >= 9 ? '🏆' : sc >= 7 ? '🥇' : sc >= 5 ? '🥈' : '🌱'}</div><div class="row" style="justify-content:center"><button class="btn" data-act="tnew">${tx('newTest')}</button><button class="btn alt" data-act="tpdf">${tx('pdfThis')}</button></div></div><h2 class="t">${tx('mistakes')}</h2>`;
+  }
+  return `${tabsHTML()}${head}<div class="stage"><div>${body}${t.done ? '' : `<div class="controls"><button class="btn" data-act="tsubmit">${tx('submitTest')}</button></div>${keypadHTML()}`}</div>${mascotHTML()}</div>`;
+}
+function gradeSet(probs, vals) {
+  let sum = 0; const res = probs.map((p, i) => { const r = checkProblem(p, vals[i] || []); sum += r.frac; return r; }); return { res, sum };
+}
+function tSubmit() {
+  const t = S.test; const g = gradeSet(t.probs, t.vals); t.res = g.res; t.score = g.sum; t.done = true;
+  progAdd(PAGE.n, it => { it.best = Math.max(it.best || 0, g.sum / 10); });
+  histAdd({ k: 'test', item: PAGE.n, score: Math.round(g.sum * itemPts(PAGE.n) * 10) / 10, max: 10 * itemPts(PAGE.n) });
+  say(g.sum >= 9 ? MSG.ok : g.sum >= 5 ? MSG.ok : MSG.bad, g.sum >= 5 ? 'bounce' : 'shake'); if (g.sum >= 7) confetti(); render(); window.scrollTo && $('.paper') && $('.paper').scrollIntoView({ behavior: 'smooth' });
+}
+/* ---- examen complet ---- */
+function examItems() { return Object.keys(ITEMS).map(Number).sort((a, b) => a - b); }
+function newExam(code) {
+  code = (code || randCode()).toUpperCase();
+  const its = examItems();
+  S.exam = { code, probs: its.map(n => makeProblem(ITEMS[n], RNG(`${code}|exam|${n}`), 'exam')), items: its, vals: [], res: null, done: false, endAt: Date.now() + EXAM_CFG.minutes * 60000, score: 0, running: true };
+}
+const itemPts = n => (EXAM_CFG.points && EXAM_CFG.points[n]) || 1;
+function examView() {
+  const e = S.exam;
+  if (!e) {
+    const its = examItems();
+    return `${tabsHTML()}<h1 class="t">${tx('examTitle')}</h1><p class="sub">${tx('examIntro')}</p>
+    <div class="stage"><div><div class="stat">⏱ ${EXAM_CFG.minutes} ${tx('min')}</div> <div class="stat">📋 ${its.length} ${tx('itemWord')}</div>
+    ${its.length < 12 ? `<p class="fb" style="color:#8a5a00">${tx('proto')}: ${its.join(', ')}.</p>` : ''}
+    <div class="row"><button class="btn" data-act="estart">${tx('startExam')}</button><button class="btn alt" data-act="epdfnew">🖨️ ${tx('printTest')}</button></div>
+    <div class="row"><label>${tx('code')}: <input id="codein" type="text" maxlength="14" style="padding:6px 8px;border:2px solid #9db3c9;border-radius:8px;text-transform:uppercase"></label><button class="btn alt" data-act="eload">${tx('load')}</button></div><p class="sub codehelp">${tx('codeHelp')}</p>${teacherCheckBox('echeck')}</div></div>`;
+  }
+  const body = e.probs.map((p, i) => `<div class="itemhead">${tx('itemWord')} ${e.items[i]} · ${ITEM_TITLES[e.items[i]][S.lang]} <small>(${itemPts(e.items[i])} ${tx('ptsS')})</small></div>` +
+    probHTML(p, i, { vals: e.vals, res: e.res, locked: e.done, reveal: e.done, showSol: e.done, num: e.items[i] })).join('');
+  let head = '';
+  if (!e.done) head = `<div class="timer ${remaining() < 600000 ? 'low' : ''}" id="timerbar"><span>⏱ ${tx('timeLeft')}</span><span class="t" id="clock">${fmtTime(remaining())}</span><span id="prog">${answeredCount()}/${e.probs.length} ${tx('answered')}</span></div>`;
+  else {
+    let tot = 0, max = 0; const rows = e.probs.map((p, i) => { const mx = itemPts(e.items[i]); const got = e.res[i].frac * mx; tot += got; max += mx; return `<tr><td>${tx('itemWord')} ${e.items[i]}</td><td>${ITEM_TITLES[e.items[i]][S.lang]}</td><td>${Math.round(got * 100) / 100} / ${mx}</td></tr>`; }).join('');
+    let grade = '';
+    if (EXAM_CFG.conv) { const pr = Math.round(tot * 100) / 100; let g = EXAM_CFG.conv[0][1]; EXAM_CFG.conv.forEach(([mn, gr]) => { if (pr >= mn) g = gr; }); grade = `<div class="big">${tx('grade')}: ${g}</div>`; } else grade = `<div class="sub">${tx('gradePending')}</div>`;
+    head = `<div class="result"><div>${tx('total')}</div><div class="big">${Math.round(tot * 100) / 100} / ${max} ${tx('pts')}</div>${grade}<table class="rt"><tr><th>${tx('itemWord')}</th><th></th><th>${tx('pts')}</th></tr>${rows}</table><div class="row" style="justify-content:center"><button class="btn" data-act="enew">${tx('newTest')}</button><button class="btn alt" data-act="epdf">${tx('pdfThis')}</button></div></div>`;
+  }
+  return `${e.done ? tabsHTML() : ""}${head}<div class="stage"><div>${body}${e.done ? '' : `<div class="controls"><button class="btn" data-act="esubmit">${tx('submitExam')}</button></div>${keypadHTML()}`}</div>${mascotHTML()}</div>`;
+}
+const remaining = () => Math.max(0, S.exam.endAt - Date.now());
+const fmtTime = ms => { const s = Math.ceil(ms / 1000); const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), x = s % 60; return `${h}:${String(m).padStart(2, '0')}:${String(x).padStart(2, '0')}`; };
+const answeredCount = () => S.exam.probs.filter((p, i) => (S.exam.vals[i] || []).some(v => String(v || '').trim())).length;
+let clockTimer = null;
+function startClock() {
+  clearInterval(clockTimer);
+  clockTimer = setInterval(() => {
+    const e = S.exam; if (!e || e.done) { clearInterval(clockTimer); return; }
+    const rem = remaining(); const c = $('#clock'); if (c) c.textContent = fmtTime(rem);
+    const pg = $('#prog'); if (pg) pg.textContent = `${answeredCount()}/${e.probs.length} ${tx('answered')}`;
+    const tb = $('#timerbar'); if (tb) tb.classList.toggle('low', rem < 600000);
+    if (rem <= 0) { eSubmit(true); }
+  }, 1000);
+}
+function eSubmit(auto) {
+  const e = S.exam; if (e.done) return; const g = gradeSet(e.probs, e.vals); e.res = g.res; e.score = g.sum; e.done = true; clearInterval(clockTimer);
+  { const o = progLoad(); o.exam = Math.max(o.exam || 0, g.sum / e.probs.length); progSave(o); setDirty(); histAdd({ k: 'exam', score: Math.round(g.sum / e.probs.length * 1000) / 10, max: 100 }); }
+  say(g.sum >= e.probs.length * 0.5 ? MSG.ok : MSG.bad, g.sum >= e.probs.length * .5 ? 'bounce' : 'shake'); if (auto) toast(tx('timeUp')); render(); $('.paper') && $('.paper').scrollIntoView({ behavior: 'smooth' });
+}
+/* ---- fila PDF ---- */
+function pdfView() {
+  return `${tabsHTML()}<h2 class="t">${tx('pdf')}</h2><p class="sub">${tx('pdfHelp')}</p>
+  <div style="max-width:420px"><label><b>${tx('variants')}</b><br><select id="pdfN" style="width:100%;padding:8px;border:2px solid #9db3c9;border-radius:8px;margin:4px 0 10px">${Array.from({ length: 10 }, (_, k) => `<option value="${k + 1}" ${k === 0 ? 'selected' : ''}>${k + 1}</option>`).join('')}</select></label>
+  <label><b>${tx('code')}</b><br><input id="pdfCode" type="text" maxlength="12" value="${randCode()}" style="width:100%;padding:8px;border:2px solid #9db3c9;border-radius:8px;margin:4px 0 10px;text-transform:uppercase"></label><p class="sub codehelp" style="margin-top:-4px">${tx('codeHelpPdf')}</p>
+  <label style="display:block;margin-bottom:10px"><input type="checkbox" id="pdfKey" ${S.teacher ? 'checked' : 'disabled'}> ${tx('withKey')}</label>${S.teacher ? '' : `<div class="sub">🔒 ${tx('keyLocked')}</div>`}
+  <button class="btn" data-act="pdfgo">${tx('preview')}</button></div>`;
+}
+
+/* ================= randare ================= */
+function viewHTML() {
+  if (PAGE.kind === 'teacher' || PAGE.kind === 'admin') return `<a class="tab" href="${window.HOME_URL || 'index.html'}" target="_top">🏠 ${tx('home')}</a><h1 class="t">${PAGE.kind === 'admin' ? 'Administrare profesori' : 'Spațiul profesorului'}</h1><div id="cloudbox">${window.CLD ? (PAGE.kind === 'admin' ? CLD.adminHTML() : CLD.teacherHTML()) : ''}</div>`;
+  if (PAGE.kind === 'exam') return examView();
+  if (S.view === 'theory' && ITEMS[PAGE.n] && ITEMS[PAGE.n].theory) return theoryView();
+  if (S.view === 'example' && ITEMS[PAGE.n] && ITEMS[PAGE.n].example) return exampleView();
+  if (PAGE.kind === 'past') return pastView();
+  if (S.view === 'practice') return practiceView();
+  if (S.view === 'test') return testView();
+  if (S.view === 'pdf') return pdfView();
+  return homeView();
+}
+function render() {
+  const active = document.activeElement; let keep = null;
+  if (active && active.matches && active.matches('input.ans')) keep = { p: active.dataset.p, f: active.dataset.f, s: active.selectionStart };
+  $('#app').innerHTML = decorate(shell(viewHTML()));
+  if (keep) { const el = $(`input.ans[data-p="${keep.p}"][data-f="${keep.f}"]`); if (el && !el.readOnly) { el.focus(); try { el.setSelectionRange(keep.s, keep.s); } catch (e) {} } }
+  S.mood = '';
+}
+window.__rerender = () => render();
+window.__getLang = () => S.lang;
+window.__prog = { load: progLoad, save: progSave };
+window.__toast = m => toast(m);
+function toast(msg) { const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 2400); }
+function confetti() {
+  const em = ['⭐', '✨', '🎉', '🌟', '➕', '✖️', 'π', '📐']; for (let i = 0; i < 20; i++) { const s = document.createElement('span'); s.className = 'confetti'; s.textContent = em[i % em.length]; s.style.left = Math.random() * 100 + 'vw'; s.style.animationDelay = Math.random() * .4 + 's'; s.style.animationDuration = 1.2 + Math.random() * 1.2 + 's'; document.body.appendChild(s); setTimeout(() => s.remove(), 3000); }
+}
+function curVals() { if (PAGE.kind === 'exam') return S.exam.vals; if (S.view === 'practice') return S.pr.vals; return S.test.vals; }
+
+
+/* ================= pagina „Din examenele și exersările anterioare” ================= */
+const PTYPES = { T1: L('Test pentru exersare N1', 'Тренировочный тест N1', 'Practice test N1'), T2: L('Test pentru exersare N2', 'Тренировочный тест N2', 'Practice test N2'), P: L('Pretestare', 'Претестирование', 'Pre-test'), E: L('Sesiunea de bază', 'Основная сессия', 'Main session'), R: L('Examen repetat', 'Повторный экзамен', 'Repeat exam') };
+const PAST = window.PAST_DATA || { tasks: [], ans: {} };
+const PS = { test: null, pcount: 1, item: 0, lab: '', year: '', mode: 'single', cur: null, show: false, vset: null, showAll: false };
+const pTaskKey = t => `${t.i}|${t.l}|${t.y}`;
+const pPool = (item) => PAST.tasks.filter(t => (item ? t.i === item : (!PS.item || t.i === PS.item)) && (!PS.lab || t.l === PS.lab) && (!PS.year || t.y === PS.year));
+const pPick = a => a[Math.floor(Math.random() * a.length)];
+function pNewSingle() { const pool = pPool(); PS.cur = pool.length ? pPick(pool.length > 1 && PS.cur ? pool.filter(t => t !== PS.cur) : pool) : null; PS.show = false; }
+function pNewVar() { PS.vset = []; for (let n = 1; n <= 12; n++) { const pool = pPool(n); if (pool.length) PS.vset.push(pPick(pool)); } PS.showAll = false; }
+function pCard(t, num, show) {
+  const rows = []; for (let n = 1; n <= 12; n++) { const a = PAST.ans[`${n}|${t.l}|${t.y}`]; if (a) rows.push(`<li value="${n}">${a}</li>`); }
+  const key = S.teacher ? `<details class="key past-noprint"><summary><b>🔑 ${tx('pKey')} ${PTYPES[t.l] ? PTYPES[t.l][S.lang] : t.l} ${t.y}</b></summary><p class="sub" style="margin:6px 0">${tx('pKeyNote')}</p><ol class="pkey">${rows.join('') || tx('pNoAns')}</ol></details>` : '';
+  return `<div class="prob"><div class="pnum">${num}</div><div class="pbody"><div class="pmeta"><b>${tx('pItem')} ${t.i}</b> · ${PTYPES[t.l] ? PTYPES[t.l][S.lang] : t.l} · ${t.y}</div><div class="ptext">${t.h}</div>${key}</div></div>`;
+}
+function pastView() {
+  const years = [...new Set(PAST.tasks.map(t => t.y))].sort();
+  const sel = (id, opts, cur) => `<select id="${id}" data-pf="${id}">${opts.map(([v, l]) => `<option value="${v}" ${String(v) === String(cur) ? 'selected' : ''}>${l}</option>`).join('')}</select>`;
+  const filters = `<div class="row past-noprint pfilters"><label>${tx('pItem')} ${sel('pf-item', [[0, tx('pAll')], ...Array.from({ length: 12 }, (_, i) => [i + 1, `${i + 1} · ${ITEM_TITLES[i + 1][S.lang]}`])], PS.item)}</label>
+  <label>${tx('pType')} ${sel('pf-lab', [['', tx('pAll')], ...Object.keys(PTYPES).map(k => [k, PTYPES[k][S.lang]])], PS.lab)}</label>
+  <label>${tx('pYear')} ${sel('pf-year', [['', tx('pAll')], ...years.map(y => [y, y])], PS.year)}</label></div>`;
+  const modes = `<div class="row past-noprint"><button class="btn ${PS.mode === 'single' ? '' : 'alt'}" data-act="pmode" data-v="single">🎲 ${tx('pSingle')}</button><button class="btn ${PS.mode === 'var' ? '' : 'alt'}" data-act="pmode" data-v="var">📋 ${tx('pVar')}</button><button class="btn ${PS.mode === 'test' ? '' : 'alt'}" data-act="pmode" data-v="test">📝 ${tx('pTest')}</button></div>`;
+  let body = '';
+  if (PS.mode === 'single') {
+    if (!PS.cur) pNewSingle();
+    body = PS.cur ? `${pCard(PS.cur, '★', PS.show)}<div class="controls past-noprint"><button class="btn" data-act="pnew">🎲 ${tx('pNew')}</button></div>` : `<p class="sub">${tx('pNone')}</p>`;
+  } else if (PS.mode === 'test') {
+    body = pTestView();
+  } else {
+    if (!PS.vset) pNewVar();
+    body = `<p class="sub">${tx('pVarD')}</p>${PS.vset.map((t, i) => pCard(t, i + 1, PS.showAll)).join('') || `<p class="sub">${tx('pNone')}</p>`}<div class="controls past-noprint"><button class="btn" data-act="pnewvar">🎲 ${tx('pVar')}</button><label>${tx('pCount')}: <select id="pcount" data-pf="pcount">${Array.from({ length: 10 }, (_, i) => `<option value="${i + 1}" ${PS.pcount === i + 1 ? 'selected' : ''}>${i + 1}</option>`).join('')}</select></label><button class="btn alt" data-act="ppdf">🖨️ ${tx('pPdf')}</button></div>`;
+  }
+  return `${tabsHTML()}<h2 class="t">${tx('pastTitle')}</h2><p class="sub">${tx('pastIntro')}</p>${filters}${modes}<div class="stage"><div>${body}</div></div>`;
+}
+
+
+/* ---- test solvabil dintr-un test real ---- */
+function pGroups() { const g = {}; PAST.tasks.forEach(t => { (g[`${t.l}|${t.y}`] = g[`${t.l}|${t.y}`] || []).push(t); }); return Object.values(g).filter(a => new Set(a.map(t => t.i)).size === 12 && a.length === 12); }
+function pNewTest() { let g = pGroups().filter(a => (!PS.lab || a[0].l === PS.lab) && (!PS.year || a[0].y === PS.year)); if (PS.test && g.length > 1) g = g.filter(a => a !== PS.test.tasks); const a = g.length ? pPick(g) : null; PS.test = a ? { tasks: a.slice().sort((x, y) => x.i - y.i), vals: [], done: false, res: null } : { tasks: null }; }
+const pNum = h => { const t = String(h).replace(/<sup>.*?<\/sup>/g, '').replace(/<[^>]+>/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/[−–—]/g, '-').replace(/,(?=\d)/g, '.').replace(/\b(cm|dm|mm|km|kg|lei|ani|zile|ore|hectare|litri|grade|m)\b/gi, ' ').replace(/[°²³]/g, ''); return t; };
+function pNorm(h) { const t = pNum(h); const nums = (t.match(/-?\d+(?:\.\d+)?(?:\/\d+)?/g) || []).map(x => { const m = x.split('/'); return m.length === 2 ? +m[0] / +m[1] : +m[0]; }).sort((a, b) => a - b); const br = (t.match(/[\[\]()]/g) || []).join(''); const sg = (t.match(/[<>=]/g) || []).join(''); return { nums, br, sg, txt: t.replace(/[^\p{L}\d<>=]/gu, '').toLowerCase() }; }
+function pMatch(stu, key) { const a = pNorm(stu), b = pNorm(key); if (!a.txt) return false; if (b.nums.length && a.nums.length) return a.nums.length === b.nums.length && a.nums.every((x, i) => Math.abs(x - b.nums[i]) < 1e-6) && (!(/[\[\]]/.test(b.br) || /[\[\]]/.test(a.br)) || a.br.replace(/[()]/g, 'o') === b.br.replace(/[()]/g, 'o') && a.br === b.br) && a.sg === b.sg; return a.txt === b.txt || (a.sg && a.sg === b.sg && b.nums.length === 0 && !b.txt.replace(/[<>=]/g, '')); }
+function pSubmitTest() { const T = PS.test; const key = []; for (let n = 1; n <= 12; n++) { const a = PAST.ans[`${n}|${T.tasks[0].l}|${T.tasks[0].y}`]; key.push(a || ''); } const used = new Set(); T.res = T.tasks.map((t, i) => { const v = (T.vals[i] || '').trim(); if (!v) return false; const k = key.findIndex((kk, j) => !used.has(j) && kk && pMatch(v, kk)); if (k < 0) return false; used.add(k); return true; }); T.done = true; }
+function pTestView() {
+  const T = PS.test || (pNewTest(), PS.test); if (!T.tasks) return `<p class="sub">${tx('pNone')}</p>`;
+  const t0 = T.tasks[0]; const key = []; for (let n = 1; n <= 12; n++) { const a = PAST.ans[`${n}|${t0.l}|${t0.y}`]; if (a) key.push(`<li value="${n}">${a}</li>`); }
+  let head = `<p class="sub">${tx('pTestD')}</p><div class="row"><span class="stat">${PTYPES[t0.l][S.lang]} · ${t0.y}</span><span class="stat">${tx('maxPts')}: ${T.tasks.reduce((a, t) => a + itemPts(t.i), 0)}</span></div>`;
+  const cards = T.tasks.map((t, i) => `<div class="prob ${T.done ? (T.res[i] ? 'okp' : '') : ''}"><div class="pnum">${i + 1}</div><div class="pbody"><div class="pmeta"><b>${tx('pItem')} ${t.i}</b> · ${itemPts(t.i)} ${tx('ptsS')}</div><div class="ptext">${t.h}</div><div class="row"><input class="pin" data-pi="${i}" type="text" placeholder="${tx('pAnsPh')}" value="${String(T.vals[i] || '').replace(/"/g, '&quot;')}" ${T.done ? 'readonly' : ''}>${T.done ? (T.res[i] ? '<span class="mark ok">✓</span>' : '<span class="mark bad">?</span>') : ''}</div></div></div>`).join('');
+  let res = '';
+  if (T.done) { const sc = T.tasks.reduce((a, t, i) => a + (T.res[i] ? itemPts(t.i) : 0), 0); let g = EXAM_CFG.conv ? EXAM_CFG.conv[0][1] : ''; (EXAM_CFG.conv || []).forEach(([mn, gr]) => { if (sc >= mn) g = gr; }); res = `<div class="result"><div>${tx('pFound')}</div><div class="big">${T.res.filter(Boolean).length} / 12 · ${sc} ${tx('pts')}</div><div>${tx('grade')} (≈): ${g}</div><p class="sub">${tx('pFoundNote')}</p></div><details class="key" open><summary><b>🔑 ${tx('pOfficial')}</b></summary><ol class="pkey">${key.join('') || tx('pNoAns')}</ol></details>`; }
+  const ctl = T.done ? '' : `<div class="controls"><button class="btn" data-act="ptsubmit">${tx('pSubmit')}</button></div>`;
+  return head + res + cards + ctl + `<div class="controls past-noprint"><button class="btn alt" data-act="pnewtest">🎲 ${tx('pNewTest')}</button><button class="btn alt" data-act="ptpdf">🖨️ ${tx('pPdfThis')}</button></div>`;
+}
+/* ---- PDF pentru sarcini din examene ---- */
+const pPex = (t, num, pts) => `<div class="pex"><div class="pn">${num}.</div><div class="pc"><div class="pt">${t.h}${pts ? ` <span class="ppt">(${pts} ${tx('ptsS')})</span>` : ''}</div><div class="psrc">${tx('pItem')} ${t.i} · ${t.l} ${t.y}</div></div></div>`;
+function buildPastSheets(sheets, o, foot, fieldsLine) {
+  const r = RNG(o.base); const title = `${tx('pastTitle')}`;
+  const variants = o.fixed ? [o.fixed] : Array.from({ length: o.count }, () => { const m = []; if (PS.item) { const pool = pPool(PS.item); r.shuffle(pool.slice()).slice(0, 12).forEach(t => m.push(t)); } else for (let n = 1; n <= 12; n++) { const pool = pPool(n); if (pool.length) m.push(r.pick(pool)); } return m; });
+  const keyTests = new Map();
+  variants.forEach((main, v) => {
+    main.forEach(t => keyTests.set(`${t.l}|${t.y}`, t));
+    const used = new Set(main); const rest = r.shuffle(PAST.tasks.filter(t => (!PS.item || t.i === PS.item) && (!PS.lab || t.l === PS.lab) && (!PS.year || t.y === PS.year) && !used.has(t))); let k = 0, num = main.length;
+    paginate(sheets, { cols: 2,
+      head: () => `<div class="shead"><div class="t1">${title}</div><div class="t2"><span>${o.fixed ? PTYPES[main[0].l][S.lang] + ' · ' + main[0].y : `${tx('variant')} ${v + 1} / ${variants.length}`}</span><span>${tx('code')}: <b>${o.base}</b></span></div>${scoreLine(main.reduce((a, t) => a + itemPts(t.i), 0))}${fieldsLine}</div>`,
+      foot: foot(`${tx('variant')} ${v + 1} · ${o.base}`),
+      main: main.map((t, i) => ({ html: pPex(t, i + 1, itemPts(t.i)) })),
+      extra: o.fixed ? null : () => { const t = rest[k++]; if (!t) return null; num++; return { html: pPex(t, num) }; }, rollback: () => { k--; num--; },
+      divider: `<div class="pdiv">${tx('extra')}</div>` });
+  });
+  if (o.key && S.teacher) {
+    const items = [...keyTests.values()];
+    paginate(sheets, { cols: 2, head: () => `<div class="shead"><div class="t1">${tx('answers')} · ${title}</div><div class="t2"><span>${tx('code')}: <b>${o.base}</b></span><span>${tx('teacher')}</span></div><p style="margin:2mm 0;font-size:.85em">${tx('pKeyNote')}</p></div>`,
+      foot: foot(`${tx('answers')} · ${o.base}`),
+      main: items.flatMap(t => { const rows = []; for (let n = 1; n <= 12; n++) { const a = PAST.ans[`${n}|${t.l}|${t.y}`]; if (a) rows.push(`<div class="krow"><b>${n}.</b> ${a}</div>`); } return [{ html: `<div class="pdiv" style="font-weight:700">${PTYPES[t.l][S.lang]} ${t.y}</div>` }, ...rows.map(h => ({ html: h }))]; }), extra: null });
+  }
+}
+
+/* ================= parola profesorului ================= */
+function askPassword() {
+  const m = $('#modal'); m.innerHTML = `<div class="modal"><div class="box"><h2 class="t" style="margin-top:0">👩‍🏫 ${tx('teacher')}</h2><label>${tx('password')}</label><input type="password" id="pw" autocomplete="off"><div class="fb" id="pwerr" style="min-height:1.4em"></div><div class="row"><button class="btn" id="pwok">${tx('enter')}</button><button class="btn alt" id="pwno">${tx('cancel')}</button></div></div></div>`;
+  const pw = $('#pw'); pw.focus();
+  const go = () => { if (sha256(SALT + pw.value) === window.PASS_HASH) { S.teacher = true; try { sessionStorage.setItem('mpf-teacher', '1'); } catch (e) {} m.innerHTML = ''; render(); } else { $('#pwerr').textContent = tx('wrongPass'); pw.value = ''; pw.focus(); } };
+  $('#pwok').onclick = go; $('#pwno').onclick = () => { m.innerHTML = ''; }; pw.onkeydown = e => { if (e.key === 'Enter') go(); if (e.key === 'Escape') m.innerHTML = ''; };
+}
+
+/* ================= PDF: construcția foilor ================= */
+function pexHTML(p, num, pts) {
+  const fields = p.fields.map(f => {
+    const lab = lbl(f.label);
+    if (f.type === 'choice') return `<span class="pch">${lab}:${f.opts.map(o => `<span class="pco">☐ ${o.h[S.lang]}</span>`).join('')}</span>`;
+    return `<span>${lab} <span class="bl"></span> ${unitOf(f.unit)}</span>`;
+  }).join('');
+  return `<div class="pex"><div class="pn">${num}.</div><div class="pc"><div class="pt">${p.text(S.lang)}${pts ? ` <span class="ppt">(${pts} ${tx('ptsS')})</span>` : ''}</div><div class="pbot"><div class="pa">${fields}</div>${p.fig ? `<div class="pf">${p.fig}</div>` : ''}</div></div></div>`;
+}
+const krowHTML = (p, num) => `<div class="krow"><b>${num}.</b> ${ansHTML(p)}</div>`;
+const overflowing = cols => cols.scrollWidth > cols.clientWidth + 2;
+/* împarte pe pagini: umple coloanele până la refuz */
+function paginate(container, o) {
+  // o: {cols, head(first)->html, foot(pageNo)->html, main:[{html}], extra: ()=>{html}|null, divider:html|null}
+  let pageNo = 0; const pages = [];
+  const newPage = () => { pageNo++; const pg = document.createElement('div'); pg.className = 'sheet'; pg.innerHTML = `${pageNo === 1 ? o.head() : ''}<div class="cols c${o.cols}"></div><div class="sfoot"></div>`; container.appendChild(pg); pages.push(pg); return pg; };
+  let pg = newPage(), cols = $('.cols', pg);
+  const addEl = html => { const d = document.createElement('div'); d.innerHTML = html; const el = d.firstElementChild; cols.appendChild(el); return el; };
+  for (let i = 0; i < o.main.length; i++) {
+    let el = addEl(o.main[i].html);
+    if (overflowing(cols)) { cols.removeChild(el); if (cols.children.length === 0) { cols.appendChild(el); continue; } pg = newPage(); cols = $('.cols', pg); el = addEl(o.main[i].html); }
+  }
+  if (o.extra) {
+    let divEl = o.divider ? addEl(o.divider) : null;
+    if (divEl && overflowing(cols)) { cols.removeChild(divEl); divEl = null; o.extra = null; }
+    let guard = 0;
+    while (o.extra && guard++ < 80) {
+      const nx = o.extra(); if (!nx) break; const el = addEl(nx.html);
+      if (overflowing(cols)) { cols.removeChild(el); o.rollback && o.rollback(); break; }
+    }
+    if (divEl && cols.lastElementChild === divEl) cols.removeChild(divEl);
+  }
+  pages.forEach(p => { const c = $('.cols', p); let g = 0; while (overflowing(c) && c.children.length > 1 && g++ < 5) { c.removeChild(c.lastElementChild); o.rollback && o.extra && o.rollback(); } });
+  pages.forEach((p, k) => { $('.sfoot', p).innerHTML = o.foot(k + 1, pages.length); });
+  return pages;
+}
+const scoreLine = max => `<div class="t2 scoreln"><span>${tx('maxPts')}: <b>${Math.round(max * 100) / 100} ${tx('pts')}</b></span><span>${tx('gotPts')}: ______ / ${Math.round(max * 100) / 100} &nbsp; ${tx('grade')}: ______</span></div>`;
+function buildSheets(sheets, o) {
+  sheets.innerHTML = '';
+  const foot = (extra) => (k, n) => `<span>© 2026 Godovaniuc Ana · CC BY-NC-SA 4.0</span><span>${extra} · ${tx('page')} ${k}/${n}</span>`;
+  const fieldsLine = `<div class="t3"><span>${tx('name')}:</span><span style="flex:.45">${tx('cls')}:</span><span style="flex:.45">${tx('date')}:</span></div><div class="t3"><span>${tx('inst')}:</span></div>`;
+  if (o.kind === 'past') { buildPastSheets(sheets, o, foot, fieldsLine); const z0 = Math.min(1, (window.innerWidth - 16) / (210 * 3.7795)); sheets.style.zoom = z0 < 1 ? z0 : ''; return; }
+  const keyData = [];
+  if (o.kind === 'item') {
+    const it = ITEMS[o.n];
+    for (let v = 1; v <= o.count; v++) {
+      const code = o.exact ? o.base : `${o.base}-${v}`, shown = o.base;
+      const main = makeSet(it, code, 't', 10);
+      const used = new Set(main.map(p => p.sig)); let k = 0; const placed = main.slice();
+      const extraGen = () => { const lvl = [1, 2, 2, 3][k % 4]; const p = makeProblem(it, RNG(`${code}|${o.n}|x|${k}`), lvl, used); k++; placed.push(p); return { html: pexHTML(p, placed.length), p }; };
+      paginate(sheets, {
+        cols: 2,
+        head: () => `<div class="shead"><div class="t1">${tx('sheetTitle')} · ${tx('itemWord')} ${o.n}: ${ITEM_TITLES[o.n][S.lang]}</div><div class="t2"><span>${tx('variant')} ${v} / ${o.count}</span><span>${tx('code')}: <b>${shown}</b></span></div>${o.exact ? scoreLine(10 * itemPts(o.n)) : ''}${fieldsLine}</div>`,
+        foot: foot(`${tx('variant')} ${v} · ${shown}`),
+        main: main.map((p, i) => ({ html: pexHTML(p, i + 1, o.exact ? itemPts(o.n) : 0) })),
+        extra: o.exact ? null : extraGen, rollback: () => { placed.pop(); },
+        divider: `<div class="pdiv">${tx('extra')}</div>`
+      });
+      keyData.push({ v, code: shown, probs: placed });
+    }
+  } else {
+    const code = o.base; const its = examItems();
+    const probs = its.map(n => makeProblem(ITEMS[n], RNG(`${code}|exam|${n}`), 'exam'));
+    paginate(sheets, {
+      cols: 1,
+      head: () => `<div class="shead"><div class="t1">${tx('examTitle')}</div><div class="t2"><span>⏱ ${EXAM_CFG.minutes} ${tx('min')}</span><span>${tx('code')}: <b>${code}</b></span></div>${scoreLine(its.reduce((a, n) => a + itemPts(n), 0))}${fieldsLine}</div>`,
+      foot: foot(`${tx('code')} ${code}`),
+      main: probs.map((p, i) => ({ html: pexHTML(p, its[i], itemPts(its[i])) })), extra: null
+    });
+    keyData.push({ v: 1, code, probs, nums: its });
+  }
+  if (o.key && S.teacher) {
+    keyData.forEach(kd => {
+      let i = 0; const nums = kd.nums;
+      paginate(sheets, {
+        cols: 2,
+        head: () => `<div class="shead"><div class="t1">${tx('answers')} · ${o.kind === 'item' ? `${tx('itemWord')} ${o.n} · ${tx('variant')} ${kd.v}` : tx('examTitle')}</div><div class="t2"><span>${tx('code')}: <b>${kd.code}</b></span><span>${tx('teacher')}</span></div></div>`,
+        foot: foot(`${tx('answers')} · ${kd.code}`),
+        main: kd.probs.map((p, j) => ({ html: krowHTML(p, nums ? nums[j] : j + 1) })), extra: null
+      });
+    });
+  }
+  const z = Math.min(1, (window.innerWidth - 16) / (210 * 3.7795)); sheets.style.zoom = z < 1 ? z : '';
+}
+function openPdf(o) {
+  const ov = $('#pdfOverlay'); ov.hidden = false; document.body.style.overflow = 'hidden';
+  ov.innerHTML = `<div class="pbar"><button class="btn" id="pPrint">${tx('print')}</button><button class="btn alt" id="pTab">${tx('newTab')}</button><button class="btn warn" id="pClose">${tx('close')}</button></div><div class="sheets" id="sheets"></div>`;
+  buildSheets($('#sheets'), o);
+  $('#pClose').onclick = () => { ov.hidden = true; ov.innerHTML = ''; document.body.style.overflow = ''; };
+  $('#pPrint').onclick = () => { const z = $('#sheets').style.zoom; document.body.classList.add('printing'); try { window.print(); } finally { setTimeout(() => document.body.classList.remove('printing'), 400); } };
+  $('#pTab').onclick = () => {
+    const w = window.open('', '_blank'); if (!w) { toast('Popup blocked'); return; }
+    const css = $$('style').map(s => s.textContent).join('\n');
+    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>PDF</title><style>${css}\nbody{background:#fff!important}.sheets{zoom:1!important;display:block!important;padding:0!important}.sheet{box-shadow:none!important;margin:0 auto 6mm!important;break-after:page}</style></head><body class="printing"><div class="sheets" id="sheets">${$('#sheets').innerHTML}</div><script>window.onload=function(){setTimeout(function(){window.print()},300)}<\/script></body></html>`);
+    w.document.close();
+  };
+}
+
+/* ================= evenimente ================= */
+document.addEventListener('input', e => {
+  const t = e.target; if (!t.matches || !t.matches('input.ans')) return;
+  const i = +t.dataset.p, j = +t.dataset.f; const vals = curVals(); (vals[i] = vals[i] || [])[j] = t.value;
+  t.classList.remove('ok', 'bad');
+  if (S.view === 'practice' && S.pr && !S.pr.final && S.pr.res) { S.pr.res = null; const mk = t.parentNode.querySelector('.mark'); if (mk) mk.remove(); }
+});
+document.addEventListener('input', e => { if (e.target && e.target.id === 'note') { try { localStorage.setItem('mpf-note-' + PAGE.n, e.target.value); } catch (x) {} } });
+document.addEventListener('focusin', e => { const t = e.target; if (t.matches && t.matches('input.ans')) S.lastInput = t; });
+document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.matches && e.target.matches('input.ans')) { if (PAGE.kind !== 'exam' && S.view === 'practice') { S.pr.final ? nextAndRender() : prCheck(); } } });
+document.addEventListener('mousedown', e => { if (e.target.closest && e.target.closest('[data-act="key"]')) e.preventDefault(); });
+function nextAndRender() { nextProblem(); S.say = null; render(); }
+document.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('[data-act]'); if (!b) return; const a = b.dataset.act;
+  if (a === 'pmode') { PS.mode = b.dataset.v; render(); }
+  else if (a === 'pnew') { pNewSingle(); render(); }
+  else if (a === 'pshow') { PS.show = !PS.show; render(); }
+  else if (a === 'pnewvar') { pNewVar(); render(); }
+  else if (a === 'pshowall') { PS.showAll = !PS.showAll; render(); }
+  else if (a === 'ppdf') { openPdf({ kind: 'past', count: PS.pcount, base: randCode(), key: S.teacher }); }
+  else if (a === 'ptpdf') { openPdf({ kind: 'past', fixed: PS.test.tasks, base: randCode(), key: S.teacher }); }
+  else if (a === 'pnewtest') { pNewTest(); render(); }
+  else if (a === 'ptsubmit') { pSubmitTest(); render(); window.scrollTo && window.scrollTo(0, 0); }
+  else if (a === 'theme') { applyTheme(curTheme() === 'dark' ? 'light' : 'dark'); render(); }
+  else if (a === 'lang') { S.lang = b.dataset.v; try { localStorage.setItem('mpf-lang', S.lang); } catch (x) {} render(); }
+  else if (a === 'teacher') { S.teacher ? (S.teacher = false, sessionStorage.removeItem('mpf-teacher'), render()) : askPassword(); }
+  else if (a === 'teacher-off') { S.teacher = false; try { sessionStorage.removeItem('mpf-teacher'); } catch (x) {} render(); }
+  else if (a === 'go') { S.view = b.dataset.v; if (S.view === 'practice' && !S.pr) { newPractice(0); say(MSG.hello); } render(); }
+  else if (a === 'check') prCheck();
+  else if (a === 'reveal') prReveal();
+  else if (a === 'side') { try { localStorage.setItem('mpf-side', localStorage.getItem('mpf-side') === 'c' ? 'o' : 'c'); } catch (x) {} render(); }
+  else if (a === 'menu') { S.drawer = !S.drawer; render(); }
+  else if (a === 'resetprog') { if (confirm(tx('resetQ'))) { try { localStorage.removeItem(PKEY); } catch (x) {} render(); } }
+  else if (a === 'tour') startTour();
+  else if (a === 'tournext') { tourI++; showTour(); }
+  else if (a === 'tourend') endTour();
+  else if (a === 'fs') { try { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); } catch (x) {} }
+  else if (a === 'hint') { S.pr.hint = true; say(MSG.hint); render(); }
+  else if (a === 'sol') { if (!S.pr.final) prReveal(true); else { S.pr.showSol = !S.pr.showSol; render(); } }
+  else if (a === 'next') nextAndRender();
+  else if (a === 'opt') { const vals = curVals(); const i = +b.dataset.p, j = +b.dataset.f; (vals[i] = vals[i] || [])[j] = b.dataset.v; render(); }
+  else if (a === 'key') {
+    const inp = S.lastInput && document.body.contains(S.lastInput) ? S.lastInput : $('input.ans:not([readonly])'); if (!inp) return;
+    inp.focus(); const k = b.dataset.k; let s = inp.selectionStart == null ? inp.value.length : inp.selectionStart, en = inp.selectionEnd == null ? s : inp.selectionEnd;
+    if (k === '⌫') { if (s === en && s > 0) s--; inp.value = inp.value.slice(0, s) + inp.value.slice(en); } else { inp.value = inp.value.slice(0, s) + k + inp.value.slice(en); s += k.length; }
+    inp.setSelectionRange(s, s); inp.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  else if (a === 'tstart') { newTest(); say(MSG.hello); render(); }
+  else if (a === 'tcheck') { const c = ($('#chkcode').value || '').trim().toUpperCase(); if (c) { S.check = { code: c, probs: makeSet(ITEM(), c, 't', 10) }; render(); } }
+  else if (a === 'echeck') { const c = ($('#chkcode').value || '').trim().toUpperCase(); if (c) { const its = examItems(); S.check = { code: c, nums: its, probs: its.map(n => makeProblem(ITEMS[n], RNG(`${c}|exam|${n}`), 'exam')) }; render(); } }
+  else if (a === 'chkclear') { S.check = null; render(); }
+  else if (a === 'tload') { const c = ($('#codein').value || '').trim(); if (c) { newTest(c); render(); } }
+  else if (a === 'tsubmit') tSubmit();
+  else if (a === 'tnew') { newTest(); S.say = null; render(); window.scrollTo(0, 0); }
+  else if (a === 'tpdfnew') { const c = (($('#codein') || {}).value || '').trim().toUpperCase() || randCode(); openPdf({ kind: 'item', n: PAGE.n, count: 1, base: c, exact: true, key: S.teacher }); }
+  else if (a === 'epdfnew') { const c = (($('#codein') || {}).value || '').trim().toUpperCase() || randCode(); openPdf({ kind: 'exam', base: c, key: S.teacher }); }
+  else if (a === 'tpdf') openPdf({ kind: 'item', n: PAGE.n, count: 1, base: S.test.code, exact: true, key: S.teacher });
+  else if (a === 'estart') { newExam(); startClock(); say(MSG.hello); render(); }
+  else if (a === 'eload') { const c = ($('#codein').value || '').trim(); if (c) { newExam(c); startClock(); render(); } }
+  else if (a === 'esubmit') eSubmit(false);
+  else if (a === 'enew') { S.exam = null; render(); }
+  else if (a === 'epdf') openPdf({ kind: 'exam', base: S.exam.code, key: S.teacher });
+  else if (a === 'pdfgo') openPdf({ kind: 'item', n: PAGE.n, count: +$('#pdfN').value, base: ($('#pdfCode').value || randCode()).toUpperCase(), key: S.teacher && $('#pdfKey').checked });
+});
+document.addEventListener('input', e => { const el = e.target; if (el.matches && el.matches('input.pin') && PS.test) { PS.test.vals[+el.dataset.pi] = el.value; } });
+document.addEventListener('change', e => { const el = e.target; if (!el.dataset || !el.dataset.pf) return; const v = el.value; if (el.id === 'pcount') { PS.pcount = +v; return; } if (el.id === 'pf-item') PS.item = +v; else if (el.id === 'pf-lab') PS.lab = v; else PS.year = v; PS.cur = null; PS.vset = null; render(); });
+document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { if (!localStorage.getItem(TOUR_KEY) && PAGE.kind === 'item') startTour(); } catch (e) {} }, 600); document.title = (PAGE.kind === 'teacher' ? 'Profesor' : PAGE.kind === 'admin' ? 'Administrare' : PAGE.kind === 'past' ? 'Din examenele anterioare' : PAGE.kind === 'exam' ? 'Test complet' : 'Item ' + PAGE.n) + ' · Mate pentru fiecare'; render(); });
+
+/* ================= Conturi: elev (cod de clasă), profesor (aprobat de admin), admin =================
+   Firebase Auth + Firestore (compat, încărcat din CDN). Dacă window.FIREBASE_CONFIG este null, nimic nu apare în pagină. */
+(function () {
+  const CFG = window.FIREBASE_CONFIG;
+  const ADMINS = (window.ADMIN_EMAILS || []).map(s => String(s).toLowerCase());
+  const MAXT = window.MAX_TEACHERS || 20;
+  const DOM = '@elev.mate9.invalid';
+  const C = { enabled: !!CFG, ready: false, error: false, user: null, role: null, tdoc: null, stu: null, classes: null, sel: null, students: null, open: null, teachers: null, busy: false, msg: '' };
+  const SL = {
+    ro: { join: 'Intră în clasă', code: 'Codul clasei', name: 'Nume și prenume', pin: 'PIN (4 cifre)', pinH: 'Alege 4 cifre și ține-le minte: le scrii când intri de pe alt dispozitiv.', enter: 'Intră', close: 'Închide', logout: 'Ieși', save: 'Salvează progresul', saved: 'Progres salvat ✓', unsaved: 'Ai progres nesalvat', clean: 'Progres salvat', cls: 'Clasa', err: 'Eroare', noCls: 'Nu există o clasă cu acest cod.', badPin: 'Numele e deja folosit în clasă sau PIN-ul e greșit.', fill: 'Completează codul, numele și PIN-ul (4 cifre).', loaded: 'Progresul tău a fost încărcat.', hello: 'Salut', notIn: 'Intră în clasa profesorului ca să-ți salvezi progresul.', teacherL: 'Cont profesor', private: 'Se salvează numele tău, clasa și progresul la exerciții; le văd tu și profesorul clasei.' },
+    ru: { join: 'Войти в класс', code: 'Код класса', name: 'Фамилия и имя', pin: 'PIN (4 цифры)', pinH: 'Выберите 4 цифры и запомните: они нужны при входе с другого устройства.', enter: 'Войти', close: 'Закрыть', logout: 'Выйти', save: 'Сохранить прогресс', saved: 'Прогресс сохранён ✓', unsaved: 'Есть несохранённый прогресс', clean: 'Прогресс сохранён', cls: 'Класс', err: 'Ошибка', noCls: 'Класса с таким кодом нет.', badPin: 'Имя в классе уже занято или неверный PIN.', fill: 'Введите код, имя и PIN (4 цифры).', loaded: 'Ваш прогресс загружен.', hello: 'Привет', notIn: 'Войдите в класс учителя, чтобы сохранять прогресс.', teacherL: 'Кабинет учителя', private: 'Сохраняются имя, класс и прогресс; их видите вы и учитель класса.' },
+    en: { join: 'Join class', code: 'Class code', name: 'Full name', pin: 'PIN (4 digits)', pinH: 'Pick 4 digits and remember them: you type them when you sign in from another device.', enter: 'Enter', close: 'Close', logout: 'Sign out', save: 'Save progress', saved: 'Progress saved ✓', unsaved: 'You have unsaved progress', clean: 'Progress saved', cls: 'Class', err: 'Error', noCls: 'No class with this code.', badPin: 'That name is already used in the class, or the PIN is wrong.', fill: 'Enter the code, your name and a 4-digit PIN.', loaded: 'Your progress was loaded.', hello: 'Hi', notIn: "Join your teacher's class to save your progress.", teacherL: 'Teacher account', private: 'Your name, class and progress are saved; only you and the class teacher can see them.' }
+  };
+  const lang = () => { try { return window.__getLang(); } catch (e) { return 'ro'; } };
+  const t = k => (SL[lang()] || SL.ro)[k];
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const $ = s => document.querySelector(s);
+  const val = id => (($('#' + id) || {}).value || '').trim();
+  const rerender = () => { try { window.__rerender && window.__rerender(); } catch (e) {} };
+  const toast = m => { try { window.__toast && window.__toast(m); } catch (e) {} };
+  const slug = s => String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9а-яё]+/g, '-').replace(/^-+|-+$/g, '');
+  const asciiSlug = s => slug(s).replace(/[^a-z0-9-]/g, c => 'x' + c.charCodeAt(0).toString(16));
+  const P = () => window.__prog;
+  let fb = null;
+  const loadScript = src => new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+
+  async function init() {
+    if (!C.enabled) return;
+    try {
+      const B = 'https://www.gstatic.com/firebasejs/10.12.2/';
+      await loadScript(B + 'firebase-app-compat.js');
+      await Promise.all([loadScript(B + 'firebase-auth-compat.js'), loadScript(B + 'firebase-firestore-compat.js')]);
+      firebase.initializeApp(CFG); fb = { auth: firebase.auth(), db: firebase.firestore() };
+      fb.auth.onAuthStateChanged(onUser);
+    } catch (e) { C.error = true; C.ready = true; rerender(); }
+  }
+  async function onUser(u) {
+    C.user = u; C.role = null; C.tdoc = null; C.stu = null; C.classes = null; C.sel = null; C.students = null; C.teachers = null;
+    if (u) {
+      const em = (u.email || '').toLowerCase();
+      if (em.endsWith(DOM)) {
+        C.role = 'student';
+        const code = em.split('.')[0].toUpperCase();
+        try { const d = await fb.db.doc(`classes/${code}/students/${u.uid}`).get(); C.stu = Object.assign({ code }, d.exists ? d.data() : {}); if (d.exists) mergeCloud(d.data()); } catch (e) { C.stu = { code }; }
+      } else {
+        try { const d = await fb.db.doc('teachers/' + u.uid).get(); C.tdoc = d.exists ? d.data() : null; } catch (e) {}
+        C.role = ADMINS.includes(em) ? 'admin' : 'teacher';
+      }
+    }
+    C.ready = true; rerender();
+  }
+  function mergeCloud(d) {
+    const p = P(); if (!p || !d || !d.progress) return;
+    const loc = p.load(); const cl = d.progress;
+    Object.keys(cl).forEach(k => {
+      if (k === 'exam') loc.exam = Math.max(loc.exam || 0, cl.exam || 0);
+      else { const a = loc[k] || { solved: 0, best: 0 }; const b = cl[k] || {}; loc[k] = { solved: Math.max(a.solved || 0, b.solved || 0), best: Math.max(a.best || 0, b.best || 0) }; }
+    });
+    p.save(loc);
+    if (Array.isArray(d.hist)) { try { const h = JSON.parse(localStorage.getItem('mpf-hist') || '[]'); const seen = new Set(h.map(x => x.ts)); d.hist.forEach(x => { if (!seen.has(x.ts)) h.push(x); }); h.sort((a, b) => a.ts - b.ts); localStorage.setItem('mpf-hist', JSON.stringify(h.slice(-40))); } catch (e) {} }
+    toast(t('loaded'));
+  }
+  const dirty = () => { try { return localStorage.getItem('mpf-dirty') === '1'; } catch (e) { return false; } };
+  C.save = async function () {
+    if (C.role !== 'student' || !fb) return;
+    const p = P(); const prog = p.load(); let hist = []; try { hist = JSON.parse(localStorage.getItem('mpf-hist') || '[]'); } catch (e) {}
+    try {
+      await fb.db.doc(`classes/${C.stu.code}/students/${C.user.uid}`).set({ name: C.stu.name || '', code: C.stu.code, progress: prog, hist: hist.slice(-40), saved: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
+      try { localStorage.removeItem('mpf-dirty'); } catch (e) {}
+      toast(t('saved')); rerender();
+    } catch (e) { toast(t('err') + ': ' + (e.code || e.message)); }
+  };
+  /* ---------- elev: intrare în clasă ---------- */
+  async function joinClass() {
+    const code = val('clCode').toUpperCase().replace(/\s/g, ''), name = val('clName').replace(/\s+/g, ' '), pin = val('clPin');
+    const err = m => { const x = $('#clErr'); if (x) x.textContent = m; };
+    if (code.length < 4 || !name || !/^\d{4}$/.test(pin)) { err(t('fill')); return; }
+    const sl = asciiSlug(name); if (!sl) { err(t('fill')); return; }
+    try {
+      const cd = await fb.db.doc('classes/' + code).get(); if (!cd.exists) { err(t('noCls')); return; }
+      const email = `${code.toLowerCase()}.${sl}${DOM}`, pass = `${pin}-${code}`;
+      try { await fb.auth.signInWithEmailAndPassword(email, pass); }
+      catch (e) {
+        try {
+          const cr = await fb.auth.createUserWithEmailAndPassword(email, pass);
+          await fb.db.doc(`classes/${code}/students/${cr.user.uid}`).set({ name, code, joined: firebase.firestore.FieldValue.serverTimestamp() });
+          C.stu = { code, name };
+        } catch (e2) { err((e2.code || '').includes('email-already') ? t('badPin') : t('err') + ': ' + (e2.code || e2.message)); return; }
+      }
+      const m = $('#modal'); if (m) m.innerHTML = '';
+      C.role = 'student'; C.stu = Object.assign({}, C.stu, { code }); if (!C.stu.name) C.stu.name = name; rerender();
+    } catch (e) { err(t('err') + ': ' + (e.code || e.message)); }
+  }
+  function openJoin() {
+    const m = $('#modal'); if (!m) return;
+    m.innerHTML = `<div class="modal"><div class="box"><h2 class="t" style="margin-top:0">${t('join')}</h2>
+      <label>${t('code')}<input id="clCode" type="text" maxlength="10" autocomplete="off" style="text-transform:uppercase"></label>
+      <label>${t('name')}<input id="clName" type="text" autocomplete="name"></label>
+      <label>${t('pin')}<input id="clPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off"></label><p class="sub" style="font-size:.82rem;margin:-4px 0 8px">${t('pinH')}</p>
+      <div class="fb" id="clErr" style="min-height:1.3em;color:#e11d48"></div><p class="sub" style="font-size:.78rem">${t('private')}</p>
+      <div class="row"><button class="btn" data-cl="join">${t('enter')}</button><button class="btn alt" data-cl="close">${t('close')}</button></div></div></div>`;
+  }
+  C.sideHTML = function () {
+    if (!C.enabled || C.error) return '';
+    if (C.role === 'student') {
+      const d = dirty();
+      return `<div class="scloud"><div class="who"><b>${esc((C.stu && C.stu.name) || '')}</b><small>${t('cls')} ${esc(C.stu && C.stu.code)}</small></div>
+      <button class="sbtn ${d ? 'dirty' : ''}" data-cl="save" title="${d ? t('unsaved') : t('clean')}">${t('save')}${d ? '<i></i>' : ''}</button><button class="slnk" data-cl="logout">${t('logout')}</button></div>`;
+    }
+    if (C.role === 'teacher' || C.role === 'admin') return `<div class="scloud"><a class="sbtn" href="${C.role === 'admin' ? 'admin.html' : 'profesor.html'}" target="_top">${t('teacherL')}</a><button class="slnk" data-cl="logout">${t('logout')}</button></div>`;
+    return `<div class="scloud"><button class="sbtn" data-cl="open">${t('join')}</button><a class="slnk" href="profesor.html" target="_top">${t('teacherL')}</a></div>`;
+  };
+  /* ---------- profesor ---------- */
+  const fdate = ts => { try { const d = ts && ts.toDate ? ts.toDate() : null; return d ? d.toLocaleString('ro-RO', { dateStyle: 'short', timeStyle: 'short' }) : '—'; } catch (e) { return '—'; } };
+  const genCode = () => { const A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; let s = ''; for (let i = 0; i < 6; i++) s += A[Math.floor(Math.random() * A.length)]; return s; };
+  const inp = (id, ph, type) => `<input id="${id}" type="${type || 'text'}" placeholder="${ph}" style="width:100%;padding:9px 11px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;margin:4px 0 8px">`;
+  function authForm() {
+    return `<div class="pan2"><h3>Autentificare profesor</h3><p class="sub">Contul nou trebuie aprobat de administrator înainte de a crea clase.</p>
+      ${inp('tEmail', 'E-mail', 'email')}${inp('tPass', 'Parolă (minim 6 caractere)', 'password')}
+      <div class="row"><button class="btn" data-cl="tin">Intră</button><button class="btn alt" data-cl="tgoogle">Cu Google</button></div>
+      <details style="margin-top:10px"><summary><b>Cont nou</b></summary>${inp('tName', 'Nume și prenume')}${inp('tSchool', 'Școala / instituția')}
+      <p class="sub" style="font-size:.85rem">Completează și e-mailul și parola de mai sus, apoi apasă:</p><button class="btn" data-cl="treg">Creează cont</button></details>
+      <div class="fb" id="tErr" style="color:#e11d48;min-height:1.3em;margin-top:8px"></div></div>`;
+  }
+  function profileForm() {
+    return `<div class="pan2"><h3>Completează profilul</h3><p class="sub">După trimitere, contul așteaptă aprobarea administratorului.</p>${inp('tName', 'Nume și prenume')}${inp('tSchool', 'Școala / instituția')}<button class="btn" data-cl="tprofile">Trimite</button><div class="fb" id="tErr" style="color:#e11d48"></div></div>`;
+  }
+  const cellColor = p => `background:hsl(${Math.round(p * 130)} 70% ${Math.round(94 - p * 8)}%)`;
+  function dashboard() {
+    const cl = C.classes;
+    let h = `<div class="pan2"><h3>Clasele mele</h3><div class="row"><input id="newCls" type="text" placeholder="Numele clasei (ex. 9B — matematică)" style="flex:1;min-width:200px;padding:9px 11px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit"><button class="btn" data-cl="newclass">Creează clasă</button></div>`;
+    if (cl === null) h += '<p class="sub">Se încarcă…</p>';
+    else if (!cl.length) h += '<p class="sub">Nu ai încă nicio clasă. Creează una și dă elevilor codul.</p>';
+    else h += `<div class="chips">${cl.map(c => `<button class="cbtn ${C.sel === c.id ? 'on' : ''}" data-cl="selclass" data-id="${c.id}"><b>${esc(c.name)}</b><small>cod ${c.id}</small></button>`).join('')}</div>`;
+    h += '</div>';
+    if (C.sel) {
+      const c = (cl || []).find(x => x.id === C.sel) || {};
+      h += `<div class="pan2"><h3>${esc(c.name || '')}</h3><div class="codebox">Codul clasei: <b>${C.sel}</b> <button class="btn alt" data-cl="copycode">Copiază</button></div>
+      <p class="sub">Elevii intră cu acest cod, numele lor și un PIN de 4 cifre (din meniul din stânga, „Intră în clasă”).</p>
+      <div class="row"><button class="btn alt" data-cl="reload">Reîncarcă</button><button class="btn alt" data-cl="csv">Descarcă CSV</button><button class="btn alt" data-cl="delclass">Șterge clasa</button></div>`;
+      if (C.students === null) h += '<p class="sub">Se încarcă elevii…</p>';
+      else if (!C.students.length) h += '<p class="sub">Niciun elev nu a intrat încă în clasă.</p>';
+      else {
+        const cols = Array.from({ length: 12 }, (_, i) => i + 1);
+        h += `<div style="overflow:auto"><table class="restab"><thead><tr><th>Elev</th>${cols.map(n => `<th>${n}</th>`).join('')}<th>Examen</th><th>Salvat</th></tr></thead><tbody>`;
+        C.students.forEach(s => {
+          const pr = s.progress || {};
+          h += `<tr><td><button class="lk" data-cl="openstu" data-id="${s.id}">${esc(s.name)}</button></td>${cols.map(n => { const it = pr[n]; if (!it) return '<td class="e">·</td>'; const p = Math.min(1, (it.solved || 0) / 50); return `<td style="${cellColor(p)}" title="rezolvate ${it.solved || 0}/50${it.best ? ' · cel mai bun test ' + Math.round(it.best * 100) + '%' : ''}"><b>${Math.min(it.solved || 0, 50)}</b>${it.best ? `<small>${Math.round(it.best * 100)}%</small>` : ''}</td>`; }).join('')}<td>${pr.exam ? Math.round(pr.exam * 100) + '%' : '·'}</td><td class="d">${fdate(s.saved)}</td></tr>`;
+          if (C.open === s.id) {
+            const hist = (s.hist || []).slice().reverse().slice(0, 12);
+            h += `<tr class="hist"><td colspan="15"><b>Ultimele teste:</b> ${hist.length ? hist.map(x => `${x.k === 'exam' ? 'Test complet' : 'Item ' + x.item}: <b>${x.score}</b>/${x.max} <small>(${new Date(x.ts).toLocaleDateString('ro-RO')})</small>`).join(' · ') : 'încă niciun test'} <button class="lk" data-cl="delstu" data-id="${s.id}">Elimină elevul din clasă</button></td></tr>`;
+          }
+        });
+        h += `</tbody></table></div><p class="sub" style="font-size:.8rem">În celule: numărul de exerciții rezolvate corect din prima încercare (din 50) și, dedesubt, cel mai bun test la acel item.</p>`;
+      }
+      h += '</div>';
+    }
+    return h;
+  }
+  C.teacherHTML = function () {
+    if (!C.enabled) return '<p class="sub">Conturile nu sunt configurate pe acest site.</p>';
+    if (C.error) return '<p class="sub">Nu s-a putut încărca serviciul de conturi. Verifică conexiunea la internet.</p>';
+    if (!C.ready) return '<p class="sub">Se încarcă…</p>';
+    if (!C.user) return authForm();
+    if (C.role === 'student') return '<p class="sub">Ești conectat ca elev. Ieși din cont ca să intri ca profesor.</p><button class="btn alt" data-cl="logout">Ieși</button>';
+    if (!C.tdoc) return profileForm();
+    if (C.tdoc.status === 'pending') return `<div class="pan2"><h3>Cont în așteptare</h3><p class="sub">Contul ${esc(C.user.email)} așteaptă aprobarea administratorului. Revino după ce ești anunțat.</p><button class="btn alt" data-cl="reloadauth">Verifică din nou</button> <button class="btn alt" data-cl="logout">Ieși</button></div>`;
+    if (C.tdoc.status === 'rejected') return `<div class="pan2"><h3>Cont respins</h3><p class="sub">Contul nu a fost aprobat.</p><button class="btn alt" data-cl="logout">Ieși</button></div>`;
+    if (C.classes === null && !C.busy) setTimeout(loadClasses, 0);
+    return `<div class="row"><b>${esc(C.tdoc.name)}</b> · ${esc(C.tdoc.school || '')} <button class="btn alt" data-cl="logout">Ieși</button></div>` + dashboard();
+  };
+  C.adminHTML = function () {
+    if (!C.enabled) return '<p class="sub">Conturile nu sunt configurate pe acest site.</p>';
+    if (!C.ready) return '<p class="sub">Se încarcă…</p>';
+    if (!C.user) return authForm();
+    if (C.role !== 'admin') return '<p class="sub">Acest cont nu are drept de administrator.</p><button class="btn alt" data-cl="logout">Ieși</button>';
+    if (C.teachers === null && !C.busy) setTimeout(loadTeachers, 0);
+    const ts = C.teachers || [];
+    const ok = ts.filter(x => x.status === 'approved').length;
+    const row = x => `<tr><td>${esc(x.name)}<br><small>${esc(x.email)}</small></td><td>${esc(x.school || '')}</td><td class="st ${x.status}">${{ pending: 'în așteptare', approved: 'aprobat', rejected: 'respins' }[x.status]}</td><td>${x.status !== 'approved' ? `<button class="btn" data-cl="approve" data-id="${x.id}">Aprobă</button>` : ''} ${x.status !== 'rejected' ? `<button class="btn alt" data-cl="reject" data-id="${x.id}">Respinge</button>` : ''} <button class="lk" data-cl="delteacher" data-id="${x.id}">Elimină</button></td></tr>`;
+    return `<div class="pan2"><h3>Profesori: ${ok} / ${MAXT} aprobați</h3><div class="row"><button class="btn alt" data-cl="reloadt">Reîncarcă</button><button class="btn alt" data-cl="logout">Ieși</button></div>
+      ${ts.length ? `<div style="overflow:auto"><table class="restab"><thead><tr><th>Profesor</th><th>Școala</th><th>Stare</th><th></th></tr></thead><tbody>${ts.slice().sort((a, b) => (a.status === 'pending' ? 0 : 1) - (b.status === 'pending' ? 0 : 1)).map(row).join('')}</tbody></table></div>` : '<p class="sub">Niciun profesor înregistrat încă.</p>'}</div>`;
+  };
+  async function loadClasses() {
+    if (!fb || !C.user || C.busy) return; C.busy = true;
+    try { const q = await fb.db.collection('classes').where('teacherUid', '==', C.user.uid).get(); C.classes = q.docs.map(d => Object.assign({ id: d.id }, d.data())); } catch (e) { C.classes = []; }
+    C.busy = false; rerender();
+  }
+  async function loadStudents() {
+    if (!C.sel) return; C.students = null; rerender();
+    try { const q = await fb.db.collection(`classes/${C.sel}/students`).get(); C.students = q.docs.map(d => Object.assign({ id: d.id }, d.data())).sort((a, b) => String(a.name).localeCompare(String(b.name), 'ro')); } catch (e) { C.students = []; }
+    rerender();
+  }
+  async function loadTeachers() {
+    if (!fb || C.busy) return; C.busy = true;
+    try { const q = await fb.db.collection('teachers').get(); C.teachers = q.docs.map(d => Object.assign({ id: d.id }, d.data())); } catch (e) { C.teachers = []; }
+    C.busy = false; rerender();
+  }
+  const tErr = m => { const x = $('#tErr'); if (x) x.textContent = m; };
+  const eMsg = e => { const c = (e && e.code) || ''; if (/wrong-password|invalid-credential|user-not-found|invalid-email/.test(c)) return 'E-mail sau parolă greșită.'; if (/email-already/.test(c)) return 'Există deja un cont cu acest e-mail.'; if (/weak/.test(c)) return 'Parola este prea scurtă (minim 6 caractere).'; if (/popup/.test(c)) return 'Fereastra Google a fost închisă sau blocată.'; return 'Eroare: ' + (c || (e && e.message)); };
+  /* ---------- evenimente ---------- */
+  document.addEventListener('click', async e => {
+    const b = e.target.closest && e.target.closest('[data-cl]'); if (!b || !fb && !['open', 'close'].includes(b.dataset.cl)) return;
+    const a = b.dataset.cl, id = b.dataset.id;
+    try {
+      if (a === 'open') openJoin();
+      else if (a === 'close') { const m = $('#modal'); if (m) m.innerHTML = ''; }
+      else if (a === 'join') await joinClass();
+      else if (a === 'save') await C.save();
+      else if (a === 'logout') { await fb.auth.signOut(); }
+      else if (a === 'tin') await fb.auth.signInWithEmailAndPassword(val('tEmail'), val('tPass'));
+      else if (a === 'tgoogle') await fb.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+      else if (a === 'treg') {
+        const name = val('tName'), school = val('tSchool'); if (!name) { tErr('Completează numele (în „Cont nou”).'); return; }
+        const cr = await fb.auth.createUserWithEmailAndPassword(val('tEmail'), val('tPass'));
+        await fb.db.doc('teachers/' + cr.user.uid).set({ email: cr.user.email, name, school, status: 'pending', created: firebase.firestore.FieldValue.serverTimestamp() });
+        C.tdoc = { email: cr.user.email, name, school, status: 'pending' }; rerender();
+      }
+      else if (a === 'tprofile') {
+        const name = val('tName'), school = val('tSchool'); if (!name) { tErr('Completează numele.'); return; }
+        await fb.db.doc('teachers/' + C.user.uid).set({ email: C.user.email, name, school, status: 'pending', created: firebase.firestore.FieldValue.serverTimestamp() });
+        C.tdoc = { email: C.user.email, name, school, status: 'pending' }; rerender();
+      }
+      else if (a === 'reloadauth') { const d = await fb.db.doc('teachers/' + C.user.uid).get(); C.tdoc = d.exists ? d.data() : null; rerender(); }
+      else if (a === 'newclass') {
+        const name = val('newCls'); if (!name) return;
+        let code = ''; for (let i = 0; i < 8; i++) { const c = genCode(); const d = await fb.db.doc('classes/' + c).get(); if (!d.exists) { code = c; break; } }
+        if (!code) return;
+        await fb.db.doc('classes/' + code).set({ teacherUid: C.user.uid, name, created: firebase.firestore.FieldValue.serverTimestamp() });
+        C.classes = null; C.sel = code; C.students = []; rerender();
+      }
+      else if (a === 'selclass') { C.sel = id; C.open = null; await loadStudents(); }
+      else if (a === 'reload') await loadStudents();
+      else if (a === 'copycode') { try { await navigator.clipboard.writeText(C.sel); toast('Cod copiat'); } catch (x) { toast(C.sel); } }
+      else if (a === 'openstu') { C.open = C.open === id ? null : id; rerender(); }
+      else if (a === 'delstu') { if (confirm('Elimini elevul din clasă? Progresul lui salvat se șterge.')) { await fb.db.doc(`classes/${C.sel}/students/${id}`).delete(); C.open = null; await loadStudents(); } }
+      else if (a === 'delclass') { if (confirm('Ștergi clasa? Elevii nu vor mai putea salva progresul în ea.')) { for (const s of (C.students || [])) await fb.db.doc(`classes/${C.sel}/students/${s.id}`).delete(); await fb.db.doc('classes/' + C.sel).delete(); C.classes = null; C.sel = null; C.students = null; rerender(); } }
+      else if (a === 'csv') {
+        const q = x => '"' + String(x == null ? '' : x).replace(/"/g, '""') + '"';
+        const hd = ['Elev'].concat(Array.from({ length: 12 }, (_, i) => 'Item ' + (i + 1) + ' rezolvate'), Array.from({ length: 12 }, (_, i) => 'Item ' + (i + 1) + ' test %'), ['Examen %', 'Salvat']);
+        const rows = (C.students || []).map(s => { const p = s.progress || {}; const n = i => p[i] || {}; return [s.name].concat(Array.from({ length: 12 }, (_, i) => n(i + 1).solved || 0), Array.from({ length: 12 }, (_, i) => n(i + 1).best ? Math.round(n(i + 1).best * 100) : ''), [p.exam ? Math.round(p.exam * 100) : '', fdate(s.saved)]); });
+        const csv = '﻿' + [hd].concat(rows).map(r => r.map(q).join(',')).join('\n');
+        const l = document.createElement('a'); l.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' })); l.download = 'clasa-' + C.sel + '.csv'; l.click();
+      }
+      else if (a === 'reloadt') { C.teachers = null; await loadTeachers(); }
+      else if (a === 'approve') {
+        const ok = (C.teachers || []).filter(x => x.status === 'approved').length;
+        if (ok >= MAXT && !confirm(`Ai deja ${ok} profesori aprobați (limita pilotului: ${MAXT}). Aprobi totuși?`)) return;
+        await fb.db.doc('teachers/' + id).update({ status: 'approved' }); C.teachers = null; await loadTeachers();
+      }
+      else if (a === 'reject') { await fb.db.doc('teachers/' + id).update({ status: 'rejected' }); C.teachers = null; await loadTeachers(); }
+      else if (a === 'delteacher') { if (confirm('Elimini contul de profesor din listă?')) { await fb.db.doc('teachers/' + id).delete(); C.teachers = null; await loadTeachers(); } }
+    } catch (x) { if (['tin', 'tgoogle', 'treg', 'tprofile'].includes(a)) tErr(eMsg(x)); else toast(eMsg(x)); }
+  });
+  window.CLD = C; init();
+})();
+
+</script><!-- MateTutor – Widget plutitor cu buton rotund -->
+<!-- Lipește acest bloc înainte de </body> în pagina ta -->
+
+<div id="matetutor-launcher">
+  <button id="matetutor-btn" onclick="toggleMateTutor()" aria-label="Deschide MateTutor">
+    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28">
+      <circle cx="24" cy="24" r="22" fill="white" fill-opacity="0.15"/>
+      <path d="M24 8L6 18l18 10 18-10L24 8z" fill="white"/>
+      <path d="M12 22v10c0 2 5.4 6 12 6s12-4 12-6V22" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <path d="M42 18v12" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
+      <circle cx="42" cy="31" r="1.5" fill="white"/>
+      <text x="24" y="29" text-anchor="middle" font-size="10" font-weight="700" fill="#2563EB" font-family="Inter, system-ui, sans-serif">π</text>
+    </svg>
+  </button>
+  <div id="matetutor-window" style="display:none;">
+    <div id="matetutor-header">
+      <span>MateTutor</span>
+      <button onclick="toggleMateTutor()" aria-label="Închide" style="background:none;border:0;color:#fff;font-size:20px;cursor:pointer;padding:4px 8px;line-height:1;">&times;</button>
+    </div>
+    <div id="matetutor-frame-wrap">
+      <div id="matetutor-loading">Se încarcă MateTutor…</div>
+      <iframe
+        id="matetutor-iframe"
+        data-src="https://matemate-tutor-bubdib.abacusai.app"
+        title="MateTutor – Tutore AI de Matematică"
+        allow="clipboard-write"
+        onload="var l=document.getElementById('matetutor-loading'); if(l) l.style.display='none';">
+      </iframe>
+    </div>
+  </div>
+</div>
+
+<style>
+  #matetutor-launcher {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 99999;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  #matetutor-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #2563EB;
+    border: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(37, 99, 235, 0.4);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  #matetutor-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 12px 32px rgba(37, 99, 235, 0.5);
+  }
+  #matetutor-window {
+    position: fixed;
+    bottom: 96px;
+    right: 24px;
+    width: 400px;
+    max-width: calc(100vw - 32px);
+    height: 640px;
+    max-height: calc(100vh - 120px);
+    background: #fff;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+  }
+  #matetutor-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #2563EB;
+    color: #fff;
+    padding: 10px 16px;
+    font-weight: 600;
+    font-size: 15px;
+    flex: 0 0 auto;
+  }
+  #matetutor-frame-wrap {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+  #matetutor-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-size: 14px;
+    background: #f8fafc;
+  }
+  #matetutor-iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+  @media (max-width: 480px) {
+    #matetutor-window {
+      width: calc(100vw - 24px);
+      right: 12px;
+      height: calc(100vh - 110px);
+    }
+  }
+</style>
+
+<script>
+  function toggleMateTutor() {
+    var w = document.getElementById('matetutor-window');
+    var b = document.getElementById('matetutor-btn');
+    var f = document.getElementById('matetutor-iframe');
+    var isOpen = (w.style.display !== 'none' && w.style.display !== '');
+    if (isOpen) {
+      w.style.display = 'none';
+      b.style.display = 'flex';
+    } else {
+      // Încarcă iframe-ul abia la prima deschidere (evită fereastra goală)
+      if (!f.src) { f.src = f.getAttribute('data-src'); }
+      w.style.display = 'flex';
+      b.style.display = 'none';
+    }
+  }
+</script>
+
+<style>@media print{#matetutor-launcher{display:none!important}}body:has(#pdfOverlay:not([hidden])) #matetutor-launcher{display:none!important}</style>
+</body></html>
