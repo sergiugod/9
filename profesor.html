@@ -442,13 +442,14 @@ header.top{display:none}
 .lk{background:none;border:0;color:var(--brand);text-decoration:underline;cursor:pointer;font:inherit;padding:0}
 .st.pending{color:#b45309}.st.approved{color:#15803d}.st.rejected{color:#b91c1c}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.acc2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
 </style></head>
 <body><div id="app"></div><div id="modal"></div><div id="pdfOverlay" hidden></div>
 <script>
 /* ← LINK: adresa paginii principale (start). Ex.: window.HOME_URL = 'https://sites.google.com/view/.../acasa'; */
 window.HOME_URL = null;
 window.FIREBASE_CONFIG = {"apiKey": "AIzaSyDc8EFgskgfGtj2g6f3jjBGFqJ477jIJq4", "authDomain": "mate-examen-9.firebaseapp.com", "projectId": "mate-examen-9", "storageBucket": "mate-examen-9.firebasestorage.app", "messagingSenderId": "422474938799", "appId": "1:422474938799:web:9d9519cf6b2df4490fd75a"};window.ADMIN_EMAILS = ["godser@gmail.com"];window.MAX_TEACHERS = 20;
-window.__PAGE={"kind": "teacher"};window.__EXAM_CFG={"minutes": 120, "points": {"1": 3, "2": 2, "3": 3, "4": 5, "5": 2, "6": 4, "7": 6, "8": 5, "9": 5, "10": 5, "11": 6, "12": 4}, "conv": [[0, 1], [1, 2], [5, 3], [9, 4], [13, 5], [21, 6], [29, 7], [37, 8], [45, 9], [48, 10]]};window.PASS_HASH="e43419c3ebbc4de79f6e66673cc564d67135e7c07b6d2e88a099d376859354de";</script>
+window.__PAGE={"kind": "teacher"};window.__EXAM_CFG={"minutes": 120, "points": {"1": 3, "2": 2, "3": 3, "4": 5, "5": 2, "6": 4, "7": 6, "8": 5, "9": 5, "10": 5, "11": 6, "12": 4}, "conv": [[0, 1], [1, 2], [5, 3], [9, 4], [13, 5], [21, 6], [29, 7], [37, 8], [45, 9], [48, 10]]};window.PASS_HASH=null;</script>
 <script>
 'use strict';
 /* ================= CORE: RNG, fracții, parser matematic, verificare ================= */
@@ -881,7 +882,7 @@ const PAGE = window.__PAGE || { kind: 'item', n: 1 };
 try { const l = localStorage.getItem('mpf-lang'); if (LANGS.includes(l)) S.lang = l; } catch (e) {}
 try { const v = new URLSearchParams(location.search).get('view'); if (['theory', 'example'].includes(v) && PAGE.kind === 'item') S.view = v; } catch (e) {}
 try { const q = new URLSearchParams(location.search).get('lang'); if (LANGS.includes(q)) S.lang = q; } catch (e) {}
-try { if (sessionStorage.getItem('mpf-teacher') === '1') S.teacher = true; } catch (e) {}
+try { if (!window.FIREBASE_CONFIG && sessionStorage.getItem('mpf-teacher') === '1') S.teacher = true; } catch (e) {}
 const tx = k => TX[k][S.lang];
 const lbl = o => (o && typeof o === 'object' ? o[S.lang] : o);
 const unitOf = u => (u ? (typeof u === 'object' ? u[S.lang] : u) : '');
@@ -1024,7 +1025,7 @@ function asideHTML() {
 }
 function shell(inner) {
   const isItem = PAGE.kind === 'item';
-  const title = PAGE.kind === 'admin' ? 'Administrare' : PAGE.kind === 'teacher' ? 'Profesor' : PAGE.kind === 'past' ? tx('pastTitle') : PAGE.kind === 'exam' ? tx('examTitle') : `${tx('itemWord')} ${PAGE.n} · ${ITEM_TITLES[PAGE.n][S.lang]}`;
+  const title = PAGE.kind === 'account' ? 'Cont' : PAGE.kind === 'admin' ? 'Administrare' : PAGE.kind === 'teacher' ? 'Profesor' : PAGE.kind === 'past' ? tx('pastTitle') : PAGE.kind === 'exam' ? tx('examTitle') : `${tx('itemWord')} ${PAGE.n} · ${ITEM_TITLES[PAGE.n][S.lang]}`;
   let sub = isItem ? (S.view && S.view !== 'home' && TX[S.view] ? tx(S.view) : tx('pickSec')) : tx('appSub');
   if (isItem) { const it = progLoad()[PAGE.n]; if (it && (it.solved || it.best)) sub += ' · ' + [it.solved ? `${Math.min(it.solved, PROG_GOAL)}/${PROG_GOAL} ${tx('solvedN')}` : '', it.best ? `${tx('bestTest')}: ${Math.round(it.best * 10 * itemPts(PAGE.n) * 10) / 10} / ${10 * itemPts(PAGE.n)} ${tx('ptsS')}` : ''].filter(Boolean).join(' · '); }
   const nav = isItem ? `<div class="inav">${PAGE.n > 1 ? `<a href="${LINK_ITEM(PAGE.n - 1)}" target="_top" title="${tx('prevItem')}" aria-label="${tx('prevItem')}">${svgIc('arrowL')}</a>` : `<span class="dis">${svgIc('arrowL')}</span>`}${PAGE.n < 12 ? `<a href="${LINK_ITEM(PAGE.n + 1)}" target="_top" title="${tx('nextItem')}" aria-label="${tx('nextItem')}">${svgIc('arrowR')}</a>` : `<span class="dis">${svgIc('arrowR')}</span>`}</div>` : '';
@@ -1032,9 +1033,9 @@ function shell(inner) {
   return `<div class="app ${collapsed ? 'collapsed' : ''} ${S.drawer ? 'drawer' : ''}"><div class="sback" data-act="menu"></div>${sideHTML()}<div class="mainwrap"><div class="board">
   <header class="banner"><div class="btxt"><h1>${tx('bannerT')}</h1><p>${tx('bannerS')}</p></div>${bannerSvg()}
   <div class="tools"><button class="chip theme menub" data-act="menu" title="${tx('menu')}" aria-label="${tx('menu')}">${svgIc('list')}</button><span class="seg">${LANGS.map(l => `<button class="chip ${l === S.lang ? 'on' : ''}" data-act="lang" data-v="${l}">${l.toUpperCase()}</button>`).join('')}</span>
-  ${themeBtn()}<button class="chip theme" data-act="tour" title="${tx('tourBtn')}" aria-label="${tx('tourBtn')}">?</button><button class="chip theme" data-act="fs" title="${tx('fullscr')}" aria-label="${tx('fullscr')}">${svgIc('expand')}</button><button class="chip teach ${S.teacher ? 'on' : ''}" data-act="teacher">👩‍🏫 ${S.teacher ? tx('teacherOn') : tx('teacher')}</button></div></header>
+  ${themeBtn()}<button class="chip theme" data-act="tour" title="${tx('tourBtn')}" aria-label="${tx('tourBtn')}">?</button><button class="chip theme" data-act="fs" title="${tx('fullscr')}" aria-label="${tx('fullscr')}">${svgIc('expand')}</button>${window.FIREBASE_CONFIG ? '' : `<button class="chip teach ${S.teacher ? 'on' : ''}" data-act="teacher">👩‍🏫 ${S.teacher ? tx('teacherOn') : tx('teacher')}</button>`}</div></header>
   <div class="icard"><span class="ilogo">∑</span><div class="ititle"><b>${title}</b><small>${sub}</small></div>${nav}</div>
-  <div class="pcols"><main class="paper">${S.teacher ? `<div class="teachbar">${tx('teacherBar')} <button class="btn alt" style="padding:2px 10px;font-size:.8rem" data-act="teacher-off">${tx('leave')}</button></div>` : ''}${inner}</main></div>
+  <div class="pcols"><main class="paper">${S.teacher ? `<div class="teachbar">${tx('teacherBar')}${window.FIREBASE_CONFIG ? '' : ` <button class="btn alt" style="padding:2px 10px;font-size:.8rem" data-act="teacher-off">${tx('leave')}</button>`}</div>` : ''}${inner}</main></div>
   <footer class="lic">© 2026 Godovaniuc Ana · ${tx('lic')} <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></footer></div></div></div>`;
 }
 function tabsHTML() {
@@ -1231,6 +1232,7 @@ function pdfView() {
 
 /* ================= randare ================= */
 function viewHTML() {
+  if (PAGE.kind === 'account') return `<a class="tab" href="${window.HOME_URL || 'index.html'}" target="_top">🏠 ${tx('home')}</a><h1 class="t">Intră / Înregistrare</h1><div id="cloudbox">${window.CLD ? CLD.accountHTML() : ''}</div>`;
   if (PAGE.kind === 'teacher' || PAGE.kind === 'admin') return `<a class="tab" href="${window.HOME_URL || 'index.html'}" target="_top">🏠 ${tx('home')}</a><h1 class="t">${PAGE.kind === 'admin' ? 'Administrare profesori' : 'Spațiul profesorului'}</h1><div id="cloudbox">${window.CLD ? (PAGE.kind === 'admin' ? CLD.adminHTML() : CLD.teacherHTML()) : ''}</div>`;
   if (PAGE.kind === 'exam') return examView();
   if (S.view === 'theory' && ITEMS[PAGE.n] && ITEMS[PAGE.n].theory) return theoryView();
@@ -1249,6 +1251,7 @@ function render() {
   S.mood = '';
 }
 window.__rerender = () => render();
+window.__setTeacher = v => { S.teacher = !!v; if (!v) { try { sessionStorage.removeItem('mpf-teacher'); } catch (e) {} } };
 window.__getLang = () => S.lang;
 window.__prog = { load: progLoad, save: progSave };
 window.__toast = m => toast(m);
@@ -1466,7 +1469,7 @@ document.addEventListener('click', e => {
   else if (a === 'ptsubmit') { pSubmitTest(); render(); window.scrollTo && window.scrollTo(0, 0); }
   else if (a === 'theme') { applyTheme(curTheme() === 'dark' ? 'light' : 'dark'); render(); }
   else if (a === 'lang') { S.lang = b.dataset.v; try { localStorage.setItem('mpf-lang', S.lang); } catch (x) {} render(); }
-  else if (a === 'teacher') { S.teacher ? (S.teacher = false, sessionStorage.removeItem('mpf-teacher'), render()) : askPassword(); }
+  else if (a === 'teacher') { if (S.teacher) { S.teacher = false; try { sessionStorage.removeItem('mpf-teacher'); } catch (x) {} render(); } else if (window.FIREBASE_CONFIG && window.CLD) { if (CLD.isTeacher()) { S.teacher = true; try { sessionStorage.setItem('mpf-teacher', '1'); } catch (x) {} render(); } else CLD.openTeacherLogin(); } else askPassword(); }
   else if (a === 'teacher-off') { S.teacher = false; try { sessionStorage.removeItem('mpf-teacher'); } catch (x) {} render(); }
   else if (a === 'go') { S.view = b.dataset.v; if (S.view === 'practice' && !S.pr) { newPractice(0); say(MSG.hello); } render(); }
   else if (a === 'check') prCheck();
@@ -1507,7 +1510,7 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('input', e => { const el = e.target; if (el.matches && el.matches('input.pin') && PS.test) { PS.test.vals[+el.dataset.pi] = el.value; } });
 document.addEventListener('change', e => { const el = e.target; if (!el.dataset || !el.dataset.pf) return; const v = el.value; if (el.id === 'pcount') { PS.pcount = +v; return; } if (el.id === 'pf-item') PS.item = +v; else if (el.id === 'pf-lab') PS.lab = v; else PS.year = v; PS.cur = null; PS.vset = null; render(); });
-document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { if (!localStorage.getItem(TOUR_KEY) && PAGE.kind === 'item') startTour(); } catch (e) {} }, 600); document.title = (PAGE.kind === 'teacher' ? 'Profesor' : PAGE.kind === 'admin' ? 'Administrare' : PAGE.kind === 'past' ? 'Din examenele anterioare' : PAGE.kind === 'exam' ? 'Test complet' : 'Item ' + PAGE.n) + ' · Mate pentru fiecare'; render(); });
+document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { if (!localStorage.getItem(TOUR_KEY) && PAGE.kind === 'item') startTour(); } catch (e) {} }, 600); document.title = (PAGE.kind === 'account' ? 'Cont' : PAGE.kind === 'teacher' ? 'Profesor' : PAGE.kind === 'admin' ? 'Administrare' : PAGE.kind === 'past' ? 'Din examenele anterioare' : PAGE.kind === 'exam' ? 'Test complet' : 'Item ' + PAGE.n) + ' · Mate pentru fiecare'; render(); });
 
 /* ================= Conturi: elev (cod de clasă), profesor (aprobat de admin), admin =================
    Firebase Auth + Firestore (compat, încărcat din CDN). Dacă window.FIREBASE_CONFIG este null, nimic nu apare în pagină. */
@@ -1518,9 +1521,9 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
   const DOM = '@elev.mate9.invalid';
   const C = { enabled: !!CFG, ready: false, error: false, user: null, role: null, tdoc: null, stu: null, classes: null, sel: null, students: null, open: null, teachers: null, busy: false, msg: '' };
   const SL = {
-    ro: { join: 'Intră în clasă', code: 'Codul clasei', name: 'Nume și prenume', pin: 'PIN (4 cifre)', pinH: 'Alege 4 cifre și ține-le minte: le scrii când intri de pe alt dispozitiv.', enter: 'Intră', close: 'Închide', logout: 'Ieși', save: 'Salvează progresul', saved: 'Progres salvat ✓', unsaved: 'Ai progres nesalvat', clean: 'Progres salvat', cls: 'Clasa', err: 'Eroare', noCls: 'Nu există o clasă cu acest cod.', badPin: 'Numele e deja folosit în clasă sau PIN-ul e greșit.', fill: 'Completează codul, numele și PIN-ul (4 cifre).', loaded: 'Progresul tău a fost încărcat.', hello: 'Salut', notIn: 'Intră în clasa profesorului ca să-ți salvezi progresul.', teacherL: 'Cont profesor', private: 'Se salvează numele tău, clasa și progresul la exerciții; le văd tu și profesorul clasei.' },
-    ru: { join: 'Войти в класс', code: 'Код класса', name: 'Фамилия и имя', pin: 'PIN (4 цифры)', pinH: 'Выберите 4 цифры и запомните: они нужны при входе с другого устройства.', enter: 'Войти', close: 'Закрыть', logout: 'Выйти', save: 'Сохранить прогресс', saved: 'Прогресс сохранён ✓', unsaved: 'Есть несохранённый прогресс', clean: 'Прогресс сохранён', cls: 'Класс', err: 'Ошибка', noCls: 'Класса с таким кодом нет.', badPin: 'Имя в классе уже занято или неверный PIN.', fill: 'Введите код, имя и PIN (4 цифры).', loaded: 'Ваш прогресс загружен.', hello: 'Привет', notIn: 'Войдите в класс учителя, чтобы сохранять прогресс.', teacherL: 'Кабинет учителя', private: 'Сохраняются имя, класс и прогресс; их видите вы и учитель класса.' },
-    en: { join: 'Join class', code: 'Class code', name: 'Full name', pin: 'PIN (4 digits)', pinH: 'Pick 4 digits and remember them: you type them when you sign in from another device.', enter: 'Enter', close: 'Close', logout: 'Sign out', save: 'Save progress', saved: 'Progress saved ✓', unsaved: 'You have unsaved progress', clean: 'Progress saved', cls: 'Class', err: 'Error', noCls: 'No class with this code.', badPin: 'That name is already used in the class, or the PIN is wrong.', fill: 'Enter the code, your name and a 4-digit PIN.', loaded: 'Your progress was loaded.', hello: 'Hi', notIn: "Join your teacher's class to save your progress.", teacherL: 'Teacher account', private: 'Your name, class and progress are saved; only you and the class teacher can see them.' }
+    ro: { join: 'Intră ca elev', newAcc: 'Nu am găsit un cont cu acest nume și PIN. Dacă intri prima dată, scrie codul clasei primit de la profesor; altfel verifică numele și PIN-ul.', pinH: 'Alege 4 cifre și ține-le minte: nume + PIN te recunosc de pe orice dispozitiv.', _x: '', code: 'Codul clasei', name: 'Nume și prenume', pin: 'PIN (4 cifre)', enter: 'Intră', close: 'Închide', logout: 'Ieși', save: 'Salvează progresul', saved: 'Progres salvat ✓', unsaved: 'Ai progres nesalvat', clean: 'Progres salvat', cls: 'Clasa', err: 'Eroare', noCls: 'Nu există o clasă cu acest cod.', badPin: 'Numele și PIN-ul nu se potrivesc.', fill: 'Completează numele și PIN-ul (4 cifre).', loaded: 'Progresul tău a fost încărcat.', hello: 'Salut', notIn: 'Intră în clasa profesorului ca să-ți salvezi progresul.', teacherL: 'Cont profesor', private: 'Se salvează numele tău, clasa și progresul la exerciții; le văd tu și profesorul clasei.' },
+    ru: { join: 'Войти как ученик', newAcc: 'Аккаунт с таким именем и PIN не найден. Если входите впервые, введите код класса от учителя; иначе проверьте имя и PIN.', code: 'Код класса', name: 'Фамилия и имя', pin: 'PIN (4 цифры)', pinH: 'Выберите 4 цифры и запомните: имя + PIN работают на любом устройстве.', enter: 'Войти', close: 'Закрыть', logout: 'Выйти', save: 'Сохранить прогресс', saved: 'Прогресс сохранён ✓', unsaved: 'Есть несохранённый прогресс', clean: 'Прогресс сохранён', cls: 'Класс', err: 'Ошибка', noCls: 'Класса с таким кодом нет.', badPin: 'Имя и PIN не совпадают.', fill: 'Введите имя и PIN (4 цифры).', loaded: 'Ваш прогресс загружен.', hello: 'Привет', notIn: 'Войдите в класс учителя, чтобы сохранять прогресс.', teacherL: 'Кабинет учителя', private: 'Сохраняются имя, класс и прогресс; их видите вы и учитель класса.' },
+    en: { join: 'Student sign-in', newAcc: 'No account found for this name and PIN. If this is your first time, enter the class code from your teacher; otherwise check your name and PIN.', code: 'Class code', name: 'Full name', pin: 'PIN (4 digits)', pinH: 'Pick 4 digits and remember them: name + PIN work on any device.', enter: 'Enter', close: 'Close', logout: 'Sign out', save: 'Save progress', saved: 'Progress saved ✓', unsaved: 'You have unsaved progress', clean: 'Progress saved', cls: 'Class', err: 'Error', noCls: 'No class with this code.', badPin: 'Name and PIN do not match.', fill: 'Enter your name and a 4-digit PIN.', loaded: 'Your progress was loaded.', hello: 'Hi', notIn: "Join your teacher's class to save your progress.", teacherL: 'Teacher account', private: 'Your name, class and progress are saved; only you and the class teacher can see them.' }
   };
   const lang = () => { try { return window.__getLang(); } catch (e) { return 'ro'; } };
   const t = k => (SL[lang()] || SL.ro)[k];
@@ -1551,15 +1554,29 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
       const em = (u.email || '').toLowerCase();
       if (em.endsWith(DOM)) {
         C.role = 'student';
-        const code = em.split('.')[0].toUpperCase();
-        try { const d = await fb.db.doc(`classes/${code}/students/${u.uid}`).get(); C.stu = Object.assign({ code }, d.exists ? d.data() : {}); if (d.exists) mergeCloud(d.data()); } catch (e) { C.stu = { code }; }
+        let code = '', nm = ''; try { const r = await fb.db.doc('students/' + u.uid).get(); if (r.exists) { code = r.data().code || ''; nm = r.data().name || ''; } } catch (e) {}
+        if (!nm && C.pendingName) nm = C.pendingName;
+        if (!code && C.pendingCode) code = C.pendingCode;
+        if (!code) { C.stu = { code: '' }; C.ready = true; rerender(); return; }
+        try { const d = await fb.db.doc(`classes/${code}/students/${u.uid}`).get(); C.stu = Object.assign({ code, name: nm }, d.exists ? d.data() : {}); if (d.exists) mergeCloud(d.data()); } catch (e) { C.stu = { code, name: nm }; }
       } else {
         try { const d = await fb.db.doc('teachers/' + u.uid).get(); C.tdoc = d.exists ? d.data() : null; } catch (e) {}
         C.role = ADMINS.includes(em) ? 'admin' : 'teacher';
       }
     }
-    C.ready = true; rerender();
+    C.ready = true; applyTeacherMode(); rerender();
   }
+  C.isTeacher = () => !!C.user && (C.role === 'admin' || (C.role === 'teacher' && C.tdoc && C.tdoc.status === 'approved'));
+  function applyTeacherMode() {
+    try { window.__setTeacher && window.__setTeacher(C.isTeacher()); } catch (e) {}
+  }
+  C.openTeacherLogin = function () {
+    const m = $('#modal'); if (!m) return; C.wantTeacher = true;
+    m.innerHTML = `<div class="modal"><div class="box"><h2 class="t" style="margin-top:0">👩‍🏫 ${t('teacherL')}</h2><p class="sub" style="font-size:.85rem">Intră cu contul de profesor aprobat. Răspunsurile și cheile PDF sunt vizibile doar profesorilor.</p>
+      <label>E-mail<input id="tEmail" type="text" autocomplete="username"></label><label>Parolă<input id="tPass" type="password" autocomplete="current-password"></label>
+      <div class="fb" id="tmErr" style="min-height:1.3em;color:#e11d48"></div>
+      <div class="row"><button class="btn" data-cl="tmin">Intră</button><button class="btn alt" data-cl="tmgoogle">Cu Google</button><button class="btn alt" data-cl="close">${t('close')}</button></div><p class="sub" style="font-size:.8rem">Nu ai cont? <a href="profesor.html" target="_top">Creează cont de profesor</a>.</p></div></div>`;
+  };
   function mergeCloud(d) {
     const p = P(); if (!p || !d || !d.progress) return;
     const loc = p.load(); const cl = d.progress;
@@ -1574,6 +1591,7 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
   const dirty = () => { try { return localStorage.getItem('mpf-dirty') === '1'; } catch (e) { return false; } };
   C.save = async function () {
     if (C.role !== 'student' || !fb) return;
+    if (!C.stu || !C.stu.code) { toast(t('notIn')); return; }
     const p = P(); const prog = p.load(); let hist = []; try { hist = JSON.parse(localStorage.getItem('mpf-hist') || '[]'); } catch (e) {}
     try {
       await fb.db.doc(`classes/${C.stu.code}/students/${C.user.uid}`).set({ name: C.stu.name || '', code: C.stu.code, progress: prog, hist: hist.slice(-40), saved: firebase.firestore.FieldValue.serverTimestamp() }, { merge: true });
@@ -1583,34 +1601,46 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
   };
   /* ---------- elev: intrare în clasă ---------- */
   async function joinClass() {
-    const code = val('clCode').toUpperCase().replace(/\s/g, ''), name = val('clName').replace(/\s+/g, ' '), pin = val('clPin');
+    const name = val('clName').replace(/\s+/g, ' '), pin = val('clPin'), code = val('clCode').toUpperCase().replace(/\s/g, '');
     const err = m => { const x = $('#clErr'); if (x) x.textContent = m; };
-    if (code.length < 4 || !name || !/^\d{4}$/.test(pin)) { err(t('fill')); return; }
-    const sl = asciiSlug(name); if (!sl) { err(t('fill')); return; }
+    const sl = asciiSlug(name); if (!sl || !/^\d{4}$/.test(pin)) { err(t('fill')); return; }
+    const email = `${sl}.${pin}${DOM}`, pass = `mate9-${pin}-${sl}`;
     try {
-      const cd = await fb.db.doc('classes/' + code).get(); if (!cd.exists) { err(t('noCls')); return; }
-      const email = `${code.toLowerCase()}.${sl}${DOM}`, pass = `${pin}-${code}`;
       try { await fb.auth.signInWithEmailAndPassword(email, pass); }
       catch (e) {
-        try {
-          const cr = await fb.auth.createUserWithEmailAndPassword(email, pass);
-          await fb.db.doc(`classes/${code}/students/${cr.user.uid}`).set({ name, code, joined: firebase.firestore.FieldValue.serverTimestamp() });
-          C.stu = { code, name };
-        } catch (e2) { err((e2.code || '').includes('email-already') ? t('badPin') : t('err') + ': ' + (e2.code || e2.message)); return; }
+        const row = $('#clCodeRow');
+        if (row && row.hidden) { row.hidden = false; err(t('newAcc')); const c = $('#clCode'); if (c) c.focus(); return; }
+        if (code.length < 4) { err(t('newAcc')); return; }
+        const cd = await fb.db.doc('classes/' + code).get(); if (!cd.exists) { err(t('noCls')); return; }
+        C.pendingCode = code; C.pendingName = name;
+        const cr = await fb.auth.createUserWithEmailAndPassword(email, pass);
+        await fb.db.doc('students/' + cr.user.uid).set({ code, name });
+        await fb.db.doc(`classes/${code}/students/${cr.user.uid}`).set({ name, code, joined: firebase.firestore.FieldValue.serverTimestamp() });
+        C.stu = { code, name }; C.pendingCode = null;
       }
       const m = $('#modal'); if (m) m.innerHTML = '';
-      C.role = 'student'; C.stu = Object.assign({}, C.stu, { code }); if (!C.stu.name) C.stu.name = name; rerender();
-    } catch (e) { err(t('err') + ': ' + (e.code || e.message)); }
+      C.role = 'student'; if (C.stu && C.stu.code) { if (!C.stu.name) C.stu.name = name; } rerender();
+    } catch (e) { err((e.code || '').includes('email-already') ? t('badPin') : t('err') + ': ' + (e.code || e.message)); }
   }
+  const joinForm = () => `<label>${t('name')}<input id="clName" type="text" autocomplete="name"></label>
+      <label>${t('pin')}<input id="clPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off"></label><p class="sub" style="font-size:.82rem;margin:-4px 0 8px">${t('pinH')}</p>
+      <label id="clCodeRow" hidden>${t('code')}<input id="clCode" type="text" maxlength="10" autocomplete="off" style="text-transform:uppercase"></label>
+      <div class="fb" id="clErr" style="min-height:1.3em;color:#e11d48"></div><p class="sub" style="font-size:.78rem">${t('private')}</p>`;
   function openJoin() {
     const m = $('#modal'); if (!m) return;
-    m.innerHTML = `<div class="modal"><div class="box"><h2 class="t" style="margin-top:0">${t('join')}</h2>
-      <label>${t('code')}<input id="clCode" type="text" maxlength="10" autocomplete="off" style="text-transform:uppercase"></label>
-      <label>${t('name')}<input id="clName" type="text" autocomplete="name"></label>
-      <label>${t('pin')}<input id="clPin" type="password" inputmode="numeric" maxlength="4" autocomplete="off"></label><p class="sub" style="font-size:.82rem;margin:-4px 0 8px">${t('pinH')}</p>
-      <div class="fb" id="clErr" style="min-height:1.3em;color:#e11d48"></div><p class="sub" style="font-size:.78rem">${t('private')}</p>
+    m.innerHTML = `<div class="modal"><div class="box"><h2 class="t" style="margin-top:0">${t('join')}</h2>${joinForm()}
       <div class="row"><button class="btn" data-cl="join">${t('enter')}</button><button class="btn alt" data-cl="close">${t('close')}</button></div></div></div>`;
   }
+  C.accountHTML = function () {
+    if (!C.enabled) return '<p class="sub">Conturile nu sunt configurate pe acest site.</p>';
+    if (C.error) return '<p class="sub">Nu s-a putut încărca serviciul de conturi. Verifică conexiunea la internet.</p>';
+    if (!C.ready) return '<p class="sub">Se încarcă…</p>';
+    const go = `<div class="row"><a class="btn" href="item-01.html" target="_top">Continuă la itemi</a><button class="btn alt" data-cl="logout">${t('logout')}</button></div>`;
+    if (C.role === 'student') return `<div class="pan2"><h3>${t('hello')}, ${esc((C.stu && C.stu.name) || '')}!</h3><p class="sub">${C.stu && C.stu.code ? t('cls') + ' ' + esc(C.stu.code) : t('notIn')}</p>${go}</div>`;
+    if (C.role === 'teacher' || C.role === 'admin') return `<div class="pan2"><h3>${t('teacherL')}</h3><p class="sub">${esc(C.user.email || '')}</p><div class="row"><a class="btn" href="${C.role === 'admin' ? 'admin.html' : 'profesor.html'}" target="_top">${C.role === 'admin' ? 'Administrare' : 'Clasele mele'}</a><a class="btn alt" href="item-01.html" target="_top">Itemi</a><button class="btn alt" data-cl="logout">${t('logout')}</button></div></div>`;
+    return `<div class="acc2"><div class="pan2"><h3>Elev</h3><p class="sub">Prima dată: nume, PIN și codul clasei primit de la profesor. Data viitoare: doar nume și PIN.</p>${joinForm()}<div class="row"><button class="btn" data-cl="join">${t('enter')} / Înregistrare</button></div></div>
+      <div class="pan2"><h3>Profesor</h3><p class="sub">Cu e-mail și parolă sau cu Google. Conturile noi sunt aprobate de administrator, apoi creezi clase și dai elevilor codul.</p><a class="btn" href="profesor.html" target="_top">Intră / Înregistrare profesor</a></div></div>`;
+  };
   C.sideHTML = function () {
     if (!C.enabled || C.error) return '';
     if (C.role === 'student') {
@@ -1711,14 +1741,22 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
   const eMsg = e => { const c = (e && e.code) || ''; if (/wrong-password|invalid-credential|user-not-found|invalid-email/.test(c)) return 'E-mail sau parolă greșită.'; if (/email-already/.test(c)) return 'Există deja un cont cu acest e-mail.'; if (/weak/.test(c)) return 'Parola este prea scurtă (minim 6 caractere).'; if (/popup/.test(c)) return 'Fereastra Google a fost închisă sau blocată.'; return 'Eroare: ' + (c || (e && e.message)); };
   /* ---------- evenimente ---------- */
   document.addEventListener('click', async e => {
-    const b = e.target.closest && e.target.closest('[data-cl]'); if (!b || !fb && !['open', 'close'].includes(b.dataset.cl)) return;
+    const b = e.target.closest && e.target.closest('[data-cl]'); if (!b || !fb && !['open', 'close', 'tmopen'].includes(b.dataset.cl)) return;
     const a = b.dataset.cl, id = b.dataset.id;
     try {
       if (a === 'open') openJoin();
       else if (a === 'close') { const m = $('#modal'); if (m) m.innerHTML = ''; }
       else if (a === 'join') await joinClass();
       else if (a === 'save') await C.save();
-      else if (a === 'logout') { await fb.auth.signOut(); }
+      else if (a === 'logout') { try { sessionStorage.removeItem('mpf-teacher'); window.__setTeacher && window.__setTeacher(false); } catch (x) {} await fb.auth.signOut(); }
+      else if (a === 'tmin' || a === 'tmgoogle') {
+        C.wantTeacher = true;
+        try { if (a === 'tmin') await fb.auth.signInWithEmailAndPassword(val('tEmail'), val('tPass')); else await fb.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
+        catch (x) { const e2 = $('#tmErr'); if (e2) e2.textContent = eMsg(x); return; }
+        await new Promise(r => setTimeout(r, 600));
+        if (C.isTeacher()) { const m = $('#modal'); if (m) m.innerHTML = ''; } else if (C.role === 'student') { const e2 = $('#tmErr'); if (e2) e2.textContent = 'Acesta este un cont de elev.'; }
+        else { const e2 = $('#tmErr'); if (e2) e2.textContent = 'Contul nu este (încă) aprobat de administrator.'; }
+      }
       else if (a === 'tin') await fb.auth.signInWithEmailAndPassword(val('tEmail'), val('tPass'));
       else if (a === 'tgoogle') await fb.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
       else if (a === 'treg') {
