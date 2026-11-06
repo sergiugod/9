@@ -446,6 +446,18 @@ header.top{display:none}
 .acc2 label,.pan2 label{display:block;font-weight:700;font-size:.9rem;margin-top:8px}
 .acc2 input[type=text],.acc2 input[type=password]{display:block;width:100%;padding:9px 11px;font:inherit;font-size:1rem;border:1px solid var(--line);border-radius:10px;margin:4px 0 10px;background:var(--bg);color:var(--ink)}
 a.btn{text-decoration:none;display:inline-block}
+
+/* ===== v6: bară laterală și banner în stilul primei pagini (gradient albastru→turcoaz, ușor mai închis) ===== */
+:root{--g1:#2f5bff;--g2:#12b5a6}
+:root[data-theme=dark]{--g1:#5470f0;--g2:#1fb3a6}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--g1:#5470f0;--g2:#1fb3a6}}
+.side{background:linear-gradient(165deg,color-mix(in srgb,var(--g1) 74%,#000),color-mix(in srgb,var(--g2) 66%,#000))}
+.banner{background:linear-gradient(135deg,color-mix(in srgb,var(--g1) 88%,#000),color-mix(in srgb,var(--g2) 84%,#000));box-shadow:0 12px 30px color-mix(in srgb,var(--g1) 35%,transparent)}
+:root[data-theme=dark] .side{background:linear-gradient(165deg,color-mix(in srgb,var(--g1) 52%,#000),color-mix(in srgb,var(--g2) 46%,#000))}
+:root[data-theme=dark] .banner{background:linear-gradient(135deg,color-mix(in srgb,var(--g1) 62%,#000),color-mix(in srgb,var(--g2) 56%,#000));box-shadow:0 12px 30px rgba(0,0,0,.45)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .side{background:linear-gradient(165deg,color-mix(in srgb,var(--g1) 52%,#000),color-mix(in srgb,var(--g2) 46%,#000))}
+:root:not([data-theme=light]) .banner{background:linear-gradient(135deg,color-mix(in srgb,var(--g1) 62%,#000),color-mix(in srgb,var(--g2) 56%,#000));box-shadow:0 12px 30px rgba(0,0,0,.45)}}
+.sl.it.on i{background:#fff;color:#0b2d78;box-shadow:none}
 </style></head>
 <body><div id="app"></div><div id="modal"></div><div id="pdfOverlay" hidden></div>
 <script>
@@ -1859,10 +1871,11 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
     if (!C.ready) return '<p class="sub">Se încarcă…</p>';
     const go = `<div class="row"><a class="btn" href="item-01.html" target="_top">Continuă la itemi</a><button class="btn alt" data-cl="logout">${t('logout')}</button></div>`;
     if (C.role === 'student') return `<div class="pan2"><h3>${t('hello')}, ${esc((C.stu && C.stu.name) || '')}!</h3><p class="sub">${C.stu && C.stu.code ? t('cls') + ' ' + esc(C.stu.code) : t('notIn')}</p>${go}</div>`;
-    if (C.role === 'teacher' || C.role === 'admin') return `<div class="pan2"><h3>${t('teacherL')}</h3><p class="sub">${esc(C.user.email || '')}</p><div class="row"><a class="btn" href="${C.role === 'admin' ? 'admin.html' : 'profesor.html'}" target="_top">${C.role === 'admin' ? 'Administrare' : 'Clasele mele'}</a><a class="btn alt" href="item-01.html" target="_top">Itemi</a><button class="btn alt" data-cl="logout">${t('logout')}</button></div></div>`;
+    if (C.role === 'teacher' || C.role === 'admin') return `<div class="pan2"><h3>${esc(whoName())}</h3><p class="sub">${C.role === 'admin' ? 'Administrator' : t('teacherL')} · ${esc(C.user.email || '')}</p><div class="row"><a class="btn" href="${C.role === 'admin' ? 'admin.html' : 'profesor.html'}" target="_top">${C.role === 'admin' ? 'Administrare' : 'Clasele mele'}</a><a class="btn alt" href="item-01.html" target="_top">Itemi</a><button class="btn alt" data-cl="logout">${t('logout')}</button></div></div>`;
     return `<div class="acc2"><div class="pan2"><h3>Elev</h3><p class="sub">Prima dată: nume, PIN și codul clasei primit de la profesor. Data viitoare: doar nume și PIN.</p>${joinForm()}<div class="row"><button class="btn" data-cl="join">${t('enter')} / Înregistrare</button></div></div>
       <div class="pan2"><h3>Profesor</h3><p class="sub">Cu e-mail și parolă sau cu Google. Conturile noi sunt aprobate de administrator, apoi creezi clase și dai elevilor codul.</p><a class="btn" href="profesor.html" target="_top">Intră / Înregistrare profesor</a></div></div>`;
   };
+  const whoName = () => (C.tdoc && C.tdoc.name) || (C.user && (C.user.displayName || C.user.email)) || '';
   C.sideHTML = function () {
     if (!C.enabled || C.error) return '';
     if (C.role === 'student') {
@@ -1870,7 +1883,7 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
       return `<div class="scloud"><div class="who"><b>${esc((C.stu && C.stu.name) || '')}</b><small>${t('cls')} ${esc(C.stu && C.stu.code)}</small></div>
       <button class="sbtn ${d ? 'dirty' : ''}" data-cl="save" title="${d ? t('unsaved') : t('clean')}">${t('save')}${d ? '<i></i>' : ''}</button><button class="slnk" data-cl="logout">${t('logout')}</button></div>`;
     }
-    if (C.role === 'teacher' || C.role === 'admin') return `<div class="scloud"><a class="sbtn" href="${C.role === 'admin' ? 'admin.html' : 'profesor.html'}" target="_top">${t('teacherL')}</a><button class="slnk" data-cl="logout">${t('logout')}</button></div>`;
+    if (C.role === 'teacher' || C.role === 'admin') return `<div class="scloud"><div class="who"><b>${esc(whoName())}</b><small>${C.role === 'admin' ? 'Administrator' : esc((C.tdoc && C.tdoc.school) || t('teacherL'))}</small></div><a class="sbtn" href="${C.role === 'admin' ? 'admin.html' : 'profesor.html'}" target="_top">${C.role === 'admin' ? 'Administrare' : t('teacherL')}</a>${C.role === 'admin' ? '<a class="slnk" href="profesor.html" target="_top">Clasele mele</a>' : ''}<button class="slnk" data-cl="logout">${t('logout')}</button></div>`;
     return `<div class="scloud"><button class="sbtn" data-cl="open">${t('join')}</button><a class="slnk" href="profesor.html" target="_top">${t('teacherL')}</a></div>`;
   };
   /* ---------- profesor ---------- */
