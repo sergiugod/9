@@ -458,6 +458,8 @@ a.btn{text-decoration:none;display:inline-block}
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]) .side{background:linear-gradient(165deg,color-mix(in srgb,var(--g1) 52%,#000),color-mix(in srgb,var(--g2) 46%,#000))}
 :root:not([data-theme=light]) .banner{background:linear-gradient(135deg,color-mix(in srgb,var(--g1) 62%,#000),color-mix(in srgb,var(--g2) 56%,#000));box-shadow:0 12px 30px rgba(0,0,0,.45)}}
 .sl.it.on i{background:#fff;color:#0b2d78;box-shadow:none}
+.restab td small.tb{opacity:.85;font-size:.72rem}
+.restab td b{font-size:.95rem}
 </style></head>
 <body><div id="app"></div><div id="modal"></div><div id="pdfOverlay" hidden></div>
 <script>
@@ -794,6 +796,76 @@ const U = { cm: { ro: 'cm', ru: 'см', en: 'cm' }, cm2: { ro: 'cm²', ru: 'см
 /* număr de soluții raționale: ax²+bx+c=0 */
 const disc = (a, b, c) => b * b - 4 * a * c;
 const isSq = n => n >= 0 && Number.isInteger(Math.sqrt(n));
+
+/* ================= scene animate pentru bannerul fiecărui item (situații din viața reală) =================
+   Desenate în viewBox 0 0 190 124; animațiile folosesc SMIL (se oprește la „reduce motion"). */
+const ITEM_SCENES = (() => {
+  const Y = '#fde047', C = '#67e8f9', W = 'rgba(255,255,255,.88)', O = '#fb923c';
+  const L = `fill="none" stroke="${W}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"`;
+  const ln = (st, w) => `fill="none" stroke="${st || W}" stroke-width="${w || 2.2}" stroke-linecap="round" stroke-linejoin="round"`;
+  const T = (x, y, s, sz, c, anc) => `<text x="${x}" y="${y}" font-family="Cambria,Georgia,serif" font-style="italic" font-size="${sz}" fill="${c || '#fff'}"${anc ? ` text-anchor="${anc}"` : ''}>${s}</text>`;
+  const N = (x, y, s, sz, c, anc) => `<text x="${x}" y="${y}" font-family="Inter,system-ui,sans-serif" font-weight="700" font-size="${sz}" fill="${c || '#fff'}"${anc ? ` text-anchor="${anc}"` : ''}>${s}</text>`;
+  const an = (attr, vals, dur, kt, extra) => `<animate attributeName="${attr}" values="${vals}" dur="${dur}s" ${kt ? `keyTimes="${kt}"` : ''} repeatCount="indefinite" ${extra || ''}/>`;
+  const win = (k, n, dur, hold) => { const a = k / n, b = (k + 1) / n; return hold ? `values="0;0;1;1" keyTimes="0;${a.toFixed(3)};${(a + .02).toFixed(3)};1" dur="${dur}s"` : `values="0;0;1;1;0;0" keyTimes="0;${a.toFixed(3)};${(a + .02).toFixed(3)};${b.toFixed(3)};${Math.min(b + .02, 1).toFixed(3)};1" dur="${dur}s"`; };
+  const S = {};
+  /* 1. Numere reale: termometru (temperaturi negative și pozitive) */
+  S[1] = `<rect x="33" y="12" width="14" height="82" rx="7" ${L}/><circle cx="40" cy="101" r="12" ${L}/>
+    <circle cx="40" cy="101" r="8" fill="${Y}"/><rect x="37" y="58" width="6" height="40" fill="${Y}">${an('y', '58;26;58', 5, '0;.5;1')}${an('height', '40;72;40', 5, '0;.5;1')}</rect>
+    <path d="M52 26h8M52 46h8M52 58h8" ${ln(null,'1.6')}/>${N(64, 30, '+5°', 12)}${N(64, 50, '0°', 12)}${N(64, 62, '−3°', 12, C)}
+    ${T(98, 38, 'Δt = 5 − (−3)', 15)}${T(98, 62, '= 5 + 3 = 8°', 16, Y)}${N(98, 92, 'Iarna: −3° → +5°', 11, 'rgba(255,255,255,.8)')}`;
+  /* 2. Geometrie: ceasul (unghi între ace) */
+  let ticks = ''; for (let i = 0; i < 12; i++) { const a = i * Math.PI / 6, r1 = 38, r2 = i % 3 ? 42 : 45; ticks += `<path d="M${(62 + r1 * Math.sin(a)).toFixed(1)} ${(62 - r1 * Math.cos(a)).toFixed(1)}L${(62 + r2 * Math.sin(a)).toFixed(1)} ${(62 - r2 * Math.cos(a)).toFixed(1)}" ${ln(null,'1.8')}/>`; }
+  S[2] = `<circle cx="62" cy="62" r="48" ${L}/>${ticks}<path d="M62 62V28" ${ln(C,'3')}><animateTransform attributeName="transform" type="rotate" from="0 62 62" to="360 62 62" dur="12s" repeatCount="indefinite"/></path>
+    <path d="M62 62V40" ${ln(Y,'3.6')}><animateTransform attributeName="transform" type="rotate" from="0 62 62" to="30 62 62" dur="12s" repeatCount="indefinite"/></path><circle cx="62" cy="62" r="3" fill="#fff"/>
+    <path d="M62 44A18 18 0 0 1 80 62" ${ln(null,'1.4')} stroke-dasharray="3 3"/>${N(100, 50, '90°', 20, Y)}${N(112, 74, 'ora 3:00', 11, 'rgba(255,255,255,.8)')}${N(112, 92, 'cerc 360°', 11, 'rgba(255,255,255,.8)')}`;
+  /* 3. Ecuația de gradul II: aruncarea la coș (traiectorie parabolică) */
+  S[3] = `<path d="M10 112H182" ${ln(null,'1.6')}/><path d="M22 108Q78 -22 150 80" ${ln(Y,'2')} stroke-dasharray="4 5"/>
+    <path d="M170 50v38" ${ln(null,'3')}/><path d="M150 80h20" ${ln(O,'3')}/><path d="M152 82l4 14M160 82l0 15M168 82l-4 14" ${ln(null,'1.2')}/>
+    <g><circle r="7" fill="${O}" stroke="#fff" stroke-width="1.4"/><path d="M-7 0h14M0 -7v14" stroke="#7c2d12" stroke-width="1"/><animateMotion dur="2.6s" repeatCount="indefinite" path="M22 108Q78 -22 150 80" keyTimes="0;1" calcMode="linear"/></g>
+    ${T(92, 14, 'h(t) = −at² + bt', 13)}${N(92, 28, 'h = 0 → x₁, x₂', 10.5, C)}`;
+  /* 4. Procente: reducere la magazin */
+  S[4] = `<circle cx="50" cy="62" r="32" ${ln('rgba(255,255,255,.28)','12')}/><circle cx="50" cy="62" r="32" ${ln(Y,'12')} stroke-dasharray="201.06" transform="rotate(-90 50 62)" stroke-linecap="butt">${an('stroke-dashoffset', '201.06;150.8;150.8;201.06', 5, '0;.4;.85;1')}</circle>${N(50, 68, '25%', 17, '#fff', 'middle')}
+    <path d="M108 38h56l14 18-14 18h-56z" ${L}/><circle cx="116" cy="56" r="3" ${ln(null,'1.6')}/>${N(122, 63, '−25%', 19, Y)}${N(106, 96, '100 lei → 75 lei', 10.5)}${N(106, 112, '100 − 25 = 75', 10.5, 'rgba(255,255,255,.8)')}`;
+  /* 5. Funcții: tariful unui taxi */
+  S[5] = `<path d="M28 106V14M22 100H176" ${L}/><path d="M28 86L166 30" ${ln(Y,'2.6')} pathLength="1" stroke-dasharray="1" stroke-dashoffset="1">${an('stroke-dashoffset', '1;0;0;1', 6, '0;.45;.9;1')}</path>
+    <circle r="5.5" fill="${C}" stroke="#fff" stroke-width="1.4"><animateMotion dur="6s" repeatCount="indefinite" path="M28 86L166 30" keyPoints="0;1;1;0" keyTimes="0;.45;.9;1" calcMode="linear"/></circle>
+    ${N(172, 114, 'km', 11)}${N(32, 14, 'lei', 11)}${T(62, 28, 'f(x) = 2x + 3', 16)}${N(60, 118, 'Taxi: 3 lei + 2 lei/km', 10.5, 'rgba(255,255,255,.85)')}`;
+  /* 6. Inecuații: limita de viteză */
+  S[6] = `<circle cx="42" cy="56" r="31" fill="#fff" stroke="#ef4444" stroke-width="7"/>${N(42, 66, '50', 28, '#111827', 'middle')}
+    <path d="M96 98H182" ${L}/><path d="M104 92v12M126 92v12M148 92v12M170 92v12" ${ln(null,'1.6')}/><path d="M104 98H148" ${ln(Y,'6')}><animate attributeName="d" values="M104 98H104;M104 98H148;M104 98H148;M104 98H104" dur="5s" keyTimes="0;.4;.85;1" repeatCount="indefinite"/></path><circle cx="148" cy="98" r="6" fill="${Y}"/>
+    ${N(98, 118, '0', 10)}${N(145, 118, '50', 10)}${T(92, 56, 'v ≤ 50 km/h', 17, Y)}${T(92, 76, 'v ∈ [0; 50]', 14)}`;
+  /* 7. Puteri și radicali: plăci de gresie */
+  let grid = ''; for (let i = 0; i <= 4; i++) grid += `<path d="M${22 + i * 18} 36V108M22 ${36 + i * 18}H94" ${ln(null,'1')} stroke="rgba(255,255,255,.35)"/>`;
+  let sq = '', tx = ''; for (let k = 4; k >= 1; k--) sq += `<rect x="22" y="${108 - 18 * k}" width="${18 * k}" height="${18 * k}" fill="${k % 2 ? Y : C}" fill-opacity=".38" stroke="#fff" stroke-width="1.6"><animate attributeName="opacity" ${win(k - 1, 4, 8, true)} repeatCount="indefinite"/></rect>`;
+  for (let k = 1; k <= 4; k++) tx += `<g opacity="0"><animate attributeName="opacity" ${win(k - 1, 4, 8, false)} repeatCount="indefinite"/>${N(106, 58, `${k}² = ${k * k}`, 22, Y)}</g>`;
+  S[7] = `${grid}${sq}${tx}${N(106, 86, 'latura → aria', 11, 'rgba(255,255,255,.85)')}${N(106, 106, '√16 = 4', 16, C)}`;
+  /* 8. Triunghiuri: scara sprijinită de perete */
+  S[8] = `<path d="M10 110H182" ${L}/><path d="M152 12V110" ${ln(null,'4')}/><path d="M140 110V98H152" ${ln(null,'1.6')}/>
+    <path d="M110 110L152 40" ${ln(Y,'4')}><animate attributeName="d" values="M110 110L152 40;M98 110L152 50;M90 110L152 56;M98 110L152 50;M110 110L152 40" dur="5s" repeatCount="indefinite"/></path>
+    ${T(10, 22, 'a² + b² = c²', 17)}${N(10, 40, 'scara: c = 80 cm', 11, C)}${N(10, 58, 'perete: b', 11)}${N(10, 74, 'distanța la perete: a', 11)}`;
+  /* 9. Probleme cu ecuații: balanța */
+  const pan = (cx, label, col) => `<g><path d="M${cx} 36L${cx - 22} 68M${cx} 36L${cx + 22} 68" ${ln(null,'1.4')}/><path d="M${cx - 28} 68H${cx + 28}" ${ln(col,'3.4')}/>${N(cx, 61, label, 13, '#fff', 'middle')}</g>`;
+  const cr = (v, k) => `<animateTransform attributeName="transform" type="rotate" values="${v}" keyTimes="0;.25;.5;.75;1" dur="5s" repeatCount="indefinite" additive="replace"/>`;
+  S[9] = `<path d="M95 36V106M64 108H126" ${ln(null,'3')}/><g><animateTransform attributeName="transform" type="rotate" values="0 95 36;-7 95 36;5 95 36;-2 95 36;0 95 36" keyTimes="0;.25;.5;.75;1" dur="5s" repeatCount="indefinite"/>
+    <path d="M30 36H160" ${ln(null,'3.4')}/>
+    <g><animateTransform attributeName="transform" type="rotate" values="0 30 36;7 30 36;-5 30 36;2 30 36;0 30 36" keyTimes="0;.25;.5;.75;1" dur="5s" repeatCount="indefinite"/>${pan(30, 'x+3', Y)}</g>
+    <g><animateTransform attributeName="transform" type="rotate" values="0 160 36;7 160 36;-5 160 36;2 160 36;0 160 36" keyTimes="0;.25;.5;.75;1" dur="5s" repeatCount="indefinite"/>${pan(160, '7', C)}</g></g>
+    <circle cx="95" cy="36" r="4.5" fill="#fff"/>${N(95, 122, 'x + 3 = 7  →  x = 4', 13, Y, 'middle')}`;
+  /* 10. Corpuri: acvariu (volumul) */
+  S[10] = `<path d="M22 44H114V108H22ZM22 44L48 24H140L114 44M114 108L140 88V24" ${L}/>
+    <rect x="24" y="104" width="88" height="2" fill="${C}" fill-opacity=".55">${an('y', '104;60;60;104', 6, '0;.6;.85;1')}${an('height', '2;46;46;2', 6, '0;.6;.85;1')}</rect>
+    ${T(22, 15, 'V = a · b · c', 14, Y)}${N(148, 76, '1 dm³', 10.5)}${N(148, 90, '= 1 litru', 10.5, C)}`;
+  /* 11. Fracții algebrice: pizza */
+  const pt = (a, r) => `${(62 + r * Math.cos(a)).toFixed(1)} ${(62 + r * Math.sin(a)).toFixed(1)}`;
+  let pz = '', pt2 = '', spokes = ''; for (let i = 0; i < 8; i++) { const a0 = -Math.PI / 2 + i * Math.PI / 4, a1 = a0 + Math.PI / 4; spokes += `<path d="M62 62L${pt(a0, 46)}" ${ln(null,'1.4')}/>`; pz += `<path d="M62 62L${pt(a0, 46)}A46 46 0 0 1 ${pt(a1, 46)}Z" fill="${Y}" fill-opacity=".55" opacity="0"><animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;${(i / 9).toFixed(3)};${(i / 9 + .02).toFixed(3)};.95;1" dur="9s" repeatCount="indefinite"/></path>`; pt2 += `<g opacity="0"><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;${(i / 9).toFixed(3)};${(i / 9 + .02).toFixed(3)};${((i + 1) / 9).toFixed(3)};${((i + 1) / 9 + .02).toFixed(3)};1" dur="9s" repeatCount="indefinite"/>${N(142, 70, `${i + 1}/8`, 24, Y, 'middle')}</g>`; }
+  S[11] = `<circle cx="62" cy="62" r="46" ${L}/>${pz}${spokes}${pt2}${N(142, 98, 'din pizza', 11, 'rgba(255,255,255,.85)', 'middle')}${N(142, 114, '8 părți egale', 10, C, 'middle')}`;
+  /* 12. Funcția de gradul II: podul în arc */
+  let hang = ''; [0.12, 0.26, 0.4, 0.6, 0.74, 0.88].forEach(t => { const x = (1 - t) * (1 - t) * 14 + 2 * t * (1 - t) * 95 + t * t * 176, y = (1 - t) * (1 - t) * 106 + 2 * t * (1 - t) * (-26) + t * t * 106; hang += `<path d="M${x.toFixed(1)} ${y.toFixed(1)}V104" ${ln(null,'1.3')}/>`; });
+  S[12] = `<path d="M6 106H184" ${ln(null,'3')}/><path d="M14 106Q95 -26 176 106" ${ln(Y,'3')}/>${hang}<circle cx="95" cy="40" r="4.5" fill="${C}" stroke="#fff" stroke-width="1.4"/>${N(104, 36, 'V(x₀; y₀)', 11, C)}
+    <g><rect x="-14" y="92" width="26" height="9" rx="3" fill="#fff"/><rect x="-6" y="85" width="13" height="8" rx="2.5" fill="#fff"/><circle cx="-7" cy="103" r="3.4" fill="#0f3d91" stroke="#fff"/><circle cx="6" cy="103" r="3.4" fill="#0f3d91" stroke="#fff"/><animateTransform attributeName="transform" type="translate" values="0 0;200 0" dur="6s" repeatCount="indefinite"/></g>
+    ${T(10, 18, 'y = −ax² + bx + c', 14)}${N(184, 18, 'arcul podului', 10, 'rgba(255,255,255,.85)', 'end')}`;
+  return S;
+})();
 
 /* ============ ITEM 1: Calcule cu numere reale ============ */
 (function () {
@@ -1216,6 +1288,7 @@ const BN = {
 };
 function bannerSvg() {
   const n = PAGE.kind === 'item' ? PAGE.n : 0; const Y = '#fde047', C = '#67e8f9';
+  if (n && typeof ITEM_SCENES !== 'undefined' && ITEM_SCENES[n]) { let sc = ITEM_SCENES[n]; try { if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) sc = sc.replace(/<animate[A-Za-z]*\b[^>]*\/>/g, ''); } catch (e) {} return `<svg class="bsvg" viewBox="0 0 190 124" aria-hidden="true">${sc}</svg>`; }
   const axes = `<path d="M240 104V16M226 92h130" ${BN.line}/>`;
   const T = (x, y, s, sz, c) => `<text x="${x}" y="${y}" ${BN.txt} font-size="${sz}" ${c ? `style="fill:${c}"` : ''}>${s}</text>`;
   const G = {
@@ -1918,16 +1991,16 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
       else if (!C.students.length) h += '<p class="sub">Niciun elev nu a intrat încă în clasă.</p>';
       else {
         const cols = Array.from({ length: 12 }, (_, i) => i + 1);
-        h += `<div style="overflow:auto"><table class="restab"><thead><tr><th>Elev</th>${cols.map(n => `<th>${n}</th>`).join('')}<th>Examen</th><th>Salvat</th></tr></thead><tbody>`;
+        h += `<div style="overflow:auto"><table class="restab"><thead><tr><th>Elev</th>${cols.map(n => `<th>${n}</th>`).join('')}<th>Total</th><th>Examen</th><th>Salvat</th></tr></thead><tbody>`;
         C.students.forEach(s => {
           const pr = s.progress || {};
-          h += `<tr><td><button class="lk" data-cl="openstu" data-id="${s.id}">${esc(s.name)}</button></td>${cols.map(n => { const it = pr[n]; if (!it) return '<td class="e">·</td>'; const p = Math.min(1, (it.solved || 0) / 50); return `<td style="${cellColor(p)}" title="rezolvate ${it.solved || 0}/50${it.best ? ' · cel mai bun test ' + Math.round(it.best * 100) + '%' : ''}"><b>${Math.min(it.solved || 0, 50)}</b>${it.best ? `<small>${Math.round(it.best * 100)}%</small>` : ''}</td>`; }).join('')}<td>${pr.exam ? Math.round(pr.exam * 100) + '%' : '·'}</td><td class="d">${fdate(s.saved)}</td></tr>`;
+          h += `<tr><td><button class="lk" data-cl="openstu" data-id="${s.id}">${esc(s.name)}</button></td>${cols.map(n => { const it = pr[n]; if (!it) return '<td class="e">·</td>'; const p = Math.min(1, (it.solved || 0) / 50); return `<td style="${cellColor(p)}" title="rezolvate ${it.solved || 0}/50${it.best ? ' · cel mai bun test ' + Math.round(it.best * 100) + '%' : ''}"><b>${Math.round(p * 100)}%</b><small>${Math.min(it.solved || 0, 50)}/50</small>${it.best ? `<small class="tb">test ${Math.round(it.best * 100)}%</small>` : ''}</td>`; }).join('')}<td style="${cellColor(tot(pr).pct / 100)}"><b>${tot(pr).pct}%</b><small>${tot(pr).n}/600</small></td><td>${pr.exam ? Math.round(pr.exam * 100) + '%' : '·'}</td><td class="d">${fdate(s.saved)}</td></tr>`;
           if (C.open === s.id) {
             const hist = (s.hist || []).slice().reverse().slice(0, 12);
             h += `<tr class="hist"><td colspan="15"><b>Ultimele teste:</b> ${hist.length ? hist.map(x => `${x.k === 'exam' ? 'Test complet' : 'Item ' + x.item}: <b>${x.score}</b>/${x.max} <small>(${new Date(x.ts).toLocaleDateString('ro-RO')})</small>`).join(' · ') : 'încă niciun test'} <button class="lk" data-cl="delstu" data-id="${s.id}">Elimină elevul din clasă</button></td></tr>`;
           }
         });
-        h += `</tbody></table></div><p class="sub" style="font-size:.8rem">În celule: numărul de exerciții rezolvate corect din prima încercare (din 50) și, dedesubt, cel mai bun test la acel item.</p>`;
+        h += `</tbody></table></div><p class="sub" style="font-size:.8rem">În celule: procentul de progres la item, dedesubt numărul de exerciții rezolvate corect din prima încercare (din 50) și cel mai bun test. Coloana Total = progresul pe toți cei 12 itemi (din 600).</p>`;
       }
       h += '</div>';
     }
@@ -1946,9 +2019,9 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
     if (C.classes === null && !C.busy) setTimeout(loadClasses, 0);
     return `<div class="row"><b>${esc(td.name)}</b> · ${esc(td.school || '')} ${isAd ? '<a class="btn alt" href="admin.html" target="_top">Administrare</a>' : ''} <button class="btn alt" data-cl="logout">Ieși</button></div>` + dashboard();
   };
-  const tot = pr => { let n = 0, it = 0; Object.keys(pr || {}).forEach(k => { if (k !== 'exam') { n += (pr[k].solved || 0); if ((pr[k].solved || 0) > 0) it++; } }); return { n, it }; };
+  const tot = pr => { let n = 0, it = 0; Object.keys(pr || {}).forEach(k => { if (k !== 'exam') { const v = Math.min(50, (pr[k].solved || 0)); n += v; if (v > 0) it++; } }); return { n, it, pct: Math.round(n / 600 * 100) }; };
   const stuTable = list => { if (list === undefined) return '<p class="sub">Se încarcă…</p>'; if (!list.length) return '<p class="sub">Niciun elev în această clasă.</p>';
-    return `<div style="overflow:auto"><table class="restab"><thead><tr><th>Elev</th><th>Itemi începuți</th><th>Exerciții rezolvate</th><th>Examen</th><th>Salvat</th></tr></thead><tbody>${list.map(x => { const t = tot(x.progress); return `<tr><td>${esc(x.name)}</td><td>${t.it}/12</td><td>${t.n}</td><td>${x.progress && x.progress.exam ? Math.round(x.progress.exam * 100) + '%' : '·'}</td><td class="d">${fdate(x.saved)}</td></tr>`; }).join('')}</tbody></table></div>`; };
+    return `<div style="overflow:auto"><table class="restab"><thead><tr><th>Elev</th><th>Itemi începuți</th><th>Progres</th><th>Examen</th><th>Salvat</th></tr></thead><tbody>${list.map(x => { const t = tot(x.progress); return `<tr><td>${esc(x.name)}</td><td>${t.it}/12</td><td><b>${t.pct}%</b> <small>(${t.n}/600)</small></td><td>${x.progress && x.progress.exam ? Math.round(x.progress.exam * 100) + '%' : '·'}</td><td class="d">${fdate(x.saved)}</td></tr>`; }).join('')}</tbody></table></div>`; };
   C.adminHTML = function () {
     if (!C.enabled) return '<p class="sub">Conturile nu sunt configurate pe acest site.</p>';
     if (!C.ready) return '<p class="sub">Se încarcă…</p>';
@@ -2046,8 +2119,8 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
       else if (a === 'delclass') { if (confirm('Ștergi clasa? Elevii nu vor mai putea salva progresul în ea.')) { for (const s of (C.students || [])) await fb.db.doc(`classes/${C.sel}/students/${s.id}`).delete(); await fb.db.doc('classes/' + C.sel).delete(); C.classes = null; C.sel = null; C.students = null; rerender(); } }
       else if (a === 'csv') {
         const q = x => '"' + String(x == null ? '' : x).replace(/"/g, '""') + '"';
-        const hd = ['Elev'].concat(Array.from({ length: 12 }, (_, i) => 'Item ' + (i + 1) + ' rezolvate'), Array.from({ length: 12 }, (_, i) => 'Item ' + (i + 1) + ' test %'), ['Examen %', 'Salvat']);
-        const rows = (C.students || []).map(s => { const p = s.progress || {}; const n = i => p[i] || {}; return [s.name].concat(Array.from({ length: 12 }, (_, i) => n(i + 1).solved || 0), Array.from({ length: 12 }, (_, i) => n(i + 1).best ? Math.round(n(i + 1).best * 100) : ''), [p.exam ? Math.round(p.exam * 100) : '', fdate(s.saved)]); });
+        const hd = ['Elev'].concat(Array.from({ length: 12 }, (_, i) => 'Item ' + (i + 1) + ' rezolvate'), Array.from({ length: 12 }, (_, i) => 'Item ' + (i + 1) + ' test %'), ['Progres total %', 'Exerciții rezolvate (max 600)', 'Examen %', 'Salvat']);
+        const rows = (C.students || []).map(s => { const p = s.progress || {}; const n = i => p[i] || {}; return [s.name].concat(Array.from({ length: 12 }, (_, i) => n(i + 1).solved || 0), Array.from({ length: 12 }, (_, i) => n(i + 1).best ? Math.round(n(i + 1).best * 100) : ''), [tot(p).pct, tot(p).n, p.exam ? Math.round(p.exam * 100) : '', fdate(s.saved)]); });
         const csv = '﻿' + [hd].concat(rows).map(r => r.map(q).join(',')).join('\n');
         const l = document.createElement('a'); l.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' })); l.download = 'clasa-' + C.sel + '.csv'; l.click();
       }
@@ -2056,8 +2129,8 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
       else if (a === 'aall') { C.aStu = {}; for (const c of (C.aClasses || [])) await loadClassStudents(c.id); }
       else if (a === 'acsv') {
         const q = x => '"' + String(x == null ? '' : x).replace(/"/g, '""') + '"';
-        const rows = [['Școala', 'Profesor', 'E-mail profesor', 'Clasa', 'Cod clasă', 'Elev', 'Itemi începuți', 'Exerciții rezolvate', 'Examen %', 'Salvat']];
-        (C.aClasses || []).forEach(c => { const t = (C.teachers || []).find(x => x.id === c.teacherUid) || {}; ((C.aStu || {})[c.id] || []).forEach(x => { const tt = tot(x.progress); rows.push([t.school, t.name, t.email, c.name, c.id, x.name, tt.it, tt.n, x.progress && x.progress.exam ? Math.round(x.progress.exam * 100) : '', fdate(x.saved)]); }); });
+        const rows = [['Școala', 'Profesor', 'E-mail profesor', 'Clasa', 'Cod clasă', 'Elev', 'Itemi începuți', 'Progres %', 'Exerciții rezolvate (max 600)', 'Examen %', 'Salvat']];
+        (C.aClasses || []).forEach(c => { const t = (C.teachers || []).find(x => x.id === c.teacherUid) || {}; ((C.aStu || {})[c.id] || []).forEach(x => { const tt = tot(x.progress); rows.push([t.school, t.name, t.email, c.name, c.id, x.name, tt.it, tt.pct, tt.n, x.progress && x.progress.exam ? Math.round(x.progress.exam * 100) : '', fdate(x.saved)]); }); });
         const l = document.createElement('a'); l.href = URL.createObjectURL(new Blob(['\ufeff' + rows.map(r => r.map(q).join(',')).join('\n')], { type: 'text/csv;charset=utf-8' })); l.download = 'toti-inregistrati.csv'; l.click();
       }
       else if (a === 'reloadt') { C.teachers = null; C.aStu = {}; await loadTeachers(); }
