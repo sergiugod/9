@@ -443,6 +443,9 @@ header.top{display:none}
 .st.pending{color:#b45309}.st.approved{color:#15803d}.st.rejected{color:#b91c1c}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
 .acc2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.acc2 label,.pan2 label{display:block;font-weight:700;font-size:.9rem;margin-top:8px}
+.acc2 input[type=text],.acc2 input[type=password]{display:block;width:100%;padding:9px 11px;font:inherit;font-size:1rem;border:1px solid var(--line);border-radius:10px;margin:4px 0 10px;background:var(--bg);color:var(--ink)}
+a.btn{text-decoration:none;display:inline-block}
 </style></head>
 <body><div id="app"></div><div id="modal"></div><div id="pdfOverlay" hidden></div>
 <script>
@@ -1928,18 +1931,41 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
     if (C.classes === null && !C.busy) setTimeout(loadClasses, 0);
     return `<div class="row"><b>${esc(C.tdoc.name)}</b> · ${esc(C.tdoc.school || '')} <button class="btn alt" data-cl="logout">Ieși</button></div>` + dashboard();
   };
+  const tot = pr => { let n = 0, it = 0; Object.keys(pr || {}).forEach(k => { if (k !== 'exam') { n += (pr[k].solved || 0); if ((pr[k].solved || 0) > 0) it++; } }); return { n, it }; };
+  const stuTable = list => { if (list === undefined) return '<p class="sub">Se încarcă…</p>'; if (!list.length) return '<p class="sub">Niciun elev în această clasă.</p>';
+    return `<div style="overflow:auto"><table class="restab"><thead><tr><th>Elev</th><th>Itemi începuți</th><th>Exerciții rezolvate</th><th>Examen</th><th>Salvat</th></tr></thead><tbody>${list.map(x => { const t = tot(x.progress); return `<tr><td>${esc(x.name)}</td><td>${t.it}/12</td><td>${t.n}</td><td>${x.progress && x.progress.exam ? Math.round(x.progress.exam * 100) + '%' : '·'}</td><td class="d">${fdate(x.saved)}</td></tr>`; }).join('')}</tbody></table></div>`; };
   C.adminHTML = function () {
     if (!C.enabled) return '<p class="sub">Conturile nu sunt configurate pe acest site.</p>';
     if (!C.ready) return '<p class="sub">Se încarcă…</p>';
     if (!C.user) return authForm();
     if (C.role !== 'admin') return '<p class="sub">Acest cont nu are drept de administrator.</p><button class="btn alt" data-cl="logout">Ieși</button>';
     if (C.teachers === null && !C.busy) setTimeout(loadTeachers, 0);
-    const ts = C.teachers || [];
-    const ok = ts.filter(x => x.status === 'approved').length;
-    const row = x => `<tr><td>${esc(x.name)}<br><small>${esc(x.email)}</small></td><td>${esc(x.school || '')}</td><td class="st ${x.status}">${{ pending: 'în așteptare', approved: 'aprobat', rejected: 'respins' }[x.status]}</td><td>${x.status !== 'approved' ? `<button class="btn" data-cl="approve" data-id="${x.id}">Aprobă</button>` : ''} ${x.status !== 'rejected' ? `<button class="btn alt" data-cl="reject" data-id="${x.id}">Respinge</button>` : ''} <button class="lk" data-cl="delteacher" data-id="${x.id}">Elimină</button></td></tr>`;
-    return `<div class="pan2"><h3>Profesori: ${ok} / ${MAXT} aprobați</h3><div class="row"><button class="btn alt" data-cl="reloadt">Reîncarcă</button><button class="btn alt" data-cl="logout">Ieși</button></div>
-      ${ts.length ? `<div style="overflow:auto"><table class="restab"><thead><tr><th>Profesor</th><th>Școala</th><th>Stare</th><th></th></tr></thead><tbody>${ts.slice().sort((a, b) => (a.status === 'pending' ? 0 : 1) - (b.status === 'pending' ? 0 : 1)).map(row).join('')}</tbody></table></div>` : '<p class="sub">Niciun profesor înregistrat încă.</p>'}</div>`;
+    const ts = C.teachers || [], cls = C.aClasses || [], S2 = C.aStu || {};
+    const ok = ts.filter(x => x.status === 'approved').length, pend = ts.filter(x => x.status === 'pending').length;
+    const schools = Array.from(new Set(ts.filter(x => x.status === 'approved').map(x => (x.school || '—').trim()))).sort((a, b) => a.localeCompare(b, 'ro'));
+    const loadedAll = cls.length > 0 && cls.every(c => S2[c.id] !== undefined);
+    const nStu = Object.keys(S2).reduce((n, k) => n + (S2[k] || []).length, 0);
+    const clsOf = id => cls.filter(c => c.teacherUid === id);
+    const status = { pending: 'în așteptare', approved: 'aprobat', rejected: 'respins' };
+    const row = x => {
+      const my = clsOf(x.id), open = C.aOpen === x.id;
+      let h = `<tr><td><button class="lk" data-cl="atopen" data-id="${x.id}">${open ? '▾' : '▸'} ${esc(x.name)}</button><br><small>${esc(x.email)}</small></td><td>${esc(x.school || '')}</td><td>${my.length}</td><td class="st ${x.status}">${status[x.status]}</td><td>${x.status !== 'approved' ? `<button class="btn" data-cl="approve" data-id="${x.id}">Aprobă</button>` : ''} ${x.status !== 'rejected' ? `<button class="btn alt" data-cl="reject" data-id="${x.id}">Respinge</button>` : ''} <button class="lk" data-cl="delteacher" data-id="${x.id}">Elimină</button></td></tr>`;
+      if (open) {
+        h += `<tr class="hist"><td colspan="5">${my.length ? my.map(c => `<div style="margin:8px 0"><b>Clasa ${esc(c.name)}</b> <small>(cod ${c.id}${S2[c.id] ? ', ' + S2[c.id].length + ' elevi' : ''})</small> ${S2[c.id] === undefined ? `<button class="btn alt" style="padding:2px 10px;font-size:.8rem" data-cl="aclsstu" data-id="${c.id}">Vezi elevii</button>` : ''}${S2[c.id] !== undefined ? stuTable(S2[c.id]) : ''}</div>`).join('') : 'Acest profesor nu a creat încă nicio clasă.'}</td></tr>`;
+      }
+      return h;
+    };
+    const bySchool = schools.map(sc => { const tt = ts.filter(x => x.status === 'approved' && (x.school || '—').trim() === sc); const cc = cls.filter(c => tt.some(x => x.id === c.teacherUid)); const st = cc.reduce((n, c) => n + ((S2[c.id] || []).length), 0); return `<tr><td>${esc(sc)}</td><td>${tt.map(x => esc(x.name)).join(', ')}</td><td>${cc.length}</td><td>${loadedAll ? st : '·'}</td></tr>`; }).join('');
+    return `<div class="pan2"><h3>Rezumat</h3><p class="sub"><b>${ok}</b> / ${MAXT} profesori aprobați · <b>${pend}</b> în așteptare · <b>${schools.length}</b> școli · <b>${cls.length}</b> clase · <b>${loadedAll ? nStu : '·'}</b> elevi${loadedAll ? '' : ' (încarcă elevii pentru total)'}</p>
+      <div class="row"><button class="btn alt" data-cl="reloadt">Reîncarcă</button><button class="btn alt" data-cl="aall" title="Citește toți elevii din toate clasele (câte o citire pe elev)">${loadedAll ? 'Reîncarcă toți elevii' : 'Încarcă toți elevii'}</button><button class="btn alt" data-cl="acsv" ${loadedAll ? '' : 'disabled'}>Descarcă tot (CSV)</button><button class="btn alt" data-cl="logout">Ieși</button></div></div>
+      <div class="pan2"><h3>Profesori și clase</h3>${ts.length ? `<div style="overflow:auto"><table class="restab"><thead><tr><th>Profesor (apasă pentru clase)</th><th>Școala</th><th>Clase</th><th>Stare</th><th></th></tr></thead><tbody>${ts.slice().sort((a, b) => (a.status === 'pending' ? 0 : 1) - (b.status === 'pending' ? 0 : 1) || String(a.name).localeCompare(String(b.name), 'ro')).map(row).join('')}</tbody></table></div>` : '<p class="sub">Niciun profesor înregistrat încă.</p>'}</div>
+      ${schools.length ? `<div class="pan2"><h3>Pe școli</h3><div style="overflow:auto"><table class="restab"><thead><tr><th>Școala</th><th>Profesori</th><th>Clase</th><th>Elevi</th></tr></thead><tbody>${bySchool}</tbody></table></div></div>` : ''}`;
   };
+  async function loadClassStudents(id) {
+    C.aStu = C.aStu || {}; C.aStu[id] = undefined; rerender();
+    try { const q = await fb.db.collection(`classes/${id}/students`).get(); C.aStu[id] = q.docs.map(d => Object.assign({ id: d.id }, d.data())).sort((a, b) => String(a.name).localeCompare(String(b.name), 'ro')); } catch (e) { C.aStu[id] = []; }
+    rerender();
+  }
   async function loadClasses() {
     if (!fb || !C.user || C.busy) return; C.busy = true;
     try { const q = await fb.db.collection('classes').where('teacherUid', '==', C.user.uid).get(); C.classes = q.docs.map(d => Object.assign({ id: d.id }, d.data())); } catch (e) { C.classes = []; }
@@ -1953,6 +1979,7 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
   async function loadTeachers() {
     if (!fb || C.busy) return; C.busy = true;
     try { const q = await fb.db.collection('teachers').get(); C.teachers = q.docs.map(d => Object.assign({ id: d.id }, d.data())); } catch (e) { C.teachers = []; }
+    try { const q2 = await fb.db.collection('classes').get(); C.aClasses = q2.docs.map(d => Object.assign({ id: d.id }, d.data())); } catch (e) { C.aClasses = []; }
     C.busy = false; rerender();
   }
   const tErr = m => { const x = $('#tErr'); if (x) x.textContent = m; };
@@ -2009,7 +2036,16 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
         const csv = '﻿' + [hd].concat(rows).map(r => r.map(q).join(',')).join('\n');
         const l = document.createElement('a'); l.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' })); l.download = 'clasa-' + C.sel + '.csv'; l.click();
       }
-      else if (a === 'reloadt') { C.teachers = null; await loadTeachers(); }
+      else if (a === 'atopen') { C.aOpen = C.aOpen === id ? null : id; rerender(); }
+      else if (a === 'aclsstu') await loadClassStudents(id);
+      else if (a === 'aall') { C.aStu = {}; for (const c of (C.aClasses || [])) await loadClassStudents(c.id); }
+      else if (a === 'acsv') {
+        const q = x => '"' + String(x == null ? '' : x).replace(/"/g, '""') + '"';
+        const rows = [['Școala', 'Profesor', 'E-mail profesor', 'Clasa', 'Cod clasă', 'Elev', 'Itemi începuți', 'Exerciții rezolvate', 'Examen %', 'Salvat']];
+        (C.aClasses || []).forEach(c => { const t = (C.teachers || []).find(x => x.id === c.teacherUid) || {}; ((C.aStu || {})[c.id] || []).forEach(x => { const tt = tot(x.progress); rows.push([t.school, t.name, t.email, c.name, c.id, x.name, tt.it, tt.n, x.progress && x.progress.exam ? Math.round(x.progress.exam * 100) : '', fdate(x.saved)]); }); });
+        const l = document.createElement('a'); l.href = URL.createObjectURL(new Blob(['\ufeff' + rows.map(r => r.map(q).join(',')).join('\n')], { type: 'text/csv;charset=utf-8' })); l.download = 'toti-inregistrati.csv'; l.click();
+      }
+      else if (a === 'reloadt') { C.teachers = null; C.aStu = {}; await loadTeachers(); }
       else if (a === 'approve') {
         const ok = (C.teachers || []).filter(x => x.status === 'approved').length;
         if (ok >= MAXT && !confirm(`Ai deja ${ok} profesori aprobați (limita pilotului: ${MAXT}). Aprobi totuși?`)) return;

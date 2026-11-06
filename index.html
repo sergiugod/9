@@ -17,6 +17,7 @@
   --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px rgba(0,0,0,.35);}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 .tbtn{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;display:grid;place-items:center;padding:0}.tbtn:hover{border-color:var(--brand);color:var(--brand)}.tbtn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.acct{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.acct a{flex:1;min-width:150px;text-align:center;padding:11px 14px;border-radius:12px;border:1.5px solid var(--brand);color:var(--brand);font-weight:700;text-decoration:none;background:var(--surface)}.acct a:hover{background:var(--brand);color:#fff}
+.guide{margin:10px 0 0}.guide a{color:var(--brand);font-weight:700;text-decoration:none}.guide a:hover{text-decoration:underline}
 .loginb{display:inline-flex;align-items:center;height:38px;padding:0 16px;border-radius:999px;background:var(--brand);color:#fff;font-weight:700;font-size:.9rem;text-decoration:none;box-shadow:0 6px 16px var(--ring)}.loginb:hover{filter:brightness(1.08)}.navr{display:flex;align-items:center;gap:8px}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -124,6 +125,7 @@ footer a{color:var(--brand)}
     <div class="cta-wrap">
       <div class="ctas" id="ctas"></div>
       <div class="acct"><a href="cont.html" id="accS"></a><a href="cont.html" id="accT"></a></div>
+      <p class="guide"><a href="ghid.html" id="guideL"></a></p>
       <div class="stats" id="stats"></div>
     </div>
   </header>
@@ -200,6 +202,7 @@ var ITEM_TITLES = {
 };
 var T={
  accS:{ro:'Sunt elev: intră / înregistrare',ru:'Я ученик: вход / регистрация',en:"I'm a student: sign in / register"},accT:{ro:'Sunt profesor: intră / înregistrare',ru:'Я учитель: вход / регистрация',en:"I'm a teacher: sign in / register"},
+ guide:{ro:'Ghid de utilizare (cu imagini)',ru:'Руководство пользователя (с картинками)',en:'User guide (with pictures)'},
  login:{ro:'Intră / Înregistrare',ru:'Вход / Регистрация',en:'Sign in / Register'},
  brandSub:{ro:'Pregătire pentru examen',ru:'Подготовка к экзамену',en:'Exam preparation'},
  author:{ro:'Pagină creată de',ru:'Страницу создала',en:'Page created by'},
@@ -236,7 +239,7 @@ function card(url,no,title,desc,tags,hl,theoryUrl,showTheory){
 }
 function draw(){
   document.documentElement.lang=lang;
-  $('brandSub').textContent=T.brandSub[lang];$('eyebrow').textContent=T.eyebrow[lang];$('h1').innerHTML=T.h1[lang];$('lead').textContent=T.lead[lang];$('loginB').textContent=T.login[lang];$('accS').textContent=T.accS[lang];$('accT').textContent=T.accT[lang];$('accT').href='profesor.html';$('author').innerHTML=T.author[lang]+' <b>Godovaniuc Ana</b>';
+  $('brandSub').textContent=T.brandSub[lang];$('eyebrow').textContent=T.eyebrow[lang];$('h1').innerHTML=T.h1[lang];$('lead').textContent=T.lead[lang];$('loginB').textContent=T.login[lang];$('accS').textContent=T.accS[lang];$('accT').textContent=T.accT[lang];$('accT').href='profesor.html';$('guideL').textContent='📘 '+T.guide[lang];$('author').innerHTML=T.author[lang]+' <b>Godovaniuc Ana</b>';
   $('sec1').textContent=T.sec1[lang];$('sec2').textContent=T.sec2[lang];$('lic').textContent=T.lic[lang];
   var c=$('ctas');c.innerHTML='';
   var a=document.createElement('a');a.className='cta p'+(LINKS.testComplet?'':' off');a.textContent=T.cta1[lang]+' →';if(LINKS.testComplet){a.href=LINKS.testComplet;a.target=LINK_TARGET;}c.appendChild(a);
