@@ -481,6 +481,14 @@ a.btn{text-decoration:none;display:inline-block}
 .upop{position:fixed;left:auto;bottom:auto;z-index:200}
 .loginb2{display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:999px;background:#fff;color:#1e3a8a;font-weight:700;font-size:.85rem;text-decoration:none;white-space:nowrap}
 @media(max-width:560px){.loginb2{padding:0 10px;font-size:.78rem}}
+
+#savenag{position:fixed;left:50%;transform:translateX(-50%);bottom:14px;z-index:150;display:flex;align-items:center;gap:10px;max-width:min(680px,calc(100vw - 24px));padding:10px 12px 10px 16px;border-radius:14px;background:#fde047;color:#422006;border:2px solid #f59e0b;box-shadow:0 10px 28px rgba(0,0,0,.35);font-size:.92rem;font-weight:600;animation:nagin .4s ease}
+#savenag button{flex:none;border:0;border-radius:10px;padding:8px 14px;background:#422006;color:#fff;font:700 .88rem inherit;font-family:inherit;cursor:pointer}
+#savenag button.x{background:transparent;color:#422006;font-size:1.3rem;padding:2px 8px}
+@keyframes nagin{from{opacity:0;transform:translate(-50%,16px)}to{opacity:1;transform:translateX(-50%)}}
+.uav i{animation:nagp 1.4s infinite}@keyframes nagp{50%{transform:scale(1.35)}}
+@media(prefers-reduced-motion:reduce){.uav i,#savenag{animation:none}}
+@media(max-width:560px){#savenag{flex-wrap:wrap;bottom:78px}}
 </style></head>
 <body><div id="app"></div><div id="modal"></div><div id="pdfOverlay" hidden></div>
 <script>
@@ -1704,9 +1712,9 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
   const DOM = '@elev.mate9.invalid';
   const C = { enabled: !!CFG, ready: false, error: false, user: null, role: null, tdoc: null, stu: null, classes: null, sel: null, students: null, open: null, teachers: null, busy: false, msg: '' };
   const SL = {
-    ro: { login: 'Intră / Înregistrare', join: 'Intră ca elev', newAcc: 'Nu am găsit un cont cu acest nume și PIN. Dacă intri prima dată, scrie codul clasei primit de la profesor; altfel verifică numele și PIN-ul.', pinH: 'Alege 4 cifre și ține-le minte: nume + PIN te recunosc de pe orice dispozitiv.', _x: '', code: 'Codul clasei', name: 'Nume și prenume', pin: 'PIN (4 cifre)', enter: 'Intră', close: 'Închide', logout: 'Ieși', save: 'Salvează progresul', saved: 'Progres salvat ✓', unsaved: 'Ai progres nesalvat', clean: 'Progres salvat', cls: 'Clasa', err: 'Eroare', noCls: 'Nu există o clasă cu acest cod.', badPin: 'Numele și PIN-ul nu se potrivesc.', fill: 'Completează numele și PIN-ul (4 cifre).', loaded: 'Progresul tău a fost încărcat.', hello: 'Salut', notIn: 'Intră în clasa profesorului ca să-ți salvezi progresul.', teacherL: 'Cont profesor', private: 'Se salvează numele tău, clasa și progresul la exerciții; le văd tu și profesorul clasei.' },
-    ru: { login: 'Вход / Регистрация', join: 'Войти как ученик', newAcc: 'Аккаунт с таким именем и PIN не найден. Если входите впервые, введите код класса от учителя; иначе проверьте имя и PIN.', code: 'Код класса', name: 'Фамилия и имя', pin: 'PIN (4 цифры)', pinH: 'Выберите 4 цифры и запомните: имя + PIN работают на любом устройстве.', enter: 'Войти', close: 'Закрыть', logout: 'Выйти', save: 'Сохранить прогресс', saved: 'Прогресс сохранён ✓', unsaved: 'Есть несохранённый прогресс', clean: 'Прогресс сохранён', cls: 'Класс', err: 'Ошибка', noCls: 'Класса с таким кодом нет.', badPin: 'Имя и PIN не совпадают.', fill: 'Введите имя и PIN (4 цифры).', loaded: 'Ваш прогресс загружен.', hello: 'Привет', notIn: 'Войдите в класс учителя, чтобы сохранять прогресс.', teacherL: 'Кабинет учителя', private: 'Сохраняются имя, класс и прогресс; их видите вы и учитель класса.' },
-    en: { login: 'Sign in / Register', join: 'Student sign-in', newAcc: 'No account found for this name and PIN. If this is your first time, enter the class code from your teacher; otherwise check your name and PIN.', code: 'Class code', name: 'Full name', pin: 'PIN (4 digits)', pinH: 'Pick 4 digits and remember them: name + PIN work on any device.', enter: 'Enter', close: 'Close', logout: 'Sign out', save: 'Save progress', saved: 'Progress saved ✓', unsaved: 'You have unsaved progress', clean: 'Progress saved', cls: 'Class', err: 'Error', noCls: 'No class with this code.', badPin: 'Name and PIN do not match.', fill: 'Enter your name and a 4-digit PIN.', loaded: 'Your progress was loaded.', hello: 'Hi', notIn: "Join your teacher's class to save your progress.", teacherL: 'Teacher account', private: 'Your name, class and progress are saved; only you and the class teacher can see them.' }
+    ro: { nagT: 'Ai progres nesalvat. Nu uita să-l salvezi, altfel îl poți pierde.', nagB: 'Salvează acum', login: 'Intră / Înregistrare', join: 'Intră ca elev', newAcc: 'Nu am găsit un cont cu acest nume și PIN. Dacă intri prima dată, scrie codul clasei primit de la profesor; altfel verifică numele și PIN-ul.', pinH: 'Alege 4 cifre și ține-le minte: nume + PIN te recunosc de pe orice dispozitiv.', _x: '', code: 'Codul clasei', name: 'Nume și prenume', pin: 'PIN (4 cifre)', enter: 'Intră', close: 'Închide', logout: 'Ieși', save: 'Salvează progresul', saved: 'Progres salvat ✓', unsaved: 'Ai progres nesalvat', clean: 'Progres salvat', cls: 'Clasa', err: 'Eroare', noCls: 'Nu există o clasă cu acest cod.', badPin: 'Numele și PIN-ul nu se potrivesc.', fill: 'Completează numele și PIN-ul (4 cifre).', loaded: 'Progresul tău a fost încărcat.', hello: 'Salut', notIn: 'Intră în clasa profesorului ca să-ți salvezi progresul.', teacherL: 'Cont profesor', private: 'Se salvează numele tău, clasa și progresul la exerciții; le văd tu și profesorul clasei.' },
+    ru: { nagT: 'У вас есть несохранённый прогресс. Не забудьте сохранить, иначе он может пропасть.', nagB: 'Сохранить', login: 'Вход / Регистрация', join: 'Войти как ученик', newAcc: 'Аккаунт с таким именем и PIN не найден. Если входите впервые, введите код класса от учителя; иначе проверьте имя и PIN.', code: 'Код класса', name: 'Фамилия и имя', pin: 'PIN (4 цифры)', pinH: 'Выберите 4 цифры и запомните: имя + PIN работают на любом устройстве.', enter: 'Войти', close: 'Закрыть', logout: 'Выйти', save: 'Сохранить прогресс', saved: 'Прогресс сохранён ✓', unsaved: 'Есть несохранённый прогресс', clean: 'Прогресс сохранён', cls: 'Класс', err: 'Ошибка', noCls: 'Класса с таким кодом нет.', badPin: 'Имя и PIN не совпадают.', fill: 'Введите имя и PIN (4 цифры).', loaded: 'Ваш прогресс загружен.', hello: 'Привет', notIn: 'Войдите в класс учителя, чтобы сохранять прогресс.', teacherL: 'Кабинет учителя', private: 'Сохраняются имя, класс и прогресс; их видите вы и учитель класса.' },
+    en: { nagT: 'You have unsaved progress. Remember to save it, or you may lose it.', nagB: 'Save now', login: 'Sign in / Register', join: 'Student sign-in', newAcc: 'No account found for this name and PIN. If this is your first time, enter the class code from your teacher; otherwise check your name and PIN.', code: 'Class code', name: 'Full name', pin: 'PIN (4 digits)', pinH: 'Pick 4 digits and remember them: name + PIN work on any device.', enter: 'Enter', close: 'Close', logout: 'Sign out', save: 'Save progress', saved: 'Progress saved ✓', unsaved: 'You have unsaved progress', clean: 'Progress saved', cls: 'Class', err: 'Error', noCls: 'No class with this code.', badPin: 'Name and PIN do not match.', fill: 'Enter your name and a 4-digit PIN.', loaded: 'Your progress was loaded.', hello: 'Hi', notIn: "Join your teacher's class to save your progress.", teacherL: 'Teacher account', private: 'Your name, class and progress are saved; only you and the class teacher can see them.' }
   };
   const lang = () => { try { return window.__getLang(); } catch (e) { return 'ro'; } };
   const t = k => (SL[lang()] || SL.ro)[k];
@@ -1750,6 +1758,7 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
       }
     }
     saveWho(); C.ready = true; applyTeacherMode(); rerender();
+    if (C.role === 'student' && C.stu && C.stu.code && location.hash === '#save') { history.replaceState(null, '', location.pathname + location.search); try { await C.save(); } catch (e) {} }
   }
   function saveWho() {
     try {
@@ -1759,6 +1768,18 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
       localStorage.setItem('mpf-who', JSON.stringify({ name: nm, sub, role: C.role }));
     } catch (e) {}
   }
+
+  /* ---------- înștiințare: progres nesalvat ---------- */
+  let nagHide = 0;
+  function nagTick() {
+    let el = document.getElementById('savenag');
+    const show = C.role === 'student' && C.stu && C.stu.code && dirty() && Date.now() > nagHide && (window.__PAGE || {}).kind !== 'account';
+    if (!show) { if (el) el.remove(); return; }
+    if (!el) { el = document.createElement('div'); el.id = 'savenag'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
+    const key = lang(); if (el.dataset.l !== key) { el.dataset.l = key; el.innerHTML = `<span>💾 ${esc(t('nagT'))}</span><button type="button" data-cl="savenag">${esc(t('nagB'))}</button><button type="button" class="x" data-cl="nagx" aria-label="${esc(t('close'))}">×</button>`; }
+  }
+  setInterval(nagTick, 1500);
+  window.addEventListener('beforeunload', e => { if (C.role === 'student' && C.stu && C.stu.code && dirty()) { e.preventDefault(); e.returnValue = ''; } });
   C.isTeacher = () => !!C.user && (C.role === 'admin' || (C.role === 'teacher' && C.tdoc && C.tdoc.status === 'approved'));
   function applyTeacherMode() {
     try { window.__setTeacher && window.__setTeacher(C.isTeacher()); } catch (e) {}
@@ -1997,7 +2018,9 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
     const b = e.target.closest && e.target.closest('[data-cl]'); if (!b || !fb && !['open', 'close', 'tmopen'].includes(b.dataset.cl)) return;
     const a = b.dataset.cl, id = b.dataset.id;
     try {
-      if (a === 'prog') { C.menu = false; openProgress(); rerender(); }
+      if (a === 'savenag') { await C.save(); nagTick(); }
+      else if (a === 'nagx') { nagHide = Date.now() + 5 * 60 * 1000; nagTick(); }
+      else if (a === 'prog') { C.menu = false; openProgress(); rerender(); }
       else if (a === 'umenu') { C.menu = !C.menu; rerender(); setTimeout(placePop, 0); }
       else if (a === 'open') openJoin();
       else if (a === 'close') { const m = $('#modal'); if (m) m.innerHTML = ''; }
