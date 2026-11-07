@@ -250,4 +250,24 @@ try{var t=localStorage.getItem('mpf-theme');if(t==='dark'||t==='light')document.
 </script>
 
 <style>@media print{#matetutor-launcher{display:none!important}}body:has(#pdfOverlay:not([hidden])) #matetutor-launcher{display:none!important}</style>
+<script>window.__CNT={"projectId": "mate-examen-9", "apiKey": "AIzaSyDc8EFgskgfGtj2g6f3jjBGFqJ477jIJq4"};
+/* Contor anonim de vizitatori: nicio dată personală, fără cookie-uri. Fiecare browser e numărat o dată pe zi, o dată pe lună și o dată în total. */
+(function () {
+  try {
+    var F = window.__CNT; if (!F || navigator.webdriver) return;
+    var tz = 'Europe/Chisinau', d;
+    try { d = new Date().toLocaleDateString('sv-SE', { timeZone: tz }); } catch (e) { d = new Date().toISOString().slice(0, 10); }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) return;
+    var keys = [['d-' + d, 'mpf-cd', d], ['m-' + d.slice(0, 7), 'mpf-cm', d.slice(0, 7)], ['total', 'mpf-ct', '1']], todo = [];
+    keys.forEach(function (k) { var seen = null; try { seen = localStorage.getItem(k[1]); } catch (e) {} if (seen !== k[2]) todo.push(k); });
+    if (!todo.length) return;
+    var base = 'projects/' + F.projectId + '/databases/(default)/documents/';
+    var body = { writes: todo.map(function (k) { return { transform: { document: base + 'stats/' + k[0], fieldTransforms: [{ fieldPath: 'n', increment: { integerValue: '1' } }] } }; }) };
+    todo.forEach(function (k) { try { localStorage.setItem(k[1], k[2]); } catch (e) {} });
+    fetch('https://firestore.googleapis.com/v1/' + base.replace(/documents\/$/, '') + 'documents:commit?key=' + encodeURIComponent(F.apiKey), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), keepalive: true }).then(function (r) {
+      if (!r.ok) todo.forEach(function (k) { try { localStorage.removeItem(k[1]); } catch (e) {} });
+    }).catch(function () { todo.forEach(function (k) { try { localStorage.removeItem(k[1]); } catch (e) {} }); });
+  } catch (e) {}
+})();
+</script>
 </body></html>

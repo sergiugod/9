@@ -1898,6 +1898,7 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
     const bySchool = schools.map(sc => { const tt = ts.filter(x => x.status === 'approved' && (x.school || '—').trim() === sc); const cc = cls.filter(c => tt.some(x => x.id === c.teacherUid)); const st = cc.reduce((n, c) => n + ((S2[c.id] || []).length), 0); return `<tr><td>${esc(sc)}</td><td>${tt.map(x => esc(x.name)).join(', ')}</td><td>${cc.length}</td><td>${loadedAll ? st : '·'}</td></tr>`; }).join('');
     return `<div class="pan2"><h3>Rezumat</h3><p class="sub"><b>${ok}</b> / ${MAXT} profesori aprobați · <b>${pend}</b> în așteptare · <b>${schools.length}</b> școli · <b>${cls.length}</b> clase · <b>${loadedAll ? nStu : '·'}</b> elevi${loadedAll ? '' : ' (încarcă elevii pentru total)'}</p>
       <div class="row"><a class="btn" href="profesor.html" target="_top">Clasele mele</a><button class="btn alt" data-cl="reloadt">Reîncarcă</button><button class="btn alt" data-cl="aall" title="Citește toți elevii din toate clasele (câte o citire pe elev)">${loadedAll ? 'Reîncarcă toți elevii' : 'Încarcă toți elevii'}</button><button class="btn alt" data-cl="acsv" ${loadedAll ? '' : 'disabled'}>Descarcă tot (CSV)</button><button class="btn alt" data-cl="logout">Ieși</button></div></div>
+      ${statsHTML()}
       <div class="pan2"><h3>Profesori și clase</h3>${ts.length ? `<div style="overflow:auto"><table class="restab"><thead><tr><th>Profesor (apasă pentru clase)</th><th>Școala</th><th>Clase</th><th>Stare</th><th></th></tr></thead><tbody>${ts.slice().sort((a, b) => (a.status === 'pending' ? 0 : 1) - (b.status === 'pending' ? 0 : 1) || String(a.name).localeCompare(String(b.name), 'ro')).map(row).join('')}</tbody></table></div>` : '<p class="sub">Niciun profesor înregistrat încă.</p>'}</div>
       ${schools.length ? `<div class="pan2"><h3>Pe școli</h3><div style="overflow:auto"><table class="restab"><thead><tr><th>Școala</th><th>Profesori</th><th>Clase</th><th>Elevi</th></tr></thead><tbody>${bySchool}</tbody></table></div></div>` : ''}`;
   };
@@ -1920,8 +1921,21 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
     if (!fb || C.busy) return; C.busy = true;
     try { const q = await fb.db.collection('teachers').get(); C.teachers = q.docs.map(d => Object.assign({ id: d.id }, d.data())); } catch (e) { C.teachers = []; }
     try { const q2 = await fb.db.collection('classes').get(); C.aClasses = q2.docs.map(d => Object.assign({ id: d.id }, d.data())); } catch (e) { C.aClasses = []; }
+    try { const q3 = await fb.db.collection('stats').get(); C.stats = {}; q3.docs.forEach(d => { C.stats[d.id] = (d.data().n || 0); }); } catch (e) { C.stats = {}; }
     C.busy = false; rerender();
   }
+  const statsHTML = () => {
+    const S = C.stats || {}, today = new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Chisinau' }), mon = today.slice(0, 7);
+    const days = [], base = new Date(today + 'T12:00:00Z');
+    for (let i = 29; i >= 0; i--) { const x = new Date(base.getTime() - i * 864e5).toISOString().slice(0, 10); days.push([x, S['d-' + x] || 0]); }
+    const mx = Math.max(1, ...days.map(x => x[1]));
+    const months = Object.keys(S).filter(k => k[0] === 'm').sort().reverse();
+    return `<div class="pan2"><h3>Vizitatori</h3><p class="sub">Număr de vizitatori unici (un browser = un vizitator, o dată pe zi / lună). Nu se păstrează nume, IP sau țară.</p>
+      <p class="sub"><b>${S['d-' + today] || 0}</b> azi · <b>${S['m-' + mon] || 0}</b> luna aceasta · <b>${S.total || 0}</b> în total</p>
+      <div style="display:flex;align-items:flex-end;gap:2px;height:90px;margin:8px 0" aria-label="Vizitatori pe zile, ultimele 30 de zile">${days.map(x => `<div title="${x[0]}: ${x[1]}" style="flex:1;background:var(--g1,#3b5bff);opacity:.85;border-radius:3px 3px 0 0;height:${Math.max(2, Math.round(x[1] / mx * 100))}%"></div>`).join('')}</div>
+      <small>Ultimele 30 de zile (maximum ${mx} pe zi)</small>
+      ${months.length ? `<div style="overflow:auto;margin-top:8px"><table class="restab"><thead><tr><th>Luna</th><th>Vizitatori</th></tr></thead><tbody>${months.map(k => `<tr><td>${k.slice(2)}</td><td><b>${S[k]}</b></td></tr>`).join('')}</tbody></table></div>` : ''}</div>`;
+  };
   const tErr = m => { const x = $('#tErr'); if (x) x.textContent = m; };
   const eMsg = e => { const c = (e && e.code) || ''; if (/wrong-password|invalid-credential|user-not-found|invalid-email/.test(c)) return 'E-mail sau parolă greșită.'; if (/email-already/.test(c)) return 'Există deja un cont cu acest e-mail.'; if (/weak/.test(c)) return 'Parola este prea scurtă (minim 6 caractere).'; if (/popup/.test(c)) return 'Fereastra Google a fost închisă sau blocată.'; return 'Eroare: ' + (c || (e && e.message)); };
   /* ---------- evenimente ---------- */
@@ -2130,4 +2144,24 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
 </script>
 
 <style>@media print{#matetutor-launcher{display:none!important}}body:has(#pdfOverlay:not([hidden])) #matetutor-launcher{display:none!important}</style>
+<script>window.__CNT={"projectId": "mate-examen-9", "apiKey": "AIzaSyDc8EFgskgfGtj2g6f3jjBGFqJ477jIJq4"};
+/* Contor anonim de vizitatori: nicio dată personală, fără cookie-uri. Fiecare browser e numărat o dată pe zi, o dată pe lună și o dată în total. */
+(function () {
+  try {
+    var F = window.__CNT; if (!F || navigator.webdriver) return;
+    var tz = 'Europe/Chisinau', d;
+    try { d = new Date().toLocaleDateString('sv-SE', { timeZone: tz }); } catch (e) { d = new Date().toISOString().slice(0, 10); }
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) return;
+    var keys = [['d-' + d, 'mpf-cd', d], ['m-' + d.slice(0, 7), 'mpf-cm', d.slice(0, 7)], ['total', 'mpf-ct', '1']], todo = [];
+    keys.forEach(function (k) { var seen = null; try { seen = localStorage.getItem(k[1]); } catch (e) {} if (seen !== k[2]) todo.push(k); });
+    if (!todo.length) return;
+    var base = 'projects/' + F.projectId + '/databases/(default)/documents/';
+    var body = { writes: todo.map(function (k) { return { transform: { document: base + 'stats/' + k[0], fieldTransforms: [{ fieldPath: 'n', increment: { integerValue: '1' } }] } }; }) };
+    todo.forEach(function (k) { try { localStorage.setItem(k[1], k[2]); } catch (e) {} });
+    fetch('https://firestore.googleapis.com/v1/' + base.replace(/documents\/$/, '') + 'documents:commit?key=' + encodeURIComponent(F.apiKey), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), keepalive: true }).then(function (r) {
+      if (!r.ok) todo.forEach(function (k) { try { localStorage.removeItem(k[1]); } catch (e) {} });
+    }).catch(function () { todo.forEach(function (k) { try { localStorage.removeItem(k[1]); } catch (e) {} }); });
+  } catch (e) {}
+})();
+</script>
 </body></html>
