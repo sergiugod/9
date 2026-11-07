@@ -460,6 +460,27 @@ a.btn{text-decoration:none;display:inline-block}
 .sl.it.on i{background:#fff;color:#0b2d78;box-shadow:none}
 .restab td small.tb{opacity:.85;font-size:.72rem}
 .restab td b{font-size:.95rem}
+/* meniu utilizator: cerculeț cu inițiale */
+.uwrap{position:relative;margin:0 10px 8px;display:flex}
+.uav{position:relative;width:46px;height:46px;border-radius:50%;border:2px solid rgba(255,255,255,.7);background:#fff;color:#1e3a8a;font:800 1rem/1 inherit;font-family:inherit;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.uav.on{box-shadow:0 0 0 3px rgba(255,255,255,.45)}
+.uav i{position:absolute;top:-2px;right:-2px;width:12px;height:12px;border-radius:50%;background:#e11d48;border:2px solid #fff}
+.upop{position:absolute;left:0;bottom:56px;z-index:60;width:210px;max-width:calc(100vw - 30px);padding:12px;border-radius:14px;background:linear-gradient(160deg,var(--g1,#1d4ed8),var(--g2,#0e7490));border:1px solid rgba(255,255,255,.35);box-shadow:0 10px 30px rgba(0,0,0,.4);display:flex;flex-direction:column;gap:6px}
+.upop .who{color:#fff;display:flex;flex-direction:column;line-height:1.25;word-break:break-word}.upop .who small{opacity:.8}
+
+.sbtn.alt2{background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.55)}
+.pgr{margin:10px 0}.pgt{font-size:.88rem;color:var(--ink)}.pgt span{color:var(--muted)}
+.pgb{height:8px;border-radius:5px;background:var(--line);margin:4px 0;overflow:hidden}.pgb i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#fb923c,#fbbf24,#a3e635,#4ade80)}
+.pgr small{color:var(--muted)}
+.modal .box{max-height:88vh;overflow:auto}
+
+/* cerculețul utilizatorului în bara de sus */
+.banner .tools{display:flex;align-items:center;gap:8px}
+.banner .tools .uwrap{margin:0}
+.banner .uav{width:38px;height:38px;font-size:.82rem}
+.upop{position:fixed;left:auto;bottom:auto;z-index:200}
+.loginb2{display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:999px;background:#fff;color:#1e3a8a;font-weight:700;font-size:.85rem;text-decoration:none;white-space:nowrap}
+@media(max-width:560px){.loginb2{padding:0 10px;font-size:.78rem}}
 </style></head>
 <body><div id="app"></div><div id="modal"></div><div id="pdfOverlay" hidden></div>
 <script>
@@ -1227,7 +1248,7 @@ function shell(inner) {
   const collapsed = (() => { try { return localStorage.getItem('mpf-side') === 'c'; } catch (e) { return false; } })();
   return `<div class="app ${collapsed ? 'collapsed' : ''} ${S.drawer ? 'drawer' : ''}"><div class="sback" data-act="menu"></div>${sideHTML()}<div class="mainwrap"><div class="board">
   <header class="banner"><div class="btxt"><h1>${tx('bannerT')}</h1><p>${tx('bannerS')}</p></div>${bannerSvg()}
-  <div class="tools"><button class="chip theme menub" data-act="menu" title="${tx('menu')}" aria-label="${tx('menu')}">${svgIc('list')}</button><span class="seg">${LANGS.map(l => `<button class="chip ${l === S.lang ? 'on' : ''}" data-act="lang" data-v="${l}">${l.toUpperCase()}</button>`).join('')}</span>
+  <div class="tools"><button class="chip theme menub" data-act="menu" title="${tx('menu')}" aria-label="${tx('menu')}">${svgIc('list')}</button><span class="seg">${LANGS.map(l => `<button class="chip ${l === S.lang ? 'on' : ''}" data-act="lang" data-v="${l}">${l.toUpperCase()}</button>`).join('')}</span>${window.CLD ? CLD.userHTML() : ''}
   ${themeBtn()}<button class="chip theme" data-act="tour" title="${tx('tourBtn')}" aria-label="${tx('tourBtn')}">?</button><button class="chip theme" data-act="fs" title="${tx('fullscr')}" aria-label="${tx('fullscr')}">${svgIc('expand')}</button>${window.FIREBASE_CONFIG ? '' : `<button class="chip teach ${S.teacher ? 'on' : ''}" data-act="teacher">👩‍🏫 ${S.teacher ? tx('teacherOn') : tx('teacher')}</button>`}</div></header>
   <div class="icard"><span class="ilogo">∑</span><div class="ititle"><b>${title}</b><small>${sub}</small></div>${nav}</div>
   <div class="pcols"><main class="paper">${S.teacher ? `<div class="teachbar past-noprint"><span>${S.keys ? tx('keysOn') : tx('keysOff')}</span> <button class="btn ${S.keys ? 'alt' : ''}" style="padding:3px 12px;font-size:.85rem" data-act="keys">${S.keys ? tx('hideKeys') : tx('showKeys')}</button>${window.FIREBASE_CONFIG ? '' : ` <button class="btn alt" style="padding:2px 10px;font-size:.8rem" data-act="teacher-off">${tx('leave')}</button>`}</div>` : ''}${inner}</main></div>
@@ -1717,9 +1738,9 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
   const DOM = '@elev.mate9.invalid';
   const C = { enabled: !!CFG, ready: false, error: false, user: null, role: null, tdoc: null, stu: null, classes: null, sel: null, students: null, open: null, teachers: null, busy: false, msg: '' };
   const SL = {
-    ro: { join: 'Intră ca elev', newAcc: 'Nu am găsit un cont cu acest nume și PIN. Dacă intri prima dată, scrie codul clasei primit de la profesor; altfel verifică numele și PIN-ul.', pinH: 'Alege 4 cifre și ține-le minte: nume + PIN te recunosc de pe orice dispozitiv.', _x: '', code: 'Codul clasei', name: 'Nume și prenume', pin: 'PIN (4 cifre)', enter: 'Intră', close: 'Închide', logout: 'Ieși', save: 'Salvează progresul', saved: 'Progres salvat ✓', unsaved: 'Ai progres nesalvat', clean: 'Progres salvat', cls: 'Clasa', err: 'Eroare', noCls: 'Nu există o clasă cu acest cod.', badPin: 'Numele și PIN-ul nu se potrivesc.', fill: 'Completează numele și PIN-ul (4 cifre).', loaded: 'Progresul tău a fost încărcat.', hello: 'Salut', notIn: 'Intră în clasa profesorului ca să-ți salvezi progresul.', teacherL: 'Cont profesor', private: 'Se salvează numele tău, clasa și progresul la exerciții; le văd tu și profesorul clasei.' },
-    ru: { join: 'Войти как ученик', newAcc: 'Аккаунт с таким именем и PIN не найден. Если входите впервые, введите код класса от учителя; иначе проверьте имя и PIN.', code: 'Код класса', name: 'Фамилия и имя', pin: 'PIN (4 цифры)', pinH: 'Выберите 4 цифры и запомните: имя + PIN работают на любом устройстве.', enter: 'Войти', close: 'Закрыть', logout: 'Выйти', save: 'Сохранить прогресс', saved: 'Прогресс сохранён ✓', unsaved: 'Есть несохранённый прогресс', clean: 'Прогресс сохранён', cls: 'Класс', err: 'Ошибка', noCls: 'Класса с таким кодом нет.', badPin: 'Имя и PIN не совпадают.', fill: 'Введите имя и PIN (4 цифры).', loaded: 'Ваш прогресс загружен.', hello: 'Привет', notIn: 'Войдите в класс учителя, чтобы сохранять прогресс.', teacherL: 'Кабинет учителя', private: 'Сохраняются имя, класс и прогресс; их видите вы и учитель класса.' },
-    en: { join: 'Student sign-in', newAcc: 'No account found for this name and PIN. If this is your first time, enter the class code from your teacher; otherwise check your name and PIN.', code: 'Class code', name: 'Full name', pin: 'PIN (4 digits)', pinH: 'Pick 4 digits and remember them: name + PIN work on any device.', enter: 'Enter', close: 'Close', logout: 'Sign out', save: 'Save progress', saved: 'Progress saved ✓', unsaved: 'You have unsaved progress', clean: 'Progress saved', cls: 'Class', err: 'Error', noCls: 'No class with this code.', badPin: 'Name and PIN do not match.', fill: 'Enter your name and a 4-digit PIN.', loaded: 'Your progress was loaded.', hello: 'Hi', notIn: "Join your teacher's class to save your progress.", teacherL: 'Teacher account', private: 'Your name, class and progress are saved; only you and the class teacher can see them.' }
+    ro: { login: 'Intră / Înregistrare', join: 'Intră ca elev', newAcc: 'Nu am găsit un cont cu acest nume și PIN. Dacă intri prima dată, scrie codul clasei primit de la profesor; altfel verifică numele și PIN-ul.', pinH: 'Alege 4 cifre și ține-le minte: nume + PIN te recunosc de pe orice dispozitiv.', _x: '', code: 'Codul clasei', name: 'Nume și prenume', pin: 'PIN (4 cifre)', enter: 'Intră', close: 'Închide', logout: 'Ieși', save: 'Salvează progresul', saved: 'Progres salvat ✓', unsaved: 'Ai progres nesalvat', clean: 'Progres salvat', cls: 'Clasa', err: 'Eroare', noCls: 'Nu există o clasă cu acest cod.', badPin: 'Numele și PIN-ul nu se potrivesc.', fill: 'Completează numele și PIN-ul (4 cifre).', loaded: 'Progresul tău a fost încărcat.', hello: 'Salut', notIn: 'Intră în clasa profesorului ca să-ți salvezi progresul.', teacherL: 'Cont profesor', private: 'Se salvează numele tău, clasa și progresul la exerciții; le văd tu și profesorul clasei.' },
+    ru: { login: 'Вход / Регистрация', join: 'Войти как ученик', newAcc: 'Аккаунт с таким именем и PIN не найден. Если входите впервые, введите код класса от учителя; иначе проверьте имя и PIN.', code: 'Код класса', name: 'Фамилия и имя', pin: 'PIN (4 цифры)', pinH: 'Выберите 4 цифры и запомните: имя + PIN работают на любом устройстве.', enter: 'Войти', close: 'Закрыть', logout: 'Выйти', save: 'Сохранить прогресс', saved: 'Прогресс сохранён ✓', unsaved: 'Есть несохранённый прогресс', clean: 'Прогресс сохранён', cls: 'Класс', err: 'Ошибка', noCls: 'Класса с таким кодом нет.', badPin: 'Имя и PIN не совпадают.', fill: 'Введите имя и PIN (4 цифры).', loaded: 'Ваш прогресс загружен.', hello: 'Привет', notIn: 'Войдите в класс учителя, чтобы сохранять прогресс.', teacherL: 'Кабинет учителя', private: 'Сохраняются имя, класс и прогресс; их видите вы и учитель класса.' },
+    en: { login: 'Sign in / Register', join: 'Student sign-in', newAcc: 'No account found for this name and PIN. If this is your first time, enter the class code from your teacher; otherwise check your name and PIN.', code: 'Class code', name: 'Full name', pin: 'PIN (4 digits)', pinH: 'Pick 4 digits and remember them: name + PIN work on any device.', enter: 'Enter', close: 'Close', logout: 'Sign out', save: 'Save progress', saved: 'Progress saved ✓', unsaved: 'You have unsaved progress', clean: 'Progress saved', cls: 'Class', err: 'Error', noCls: 'No class with this code.', badPin: 'Name and PIN do not match.', fill: 'Enter your name and a 4-digit PIN.', loaded: 'Your progress was loaded.', hello: 'Hi', notIn: "Join your teacher's class to save your progress.", teacherL: 'Teacher account', private: 'Your name, class and progress are saved; only you and the class teacher can see them.' }
   };
   const lang = () => { try { return window.__getLang(); } catch (e) { return 'ro'; } };
   const t = k => (SL[lang()] || SL.ro)[k];
@@ -1745,6 +1766,7 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
     } catch (e) { C.error = true; C.ready = true; rerender(); }
   }
   async function onUser(u) {
+    if (u && location.hash === '#logout') { try { history.replaceState(null, '', location.pathname + location.search); await fb.auth.signOut(); } catch (e) {} return; }
     C.user = u; C.role = null; C.tdoc = null; C.stu = null; C.classes = null; C.sel = null; C.students = null; C.teachers = null;
     if (u) {
       const em = (u.email || '').toLowerCase();
@@ -1753,7 +1775,7 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
         let code = '', nm = ''; try { const r = await fb.db.doc('students/' + u.uid).get(); if (r.exists) { code = r.data().code || ''; nm = r.data().name || ''; } } catch (e) {}
         if (!nm && C.pendingName) nm = C.pendingName;
         if (!code && C.pendingCode) code = C.pendingCode;
-        if (!code) { C.stu = { code: '' }; C.ready = true; rerender(); return; }
+        if (!code) { C.stu = { code: '', name: nm }; saveWho(); C.ready = true; rerender(); return; }
         try { const d = await fb.db.doc(`classes/${code}/students/${u.uid}`).get(); C.stu = Object.assign({ code, name: nm }, d.exists ? d.data() : {}); if (d.exists) mergeCloud(d.data()); } catch (e) { C.stu = { code, name: nm }; }
       } else {
         try { const d = await fb.db.doc('teachers/' + u.uid).get(); C.tdoc = d.exists ? d.data() : null; } catch (e) {}
@@ -1761,7 +1783,15 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
         if (C.role === 'teacher' && u.emailVerified !== false) { try { const ad = await fb.db.doc('admins/' + em).get(); if (ad.exists) C.role = 'admin'; } catch (e) {} }
       }
     }
-    C.ready = true; applyTeacherMode(); rerender();
+    saveWho(); C.ready = true; applyTeacherMode(); rerender();
+  }
+  function saveWho() {
+    try {
+      if (!C.user || !C.role) { localStorage.removeItem('mpf-who'); return; }
+      const nm = C.role === 'student' ? ((C.stu && C.stu.name) || '') : whoName();
+      const sub = C.role === 'student' ? (C.stu && C.stu.code ? t('cls') + ' ' + C.stu.code : '') : (C.role === 'admin' ? 'Administrator' : ((C.tdoc && C.tdoc.school) || ''));
+      localStorage.setItem('mpf-who', JSON.stringify({ name: nm, sub, role: C.role }));
+    } catch (e) {}
   }
   C.isTeacher = () => !!C.user && (C.role === 'admin' || (C.role === 'teacher' && C.tdoc && C.tdoc.status === 'approved'));
   function applyTeacherMode() {
@@ -1839,16 +1869,36 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
       <div class="pan2"><h3>Profesor</h3><p class="sub">Cu e-mail și parolă sau cu Google. Conturile noi sunt aprobate de administrator, apoi creezi clase și dai elevilor codul.</p><a class="btn" href="profesor.html" target="_top">Intră / Înregistrare profesor</a></div></div>`;
   };
   const whoName = () => (C.tdoc && C.tdoc.name) || (C.user && (C.user.displayName || C.user.email)) || '';
-  C.sideHTML = function () {
+  const initials = n => { const w = String(n || '').trim().split(/[\s\-]+/).filter(Boolean); if (!w.length) return '?'; return ((w[0][0] || '') + (w.length > 1 ? (w[w.length - 1][0] || '') : '')).toUpperCase(); };
+  const PT = { ro: { h: 'Progresul meu', tot: 'Progres total', ex: 'Examen (test complet)', best: 'cel mai bun test', item: 'Item', note: 'Un exercițiu se numără dacă ai rezolvat corect din prima încercare. Obiectiv: 50 pe item.', btn: 'Progresul meu' }, ru: { h: 'Мой прогресс', tot: 'Общий прогресс', ex: 'Экзамен (полный тест)', best: 'лучший тест', item: 'Пункт', note: 'Задание засчитывается, если решено верно с первой попытки. Цель: 50 на пункт.', btn: 'Мой прогресс' }, en: { h: 'My progress', tot: 'Total progress', ex: 'Exam (full test)', best: 'best test', item: 'Item', note: 'An exercise counts when solved correctly on the first try. Goal: 50 per item.', btn: 'My progress' } };
+  const pt = k => (PT[lang()] || PT.ro)[k];
+  function openProgress() {
+    const m = $('#modal'); if (!m) return; let pr = {}; try { pr = P().load() || {}; } catch (e) {}
+    const L = lang(); let n = 0; const rows = [];
+    for (let i = 1; i <= 12; i++) { const it = pr[i] || {}; const v = Math.min(50, it.solved || 0); n += v; const p = Math.round(v / 50 * 100); const nmI = (typeof ITEM_TITLES !== 'undefined' && ITEM_TITLES[i]) ? ITEM_TITLES[i][L] : '';
+      rows.push(`<div class="pgr"><div class="pgt"><b>${pt('item')} ${i}</b> <span>${esc(nmI)}</span></div><div class="pgb"><i style="width:${p}%"></i></div><small><b>${p}%</b> · ${v}/50${it.best ? ' · ' + pt('best') + ' ' + Math.round(it.best * 100) + '%' : ''}</small></div>`); }
+    const tp = Math.round(n / 600 * 100), ex = pr.exam ? Math.round(pr.exam * 100) + '%' : '·';
+    m.innerHTML = `<div class="modal"><div class="box"><h2 class="t" style="margin-top:0">${pt('h')}</h2><p class="sub"><b>${pt('tot')}: ${tp}%</b> (${n}/600) · ${pt('ex')}: <b>${ex}</b></p>${rows.join('')}<p class="sub" style="font-size:.8rem">${pt('note')}</p><div class="row"><button class="btn alt" data-cl="close">${t('close')}</button></div></div></div>`;
+  }
+  C.sideHTML = function () { return ''; };
+  const PAGE_KIND_OK = () => { try { return (window.__PAGE || {}).kind !== 'account'; } catch (e) { return true; } };
+  C.userHTML = function () {
     if (!C.enabled || C.error) return '';
+    let nm = '', body = '', sub = '', dirtyDot = false;
     if (C.role === 'student') {
-      const d = dirty();
-      return `<div class="scloud"><div class="who"><b>${esc((C.stu && C.stu.name) || '')}</b><small>${t('cls')} ${esc(C.stu && C.stu.code)}</small></div>
-      <button class="sbtn ${d ? 'dirty' : ''}" data-cl="save" title="${d ? t('unsaved') : t('clean')}">${t('save')}${d ? '<i></i>' : ''}</button><button class="slnk" data-cl="logout">${t('logout')}</button></div>`;
+      const d = dirty(); dirtyDot = d; nm = (C.stu && C.stu.name) || ''; sub = `${t('cls')} ${esc(C.stu && C.stu.code)}`;
+      body = `<button class="sbtn alt2" data-cl="prog">${pt('btn')}</button><button class="sbtn ${d ? 'dirty' : ''}" data-cl="save" title="${d ? t('unsaved') : t('clean')}">${t('save')}${d ? '<i></i>' : ''}</button><button class="slnk" data-cl="logout">${t('logout')}</button>`;
+    } else if (C.role === 'teacher' || C.role === 'admin') {
+      nm = whoName(); sub = C.role === 'admin' ? 'Administrator' : esc((C.tdoc && C.tdoc.school) || t('teacherL'));
+      body = `<button class="sbtn alt2" data-cl="prog">${pt('btn')}</button><a class="sbtn" href="${C.role === 'admin' ? 'admin.html' : 'profesor.html'}" target="_top">${C.role === 'admin' ? 'Administrare' : t('teacherL')}</a>${C.role === 'admin' ? '<a class="slnk" href="profesor.html" target="_top">Clasele mele</a>' : ''}<button class="slnk" data-cl="logout">${t('logout')}</button>`;
+    } else {
+      return PAGE_KIND_OK() ? `<a class="loginb2" href="cont.html" target="_top">${t('login')}</a>` : '';
     }
-    if (C.role === 'teacher' || C.role === 'admin') return `<div class="scloud"><div class="who"><b>${esc(whoName())}</b><small>${C.role === 'admin' ? 'Administrator' : esc((C.tdoc && C.tdoc.school) || t('teacherL'))}</small></div><a class="sbtn" href="${C.role === 'admin' ? 'admin.html' : 'profesor.html'}" target="_top">${C.role === 'admin' ? 'Administrare' : t('teacherL')}</a>${C.role === 'admin' ? '<a class="slnk" href="profesor.html" target="_top">Clasele mele</a>' : ''}<button class="slnk" data-cl="logout">${t('logout')}</button></div>`;
-    return `<div class="scloud"><button class="sbtn" data-cl="open">${t('join')}</button><a class="slnk" href="profesor.html" target="_top">${t('teacherL')}</a></div>`;
+    return `<div class="uwrap"><button class="uav ${C.menu ? 'on' : ''}" data-cl="umenu" title="${esc(nm)}" aria-label="${esc(nm)}" aria-expanded="${!!C.menu}">${esc(initials(nm))}${dirtyDot ? '<i></i>' : ''}</button>${C.menu ? `<div class="upop"><div class="who"><b>${esc(nm)}</b><small>${sub}</small></div>${body}</div>` : ''}</div>`;
   };
+  function placePop() { const b = $('.uav'), p = $('.upop'); if (!b || !p) return; const r = b.getBoundingClientRect(); p.style.top = (r.bottom + 8) + 'px'; p.style.right = Math.max(8, innerWidth - r.right) + 'px'; }
+  window.addEventListener('resize', placePop);
+  document.addEventListener('click', e => { if (C.menu && !(e.target.closest && (e.target.closest('.upop') || e.target.closest('[data-cl="umenu"]')))) { C.menu = false; rerender(); } });
   /* ---------- profesor ---------- */
   const fdate = ts => { try { const d = ts && ts.toDate ? ts.toDate() : null; return d ? d.toLocaleString('ro-RO', { dateStyle: 'short', timeStyle: 'short' }) : '—'; } catch (e) { return '—'; } };
   const genCode = () => { const A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; let s = ''; for (let i = 0; i < 6; i++) s += A[Math.floor(Math.random() * A.length)]; return s; };
@@ -1981,7 +2031,9 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
     const b = e.target.closest && e.target.closest('[data-cl]'); if (!b || !fb && !['open', 'close', 'tmopen'].includes(b.dataset.cl)) return;
     const a = b.dataset.cl, id = b.dataset.id;
     try {
-      if (a === 'open') openJoin();
+      if (a === 'prog') { C.menu = false; openProgress(); rerender(); }
+      else if (a === 'umenu') { C.menu = !C.menu; rerender(); setTimeout(placePop, 0); }
+      else if (a === 'open') openJoin();
       else if (a === 'close') { const m = $('#modal'); if (m) m.innerHTML = ''; }
       else if (a === 'join') await joinClass();
       else if (a === 'save') await C.save();
