@@ -1226,7 +1226,7 @@ function shell(inner) {
   ${themeBtn()}<button class="chip theme" data-act="tour" title="${tx('tourBtn')}" aria-label="${tx('tourBtn')}">?</button><button class="chip theme" data-act="fs" title="${tx('fullscr')}" aria-label="${tx('fullscr')}">${svgIc('expand')}</button>${window.FIREBASE_CONFIG ? '' : `<button class="chip teach ${S.teacher ? 'on' : ''}" data-act="teacher">👩‍🏫 ${S.teacher ? tx('teacherOn') : tx('teacher')}</button>`}</div></header>
   <div class="icard"><span class="ilogo">∑</span><div class="ititle"><b>${title}</b><small>${sub}</small></div>${nav}</div>
   <div class="pcols"><main class="paper">${S.teacher ? `<div class="teachbar past-noprint"><span>${S.keys ? tx('keysOn') : tx('keysOff')}</span> <button class="btn ${S.keys ? 'alt' : ''}" style="padding:3px 12px;font-size:.85rem" data-act="keys">${S.keys ? tx('hideKeys') : tx('showKeys')}</button>${window.FIREBASE_CONFIG ? '' : ` <button class="btn alt" style="padding:2px 10px;font-size:.8rem" data-act="teacher-off">${tx('leave')}</button>`}</div>` : ''}${inner}</main></div>
-  <footer class="lic">© 2026 Godovaniuc Ana · ${tx('lic')} <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></footer></div></div></div>`;
+  <footer class="lic">© 2026 Godovaniuc Ana, Godovaniuc Sergiu · ${tx('lic')} <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></footer></div></div></div>`;
 }
 function tabsHTML() {
   if (PAGE.kind === 'exam' || PAGE.kind === 'past') return `<div class="tabs past-noprint"><!-- ← LINK: Acasă → pagina de start (HOME_URL din build.py) --><a class="tab" href="${window.HOME_URL || 'index.html'}" target="_top">🏠 ${tx('home')}</a></div>`;
@@ -1575,7 +1575,7 @@ function paginate(container, o) {
 const scoreLine = max => `<div class="t2 scoreln"><span>${tx('maxPts')}: <b>${Math.round(max * 100) / 100} ${tx('pts')}</b></span><span>${tx('gotPts')}: ______ / ${Math.round(max * 100) / 100} &nbsp; ${tx('grade')}: ______</span></div>`;
 function buildSheets(sheets, o) {
   sheets.innerHTML = '';
-  const foot = (extra) => (k, n) => `<span>© 2026 Godovaniuc Ana · CC BY-NC-SA 4.0</span><span>${extra} · ${tx('page')} ${k}/${n}</span>`;
+  const foot = (extra) => (k, n) => `<span>© 2026 Godovaniuc Ana, Godovaniuc Sergiu · CC BY-NC-SA 4.0</span><span>${extra} · ${tx('page')} ${k}/${n}</span>`;
   const fieldsLine = `<div class="t3"><span>${tx('name')}:</span><span style="flex:.45">${tx('cls')}:</span><span style="flex:.45">${tx('date')}:</span></div><div class="t3"><span>${tx('inst')}:</span></div>`;
   if (o.kind === 'past') { buildPastSheets(sheets, o, foot, fieldsLine); const z0 = Math.min(1, (window.innerWidth - 16) / (210 * 3.7795)); sheets.style.zoom = z0 < 1 ? z0 : ''; return; }
   const keyData = [];

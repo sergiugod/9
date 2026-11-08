@@ -140,7 +140,7 @@ footer a{color:var(--brand)}
   <div class="grid" id="items"></div>
 
   <footer>
-    <span>© 2026 Godovaniuc Ana</span>
+    <span>© 2026 Godovaniuc Ana, Godovaniuc Sergiu</span>
     <span><span id="lic"></span> <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a></span>
   </footer>
 </div>
@@ -208,7 +208,7 @@ var T={
  guide:{ro:'Ghid de utilizare (cu imagini)',ru:'Руководство пользователя (с картинками)',en:'User guide (with pictures)'},
  login:{ro:'Intră / Înregistrare',ru:'Вход / Регистрация',en:'Sign in / Register'},
  brandSub:{ro:'Pregătire pentru examen',ru:'Подготовка к экзамену',en:'Exam preparation'},
- author:{ro:'Pagină creată de',ru:'Страницу создала',en:'Page created by'},
+ author:{ro:'Autor:',ru:'Автор:',en:'Author:'},design:{ro:'Design:',ru:'Дизайн:',en:'Design:'},
  eyebrow:{ro:'Matematică · gimnaziu',ru:'Математика · гимназия',en:'Mathematics · lower secondary'},
  h1:{ro:'Exersează fiecare item, <em>pas cu pas</em>.',ru:'Тренируй каждое задание, <em>шаг за шагом</em>.',en:'Practise every item, <em>step by step</em>.'},
  lead:{ro:'Exerciții generate automat, cu rezolvări, teste cronometrate și fișe PDF gata de tipărit. Alege un item sau încearcă o simulare completă de examen.',ru:'Автоматически создаваемые задания с решениями, тесты на время и готовые к печати листы PDF. Выбери пункт или попробуй полную симуляцию экзамена.',en:'Automatically generated exercises with solutions, timed tests and print-ready PDF sheets. Pick an item or try a full exam simulation.'},
@@ -242,7 +242,7 @@ function card(url,no,title,desc,tags,hl,theoryUrl,showTheory){
 }
 function draw(){
   document.documentElement.lang=lang;
-  $('brandSub').textContent=T.brandSub[lang];$('eyebrow').textContent=T.eyebrow[lang];$('h1').innerHTML=T.h1[lang];$('lead').textContent=T.lead[lang];$('loginB').textContent=T.login[lang];$('accS').textContent=T.accS[lang];$('accT').textContent=T.accT[lang];$('accT').href='profesor.html';$('guideL').textContent='📘 '+T.guide[lang];$('author').innerHTML=T.author[lang]+' <b>Godovaniuc Ana</b>';
+  $('brandSub').textContent=T.brandSub[lang];$('eyebrow').textContent=T.eyebrow[lang];$('h1').innerHTML=T.h1[lang];$('lead').textContent=T.lead[lang];$('loginB').textContent=T.login[lang];$('accS').textContent=T.accS[lang];$('accT').textContent=T.accT[lang];$('accT').href='profesor.html';$('guideL').textContent='📘 '+T.guide[lang];$('author').innerHTML=T.author[lang]+' <b>Godovaniuc Ana</b> · '+T.design[lang]+' <b>Godovaniuc Sergiu</b>';
   $('sec1').textContent=T.sec1[lang];$('sec2').textContent=T.sec2[lang];$('lic').textContent=T.lic[lang];
   var c=$('ctas');c.innerHTML='';
   var a=document.createElement('a');a.className='cta p'+(LINKS.testComplet?'':' off');a.textContent=T.cta1[lang]+' →';if(LINKS.testComplet){a.href=LINKS.testComplet;a.target=LINK_TARGET;}c.appendChild(a);
@@ -275,7 +275,7 @@ function sky(){var s=$('sky'),sym=['π','+','−','×','÷','=','√','∠','△
 
 /* utilizator logat (semnalat de celelalte pagini prin localStorage 'mpf-who'): cerculeț cu inițiale în loc de butonul de logare */
 var UT={nagT:{ro:'Ai progres nesalvat. Nu uita să-l salvezi, altfel îl poți pierde.',ru:'У вас есть несохранённый прогресс. Не забудьте сохранить, иначе он может пропасть.',en:'You have unsaved progress. Remember to save it, or you may lose it.'},nagB:{ro:'Salvează acum',ru:'Сохранить',en:'Save now'},prog:{ro:'Progresul meu',ru:'Мой прогресс',en:'My progress'},acc:{ro:'Contul meu',ru:'Мой аккаунт',en:'My account'},out:{ro:'Ieși',ru:'Выйти',en:'Sign out'},tp:{ro:'Progres total',ru:'Общий прогресс',en:'Total progress'},ex:{ro:'Examen (test complet)',ru:'Экзамен (полный тест)',en:'Exam (full test)'},best:{ro:'cel mai bun test',ru:'лучший тест',en:'best test'},close:{ro:'Închide',ru:'Закрыть',en:'Close'},teach:{ro:'Spațiul profesorului',ru:'Кабинет учителя',en:'Teacher space'},adm:{ro:'Administrare',ru:'Администрирование',en:'Administration'}};
-function whoGet(){try{var w=JSON.parse(localStorage.getItem('mpf-who'));return w&&w.role?w:null}catch(e){return null}}
+function whoGet(){if(window.LOCAL_ONLY)return null;try{var w=JSON.parse(localStorage.getItem('mpf-who'));return w&&w.role?w:null}catch(e){return null}}
 function inits(n){var w=String(n||'').trim().split(/[\s\-]+/).filter(Boolean);if(!w.length)return '?';return((w[0][0]||'')+(w.length>1?(w[w.length-1][0]||''):'')).toUpperCase()}
 function escH(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 var uOpen=false;
