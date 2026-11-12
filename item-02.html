@@ -489,6 +489,14 @@ a.btn{text-decoration:none;display:inline-block}
 .uav i{animation:nagp 1.4s infinite}@keyframes nagp{50%{transform:scale(1.35)}}
 @media(prefers-reduced-motion:reduce){.uav i,#savenag{animation:none}}
 @media(max-width:560px){#savenag{flex-wrap:wrap;bottom:78px}}
+
+/* progres nesalvat: cerculețul se colorează, fără bandă */
+.uav.nag{background:#fde047;color:#422006;border-color:#f59e0b;animation:nagring 1.6s infinite}
+@keyframes nagring{0%{box-shadow:0 0 0 0 rgba(245,158,11,.7)}70%{box-shadow:0 0 0 10px rgba(245,158,11,0)}100%{box-shadow:0 0 0 0 rgba(245,158,11,0)}}
+@media(prefers-reduced-motion:reduce){.uav.nag{animation:none;box-shadow:0 0 0 3px rgba(245,158,11,.6)}}
+/* bara de unelte (limbă, utilizator, temă) rămâne vizibilă la derulare */
+.banner .tools.stuck{position:fixed!important;top:10px;right:14px;left:auto;width:auto;z-index:170;padding:6px 10px;border-radius:999px;background:linear-gradient(120deg,#1e5eff,#22c3d6);box-shadow:0 8px 22px rgba(0,0,0,.3);flex-wrap:nowrap;order:0}
+@media(max-width:560px){.banner .tools.stuck{right:8px;top:8px;gap:5px;padding:5px 8px}}
 </style></head>
 <body><div id="app"></div><div id="modal"></div><div id="pdfOverlay" hidden></div>
 <script>
@@ -2221,6 +2229,10 @@ document.addEventListener('input', e => { const el = e.target; if (el.matches &&
 document.addEventListener('change', e => { const el = e.target; if (!el.dataset || !el.dataset.pf) return; const v = el.value; if (el.id === 'pcount') { PS.pcount = +v; return; } if (el.id === 'pf-item') PS.item = +v; else if (el.id === 'pf-lab') PS.lab = v; else PS.year = v; PS.cur = null; PS.vset = null; render(); });
 document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { if (!localStorage.getItem(TOUR_KEY) && PAGE.kind === 'item') startTour(); } catch (e) {} }, 600); document.title = (PAGE.kind === 'account' ? 'Cont' : PAGE.kind === 'teacher' ? 'Profesor' : PAGE.kind === 'admin' ? 'Administrare' : PAGE.kind === 'past' ? 'Din examenele anterioare' : PAGE.kind === 'exam' ? 'Test complet' : 'Item ' + PAGE.n) + ' · Mate pentru fiecare'; render(); });
 
+/* unelte lipite sus la derulare */
+(function(){function f(){var b=document.querySelector('.banner'),t=document.querySelector('.banner .tools');if(!b||!t)return;var r=b.getBoundingClientRect();t.classList.toggle('stuck',r.top<-6)}
+addEventListener('scroll',f,{passive:true});addEventListener('resize',f);setInterval(f,400)})();
+
 /* ================= Conturi: elev (cod de clasă), profesor (aprobat de admin), admin =================
    Firebase Auth + Firestore (compat, încărcat din CDN). Dacă window.FIREBASE_CONFIG este null, nimic nu apare în pagină. */
 (function () {
@@ -2289,13 +2301,7 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
 
   /* ---------- înștiințare: progres nesalvat ---------- */
   let nagHide = 0;
-  function nagTick() {
-    let el = document.getElementById('savenag');
-    const show = C.role === 'student' && C.stu && C.stu.code && dirty() && Date.now() > nagHide && (window.__PAGE || {}).kind !== 'account';
-    if (!show) { if (el) el.remove(); return; }
-    if (!el) { el = document.createElement('div'); el.id = 'savenag'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
-    const key = lang(); if (el.dataset.l !== key) { el.dataset.l = key; el.innerHTML = `<span>💾 ${esc(t('nagT'))}</span><button type="button" data-cl="savenag">${esc(t('nagB'))}</button><button type="button" class="x" data-cl="nagx" aria-label="${esc(t('close'))}">×</button>`; }
-  }
+  function nagTick() { const el = document.getElementById('savenag'); if (el) el.remove(); }
   setInterval(nagTick, 1500);
   window.addEventListener('beforeunload', e => { if (C.role === 'student' && C.stu && C.stu.code && dirty()) { e.preventDefault(); e.returnValue = ''; } });
   C.isTeacher = () => !!C.user && (C.role === 'admin' || (C.role === 'teacher' && C.tdoc && C.tdoc.status === 'approved'));
@@ -2399,7 +2405,7 @@ document.addEventListener('DOMContentLoaded', () => { setTimeout(() => { try { i
     } else {
       return PAGE_KIND_OK() ? `<a class="loginb2" href="cont.html" target="_top">${t('login')}</a>` : '';
     }
-    return `<div class="uwrap"><button class="uav ${C.menu ? 'on' : ''}" data-cl="umenu" title="${esc(nm)}" aria-label="${esc(nm)}" aria-expanded="${!!C.menu}">${esc(initials(nm))}${dirtyDot ? '<i></i>' : ''}</button>${C.menu ? `<div class="upop"><div class="who"><b>${esc(nm)}</b><small>${sub}</small></div>${body}</div>` : ''}</div>`;
+    return `<div class="uwrap"><button class="uav ${C.menu ? 'on' : ''} ${dirtyDot ? 'nag' : ''}" data-cl="umenu" title="${esc(dirtyDot ? nm + ' · ' + t('unsaved') : nm)}" aria-label="${esc(nm)}" aria-expanded="${!!C.menu}">${esc(initials(nm))}</button>${C.menu ? `<div class="upop"><div class="who"><b>${esc(nm)}</b><small>${sub}</small></div>${body}</div>` : ''}</div>`;
   };
   function placePop() { const b = $('.uav'), p = $('.upop'); if (!b || !p) return; const r = b.getBoundingClientRect(); p.style.top = (r.bottom + 8) + 'px'; p.style.right = Math.max(8, innerWidth - r.right) + 'px'; }
   window.addEventListener('resize', placePop);
